@@ -24,11 +24,12 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.ShaderModule;
-import net.nanitu.graphics.ShaderModuleDesc;
+import net.nanitu.graphics.shader.ShaderModule;
+import net.nanitu.graphics.shader.ShaderModuleDesc;
 import net.nanitu.util.InternalApi;
+import org.jspecify.annotations.Nullable;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL33.*;
 
 /**
  * Compiles a single GLSL shader stage.
@@ -37,15 +38,9 @@ import static org.lwjgl.opengl.GL20.*;
 public final class OpenGLShaderModule implements ShaderModule {
   private final OpenGLDevice ctx;
   private final ShaderModuleDesc desc;
-  int handle = 0; // package-private for OpenGLShaderProgram
+  int handle = 0;
+  private @Nullable String compilationError;
 
-  /**
-   * Creates a new shader module and compiles it.
-   *
-   * @param ctx  the GL context
-   * @param desc the shader module descriptor
-   * @throws RuntimeException if shader compilation fails
-   */
   OpenGLShaderModule(OpenGLDevice ctx, ShaderModuleDesc desc) {
     this.ctx = ctx;
     this.desc = desc;
@@ -56,10 +51,9 @@ public final class OpenGLShaderModule implements ShaderModule {
       glCompileShader(handle);
 
       if (glGetShaderi(handle, GL_COMPILE_STATUS) == GL_FALSE) {
-        String log = glGetShaderInfoLog(handle);
+        compilationError = glGetShaderInfoLog(handle);
         glDeleteShader(handle);
         handle = 0;
-        throw new RuntimeException("Shader compile failed [" + desc.type() + "]:\n" + log);
       }
     });
   }
@@ -67,6 +61,11 @@ public final class OpenGLShaderModule implements ShaderModule {
   @Override
   public ShaderModuleDesc desc() {
     return desc;
+  }
+
+  @Override
+  public @Nullable String checkCompilationError() {
+    return compilationError;
   }
 
   @Override

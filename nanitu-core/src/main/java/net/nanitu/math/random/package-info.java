@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.math.random;
+@NullMarked
+package net.nanitu.math.random;
 
 import org.jspecify.annotations.NullMarked;

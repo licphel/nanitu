@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.memory;
+@NullMarked
+package net.nanitu.memory;
 
 import org.jspecify.annotations.NullMarked;

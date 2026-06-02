@@ -24,11 +24,10 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.Sampler;
-import net.nanitu.graphics.SamplerDesc;
+import net.nanitu.graphics.texture.Sampler;
+import net.nanitu.graphics.texture.SamplerDesc;
 import net.nanitu.util.InternalApi;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL33.*;
 
 /**

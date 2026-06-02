@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.resource;
+@NullMarked
+package net.nanitu.resource;
 
 import org.jspecify.annotations.NullMarked;

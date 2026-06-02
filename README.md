@@ -43,19 +43,28 @@ annotations (`org.jspecify:jspecify`).
 
 Spatial audio with automatic format detection.
 
-- **Core**: `Mixer` (device), `Clip` (in-memory PCM buffer), `Emitter` (3D positional sound), `ClipManager` (auto-recycle stopped clips)
-- **Format**: `AudioInputStream.open(InputStream)` probes the container header and returns the appropriate decoder. Currently, it supports RIFF/WAVE in all common PCM variants (signed/unsigned integer, 32-bit float, extensible format)
-- **Backend**: LWJGL/OpenAL. All AL/ALC calls run on a single daemon thread; callers enqueue work via `Mixer.submit(Runnable)`
+- **Core**: `Mixer` (device), `Clip` (in-memory PCM buffer), `Emitter` (3D positional sound), `ClipManager` (
+  auto-recycle stopped clips)
+- **Format**: `AudioInputStream.open(InputStream)` probes the container header and returns the appropriate decoder.
+  Currently, it supports RIFF/WAVE in all common PCM variants (signed/unsigned integer, 32-bit float, extensible format)
+- **Backend**: LWJGL/OpenAL. All AL/ALC calls run on a single daemon thread; callers enqueue work via
+  `Mixer.submit(Runnable)`
 
 ### `nanitu-graphics`
 
 Low-level 3D rendering with a Vulkan-compatible resource-binding model.
 
-- **Core**: `Device` (GPU), `Surface` (window), `Encoder` (command buffer), `BufferObject` (VBO/IBO/UBO), `Texture` (1D/2D/3D), `Sampler`, `ShaderModule`/`ShaderProgram`, `RenderPipe` (immutable pipeline state), `RenderTarget` (FBO/swapchain), `ResourceSet` (descriptor bindings)
-- **Descriptor model**: textures and uniform buffers share a unified slot namespace — compatible with Vulkan's `VkDescriptorSet` semantics. OpenGL binding-point assignment is handled internally at apply-time
-- **Image I/O**: `ImageInputStream.open(InputStream)` detects PNG and returns decoded RGBA pixel data as a raw byte stream. Additional formats added via subclasses
-- **Backend**: LWJGL/OpenGL 3.3 Core Profile + GLFW. Single-threaded command-buffer execution model — `Encoder` records, `Device.execute()` dispatches
-- **Windowing**: GLFW surfaces expose an opaque `procAddress()` (a `Runnable` that binds the GL context). The graphics backend never imports GLFW types — this enables drop-in replacement with SDL or other windowing libraries
+- **Core**: `Device` (GPU), `Surface` (window), `Encoder` (command buffer), `BufferObject` (VBO/IBO/UBO), `Texture` (
+  1D/2D/3D), `Sampler`, `ShaderModule`/`ShaderProgram`, `RenderPipe` (immutable pipeline state), `RenderTarget` (
+  FBO/swapchain), `ResourceSet` (descriptor bindings)
+- **Descriptor model**: textures and uniform buffers share a unified slot namespace — compatible with Vulkan's
+  `VkDescriptorSet` semantics. OpenGL binding-point assignment is handled internally at apply-time
+- **Image I/O**: `ImageInputStream.open(InputStream)` detects PNG and returns decoded RGBA pixel data as a raw byte
+  stream. Additional formats added via subclasses
+- **Backend**: LWJGL/OpenGL 3.3 Core Profile + GLFW. Single-threaded command-buffer execution model — `Encoder` records,
+  `Device.execute()` dispatches
+- **Windowing**: GLFW surfaces expose an opaque `procAddress()` (a `Runnable` that binds the GL context). The graphics
+  backend never imports GLFW types — this enables drop-in replacement with SDL or other windowing libraries
 
 ### `nanitu-ai`
 

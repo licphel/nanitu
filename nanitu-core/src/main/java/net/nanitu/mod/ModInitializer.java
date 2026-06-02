@@ -33,7 +33,7 @@ package net.nanitu.mod;
  * <ul>
  *   <li>{@link #onPreLoad()} — called after mod.json is parsed and
  *   the entrypoint is instantiated, before dependency resolution</li>
- *   <li>{@link #onPostLoad()} — called during {@link Mod#freeze()} after
+ *   <li>{@link #onPostLoad()} — called during {@link ModLoader#freeze()} after
  *   the dependency graph has been topologically sorted</li>
  * </ul>
  *

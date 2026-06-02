@@ -71,7 +71,7 @@ public record ModInfo(String modId, SemanticVersion version, String authors, Str
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   /**
-   * Parses a mod.json string into a {@link ModInfo}.
+   * Parses a mod.json string into a {@code ModInfo}.
    *
    * @param json the raw JSON content of a mod.json file
    * @return the parsed metadata

@@ -24,15 +24,16 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.BufferFrequency;
-import net.nanitu.graphics.BufferObject;
-import net.nanitu.graphics.BufferObjectDesc;
+import net.nanitu.graphics.buffer.BufferFrequency;
+import net.nanitu.graphics.buffer.BufferObject;
+import net.nanitu.graphics.buffer.BufferObjectDesc;
+import net.nanitu.graphics.buffer.BufferUsage;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memFree;
 
@@ -86,7 +87,8 @@ final class OpenGLBufferObject implements BufferObject {
     this.ctx = ctx;
     this.desc = desc;
     target = OpenGLUtils.bufferTarget(desc.type());
-    hint = OpenGLUtils.bufferUsage(desc.frequency(), false);
+    boolean gpuWrite = (desc.usage() & BufferUsage.GPU_WRITE) != 0;
+    hint = OpenGLUtils.bufferUsage(desc.frequency(), gpuWrite);
 
     ctx.submit(() -> {
       handle = glGenBuffers();

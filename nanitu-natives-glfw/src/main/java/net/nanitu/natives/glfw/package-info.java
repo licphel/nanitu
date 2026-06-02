@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.natives.glfw;
+@NullMarked
+package net.nanitu.natives.glfw;
 
 import org.jspecify.annotations.NullMarked;

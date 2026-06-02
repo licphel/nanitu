@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.natives.opengl;
+@NullMarked
+package net.nanitu.natives.opengl;
 
 import org.jspecify.annotations.NullMarked;

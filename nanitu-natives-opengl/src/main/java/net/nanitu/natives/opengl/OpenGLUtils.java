@@ -24,20 +24,18 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.*;
+import net.nanitu.graphics.buffer.BufferFrequency;
+import net.nanitu.graphics.buffer.BufferType;
+import net.nanitu.graphics.pipe.*;
+import net.nanitu.graphics.shader.ShaderType;
+import net.nanitu.graphics.shader.VertexAttributeType;
+import net.nanitu.graphics.texture.TextureFilter;
+import net.nanitu.graphics.texture.TextureFormat;
+import net.nanitu.graphics.texture.TextureType;
+import net.nanitu.graphics.texture.TextureWrap;
 import net.nanitu.util.InternalApi;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
-import static org.lwjgl.opengl.GL12.GL_TEXTURE_3D;
-import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
-import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
-import static org.lwjgl.opengl.GL32.GL_UNIFORM_BUFFER;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 
 /**

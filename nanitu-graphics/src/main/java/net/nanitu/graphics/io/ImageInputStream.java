@@ -58,8 +58,7 @@ public abstract class ImageInputStream extends InputStream {
     buffered.reset();
 
     // PNG signature
-    if (sig.length >= 8 && sig[0] == (byte) 0x89 && sig[1] == 'P' && sig[2] == 'N' && sig[3] == 'G'
-        && sig[4] == 0x0D && sig[5] == 0x0A && sig[6] == 0x1A && sig[7] == 0x0A) {
+    if (sig.length >= 8 && sig[0] == (byte) 0x89 && sig[1] == 'P' && sig[2] == 'N' && sig[3] == 'G' && sig[4] == 0x0D && sig[5] == 0x0A && sig[6] == 0x1A && sig[7] == 0x0A) {
       return new PngInputStream(buffered);
     }
 

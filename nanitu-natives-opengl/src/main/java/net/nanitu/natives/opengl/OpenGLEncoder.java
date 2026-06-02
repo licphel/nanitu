@@ -24,14 +24,21 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.*;
+import net.nanitu.graphics.GraphicsException;
+import net.nanitu.graphics.buffer.BufferObject;
+import net.nanitu.graphics.buffer.BufferType;
+import net.nanitu.graphics.cmd.Encoder;
+import net.nanitu.graphics.pipe.Pipeline;
+import net.nanitu.graphics.pipe.Topology;
+import net.nanitu.graphics.shader.ResourceSet;
+import net.nanitu.graphics.shader.ResourceSetLayout;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 /**
@@ -57,9 +64,9 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 final class OpenGLEncoder implements Encoder {
   private final OpenGLDevice ctx;
   private final List<Runnable> commands = new ArrayList<>();
-
+  private final @Nullable OpenGLResourceSet[] currentRss = new OpenGLResourceSet[64]; // Most support 64 sets
   // Per-frame recording state (single-threaded)
-  private @Nullable OpenGLRenderPipe currentPipe;
+  private @Nullable OpenGLPipeline currentPipe;
   private @Nullable OpenGLBufferObject currentVbo;
   private @Nullable OpenGLBufferObject currentEbo;
   private int topology = GL_TRIANGLES;
@@ -72,7 +79,7 @@ final class OpenGLEncoder implements Encoder {
   OpenGLEncoder(OpenGLDevice ctx) {
     this.ctx = ctx;
   }
-  
+
   /**
    * Discards all recorded commands and resets per-frame tracking state.
    *
@@ -108,24 +115,27 @@ final class OpenGLEncoder implements Encoder {
   public void setTopology(Topology t) {
     int glTopo = OpenGLUtils.topology(t);
     commands.add(() -> topology = glTopo);
-    topology = glTopo;
   }
 
   @Override
   public void setBuffer(BufferObject buffer) {
     OpenGLBufferObject glBuf = (OpenGLBufferObject) buffer;
-    if (buffer.desc().type() == BufferType.INDEX) {
-      currentEbo = glBuf;
-    } else {
-      currentVbo = glBuf;
-    }
+    commands.add(() -> {
+      if (buffer.desc().type() == BufferType.INDEX) {
+        currentEbo = glBuf;
+      } else {
+        currentVbo = glBuf;
+      }
+    });
   }
 
   @Override
-  public void setRenderPipe(RenderPipe pipe) {
-    currentPipe = (OpenGLRenderPipe) pipe;
-    OpenGLRenderPipe p = currentPipe;
-    commands.add(() -> p.apply(ctx.cache, ctx.framebufferHeight()));
+  public void setRenderPipe(Pipeline pipe) {
+    OpenGLPipeline glPipe = (OpenGLPipeline) pipe;
+    commands.add(() -> {
+      currentPipe = glPipe;
+      glPipe.apply(ctx.cache, ctx.framebufferHeight());
+    });
   }
 
   @Override
@@ -141,7 +151,12 @@ final class OpenGLEncoder implements Encoder {
   @Override
   public void setResource(int slot, ResourceSet set) {
     OpenGLResourceSet rs = (OpenGLResourceSet) set;
-    commands.add(() -> rs.apply(ctx.cache));
+    commands.add(() -> {
+      if (slot >= currentRss.length) {
+        throw new GraphicsException("Mostly support 64 slots, but got " + slot);
+      }
+      currentRss[slot] = rs;
+    });
   }
 
   /**
@@ -153,17 +168,19 @@ final class OpenGLEncoder implements Encoder {
    */
   @Override
   public void draw(int vertexCount, int firstVertex) {
-    OpenGLRenderPipe pipe = currentPipe;
-    OpenGLBufferObject vbo = currentVbo;
-    int topo = topology;
-    if (pipe == null || vbo == null) {
-      return;
-    }
-
     commands.add(() -> {
-      int vao = pipe.acquireVao(vbo.handle, 0);
+      if (currentVbo == null) {
+        throw new GraphicsException("VBO not bound");
+      }
+      if (currentPipe == null) {
+        throw new GraphicsException("Pipeline not bound");
+      }
+
+      applyResources();
+
+      int vao = currentPipe.acquireVao(currentVbo.handle, 0);
       ctx.cache.bindVao(vao);
-      glDrawArrays(topo, firstVertex, vertexCount);
+      glDrawArrays(topology, firstVertex, vertexCount);
       ctx.cache.bindVao(0);
     });
   }
@@ -179,18 +196,22 @@ final class OpenGLEncoder implements Encoder {
    */
   @Override
   public void drawIndexed(int indexCount, int firstIndex) {
-    OpenGLRenderPipe pipe = currentPipe;
-    OpenGLBufferObject vbo = currentVbo;
-    OpenGLBufferObject ebo = currentEbo;
-    int topo = topology;
-    if (pipe == null || vbo == null || ebo == null) {
-      return;
-    }
-
     commands.add(() -> {
-      int vao = pipe.acquireVao(vbo.handle, ebo.handle);
+      if (currentVbo == null) {
+        throw new GraphicsException("VBO not bound");
+      }
+      if (currentEbo == null) {
+        throw new GraphicsException("EBO not bound");
+      }
+      if (currentPipe == null) {
+        throw new GraphicsException("Pipeline not bound");
+      }
+
+      applyResources();
+
+      int vao = currentPipe.acquireVao(currentVbo.handle, currentEbo.handle);
       ctx.cache.bindVao(vao);
-      glDrawElements(topo, indexCount, GL_UNSIGNED_INT, (long) firstIndex * Integer.BYTES);
+      glDrawElements(topology, indexCount, GL_UNSIGNED_INT, (long) firstIndex * Integer.BYTES);
       ctx.cache.bindVao(0);
     });
   }
@@ -208,5 +229,20 @@ final class OpenGLEncoder implements Encoder {
   @Override
   public void close() {
     commands.clear();
+  }
+
+  private void applyResources() {
+    assert currentPipe != null;
+
+    ResourceSetLayout[] layouts = currentPipe.desc().resourceLayouts();
+    for (int i = 0; i < layouts.length; i++) {
+      OpenGLResourceSet rs = currentRss[i];
+      if (rs == null) {
+        throw new GraphicsException("Null resource layout at slot " + i);
+      }
+
+      rs.validate(layouts[i]);
+      rs.apply(ctx.cache);
+    }
   }
 }

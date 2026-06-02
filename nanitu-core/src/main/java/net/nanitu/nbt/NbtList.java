@@ -304,7 +304,7 @@ public final class NbtList implements Iterable<@Nullable Object> {
   }
 
   /**
-   * Returns the element as an {@link NbtList}.
+   * Returns the element as an {@code NbtList}.
    *
    * @param index the element index
    * @return the nested list, or {@code null} if out of bounds or type mismatch
@@ -416,7 +416,7 @@ public final class NbtList implements Iterable<@Nullable Object> {
   }
 
   /**
-   * Appends an {@link NbtList}.
+   * Appends an {@code NbtList}.
    *
    * @param value the list to add
    */
@@ -473,7 +473,7 @@ public final class NbtList implements Iterable<@Nullable Object> {
   /**
    * Creates a deep copy of this list.
    *
-   * <p>Nested {@link NbtCompound} and {@link NbtList} elements are recursively
+   * <p>Nested {@link NbtCompound} and {@code NbtList} elements are recursively
    * copied. {@code byte[]} elements are cloned. All other values are shared
    * by reference (they are immutable primitives or strings).
    *

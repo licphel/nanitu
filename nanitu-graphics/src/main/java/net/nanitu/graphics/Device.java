@@ -24,7 +24,20 @@
 
 package net.nanitu.graphics;
 
+import net.nanitu.graphics.buffer.BufferObject;
+import net.nanitu.graphics.buffer.BufferObjectDesc;
+import net.nanitu.graphics.cmd.Encoder;
+import net.nanitu.graphics.cmd.EncoderDesc;
+import net.nanitu.graphics.pass.RenderTarget;
+import net.nanitu.graphics.pass.RenderTargetDesc;
+import net.nanitu.graphics.pipe.Pipeline;
+import net.nanitu.graphics.pipe.PipelineDesc;
+import net.nanitu.graphics.shader.*;
 import net.nanitu.graphics.spi.DeviceProvider;
+import net.nanitu.graphics.texture.Sampler;
+import net.nanitu.graphics.texture.SamplerDesc;
+import net.nanitu.graphics.texture.Texture;
+import net.nanitu.graphics.texture.TextureDesc;
 
 /**
  * Represents a graphics output device (hardware or software).
@@ -49,7 +62,7 @@ import net.nanitu.graphics.spi.DeviceProvider;
  *
  * Texture tex = device.createTexture(desc);
  * BufferObject vbo = device.createBuffer(BufferObjectDesc.vertex(BufferFrequency.DYNAMIC));
- * RenderPipe pipe = device.createRenderPipe(pipeDesc);
+ * Pipeline pipe = device.createRenderPipe(pipeDesc);
  *
  * // In the main loop:
  * while (running) {
@@ -95,7 +108,7 @@ public interface Device extends AutoCloseable {
   /**
    * Creates a new GPU texture (1D, 2D, or 3D).
    *
-   * <p>If the descriptor includes {@link TextureDesc#initialBytes}, they are
+   * <p>If the descriptor includes {@link TextureDesc#initialBytes()}, they are
    * uploaded during creation. Otherwise, the texture is left uninitialized.
    *
    * @param desc the texture dimensions, format, type, and optional initial data
@@ -141,7 +154,7 @@ public interface Device extends AutoCloseable {
    * @param desc the blend, depth, stencil, rasterization, shader, and vertex layout
    * @return a new render pipeline backed by this device
    */
-  RenderPipe getRenderPipeline(RenderPipeDesc desc);
+  Pipeline getRenderPipeline(PipelineDesc desc);
 
   /**
    * Creates a new, empty resource set.
@@ -150,16 +163,18 @@ public interface Device extends AutoCloseable {
    * {@link ResourceSet#bindTexture} and {@link ResourceSet#bindUniform}
    * before using the set in a draw call.
    *
+   * @param layout the resource set layout declaring valid slots
    * @return a new resource set backed by this device
    */
-  ResourceSet getResourceSet();
+  ResourceSet getResourceSet(ResourceSetLayout layout);
 
   /**
    * Creates a new command encoder for recording GPU commands.
    *
+   * @param desc encoder usage, extended info
    * @return a new encoder backed by this device
    */
-  Encoder getEncoder();
+  Encoder getEncoder(EncoderDesc desc);
 
   /**
    * Creates a render target wrapping the default framebuffer (swapchain).
@@ -181,6 +196,14 @@ public interface Device extends AutoCloseable {
    * @return an off-screen render target
    */
   RenderTarget getRenderTarget(int width, int height);
+
+  /**
+   * Creates a render target from a full descriptor.
+   *
+   * @param desc color attachment formats, depth/stencil, sample count
+   * @return a new render target backed by this device
+   */
+  RenderTarget getRenderTarget(RenderTargetDesc desc);
 
   /**
    * Returns the swapchain render target representing the screen.

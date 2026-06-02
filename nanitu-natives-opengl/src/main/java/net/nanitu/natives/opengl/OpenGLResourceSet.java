@@ -24,10 +24,13 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.BufferObject;
-import net.nanitu.graphics.ResourceSet;
-import net.nanitu.graphics.Sampler;
-import net.nanitu.graphics.Texture;
+import net.nanitu.graphics.GraphicsException;
+import net.nanitu.graphics.buffer.BufferObject;
+import net.nanitu.graphics.shader.ResourceSet;
+import net.nanitu.graphics.shader.ResourceSetLayout;
+import net.nanitu.graphics.texture.Sampler;
+import net.nanitu.graphics.texture.Texture;
+import org.jspecify.annotations.Nullable;
 
 /**
  * OpenGL resource set with a unified descriptor slot space.
@@ -45,7 +48,6 @@ import net.nanitu.graphics.Texture;
 final class OpenGLResourceSet implements ResourceSet {
   private static final int MAX_SLOTS = 16;
 
-  /** Slot type markers. */
   private static final byte NONE = 0;
   private static final byte TEXTURE = 1;
   private static final byte UNIFORM = 2;
@@ -61,9 +63,16 @@ final class OpenGLResourceSet implements ResourceSet {
   private final int[] uboSizes = new int[MAX_SLOTS];
   private final int[] uboOffsets = new int[MAX_SLOTS];
 
+  private final ResourceSetLayout layout;
   private int slotCount = 0;
 
-  OpenGLResourceSet(OpenGLDevice ctx) {
+  OpenGLResourceSet(OpenGLDevice ctx, ResourceSetLayout layout) {
+    this.layout = layout;
+  }
+
+  @Override
+  public ResourceSetLayout layout() {
+    return layout;
   }
 
   @Override
@@ -85,6 +94,10 @@ final class OpenGLResourceSet implements ResourceSet {
     if (slot >= slotCount) {
       slotCount = slot + 1;
     }
+  }
+
+  @Override
+  public void close() {
   }
 
   /**
@@ -113,7 +126,14 @@ final class OpenGLResourceSet implements ResourceSet {
     }
   }
 
-  @Override
-  public void close() {
+  /**
+   * Validates this set's layout against the pipeline's layout at the given slot.
+   *
+   * @throws GraphicsException if the layouts are incompatible
+   */
+  void validate(@Nullable ResourceSetLayout pipelineLayout) {
+    if (!layout.matches(pipelineLayout)) {
+      throw new GraphicsException("Resource set layout does not match pipeline layout");
+    }
   }
 }

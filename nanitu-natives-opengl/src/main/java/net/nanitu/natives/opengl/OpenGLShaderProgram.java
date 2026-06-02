@@ -24,11 +24,12 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.ShaderModule;
-import net.nanitu.graphics.ShaderProgram;
+import net.nanitu.graphics.shader.ShaderModule;
+import net.nanitu.graphics.shader.ShaderProgram;
 import net.nanitu.util.InternalApi;
+import org.jspecify.annotations.Nullable;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL33.*;
 
 /**
  * Links one or more compiled shader modules into an OpenGL program.
@@ -37,15 +38,9 @@ import static org.lwjgl.opengl.GL20.*;
 public final class OpenGLShaderProgram implements ShaderProgram {
   private final OpenGLDevice ctx;
   private final ShaderModule[] modules;
-  int handle = 0; // package-private for OpenGLRenderPipe
+  int handle = 0; // package-private for OpenGLPipeline
+  private @Nullable String compilationError;
 
-  /**
-   * Creates a new shader program and links the given modules.
-   *
-   * @param ctx     the GL context
-   * @param modules the shader modules to link together
-   * @throws RuntimeException if program linking fails
-   */
   OpenGLShaderProgram(OpenGLDevice ctx, ShaderModule[] modules) {
     this.ctx = ctx;
     this.modules = modules;
@@ -57,10 +52,10 @@ public final class OpenGLShaderProgram implements ShaderProgram {
       }
       glLinkProgram(handle);
       if (glGetProgrami(handle, GL_LINK_STATUS) == GL_FALSE) {
-        String log = glGetProgramInfoLog(handle);
+        compilationError = glGetProgramInfoLog(handle);
         glDeleteProgram(handle);
         handle = 0;
-        throw new RuntimeException("Shader program link failed:\n" + log);
+        return;
       }
       // Detach after successful link
       for (ShaderModule m : modules) {
@@ -72,6 +67,11 @@ public final class OpenGLShaderProgram implements ShaderProgram {
   @Override
   public ShaderModule[] modules() {
     return modules;
+  }
+
+  @Override
+  public @Nullable String checkCompilationError() {
+    return compilationError;
   }
 
   @Override

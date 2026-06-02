@@ -24,9 +24,23 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.*;
+import net.nanitu.graphics.Device;
+import net.nanitu.graphics.DeviceInfo;
+import net.nanitu.graphics.Surface;
+import net.nanitu.graphics.buffer.BufferObject;
+import net.nanitu.graphics.buffer.BufferObjectDesc;
+import net.nanitu.graphics.cmd.Encoder;
+import net.nanitu.graphics.cmd.EncoderDesc;
+import net.nanitu.graphics.pass.RenderTarget;
+import net.nanitu.graphics.pass.RenderTargetDesc;
+import net.nanitu.graphics.pipe.Pipeline;
+import net.nanitu.graphics.pipe.PipelineDesc;
+import net.nanitu.graphics.shader.*;
+import net.nanitu.graphics.texture.Sampler;
+import net.nanitu.graphics.texture.SamplerDesc;
+import net.nanitu.graphics.texture.Texture;
+import net.nanitu.graphics.texture.TextureDesc;
 import net.nanitu.util.InternalApi;
-import org.jspecify.annotations.Nullable;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
@@ -76,7 +90,6 @@ final class OpenGLDevice implements Device {
 
   private final Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
   private final OpenGLSwapchain swapchain = new OpenGLSwapchain(this);
-  private @Nullable Surface surface;
 
   private volatile int fbHeight = 1;
 
@@ -105,7 +118,6 @@ final class OpenGLDevice implements Device {
    */
   @Override
   public void load(Surface surface) {
-    this.surface = surface;
     ((Runnable) surface.procAddress()).run();
     GL.createCapabilities();
     fbHeight = surface.height();
@@ -139,17 +151,17 @@ final class OpenGLDevice implements Device {
   }
 
   @Override
-  public RenderPipe getRenderPipeline(RenderPipeDesc desc) {
-    return new OpenGLRenderPipe(this, desc);
+  public Pipeline getRenderPipeline(PipelineDesc desc) {
+    return new OpenGLPipeline(this, desc);
   }
 
   @Override
-  public ResourceSet getResourceSet() {
-    return new OpenGLResourceSet(this);
+  public ResourceSet getResourceSet(ResourceSetLayout layout) {
+    return new OpenGLResourceSet(this, layout);
   }
 
   @Override
-  public Encoder getEncoder() {
+  public Encoder getEncoder(EncoderDesc desc) {
     return new OpenGLEncoder(this);
   }
 
@@ -161,6 +173,18 @@ final class OpenGLDevice implements Device {
   @Override
   public RenderTarget getRenderTarget(int width, int height) {
     return new OpenGLRenderTarget(this, width, height);
+  }
+
+  @Override
+  public RenderTarget getRenderTarget(RenderTargetDesc desc) {
+    if (desc.isSwapchain()) {
+      return swapchain;
+    }
+    /*
+     * Extended options are not supported yet.
+     * TODO
+     */
+    return new OpenGLRenderTarget(this, desc.width(), desc.height());
   }
 
   @Override

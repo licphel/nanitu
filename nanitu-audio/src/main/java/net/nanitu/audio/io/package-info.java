@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.audio.io;
+@NullMarked
+package net.nanitu.audio.io;
 
 import org.jspecify.annotations.NullMarked;

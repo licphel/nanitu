@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.math.noise;
+@NullMarked
+package net.nanitu.math.noise;
 
 import org.jspecify.annotations.NullMarked;

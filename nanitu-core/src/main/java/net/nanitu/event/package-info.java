@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.event;
+@NullMarked
+package net.nanitu.event;
 
 import org.jspecify.annotations.NullMarked;

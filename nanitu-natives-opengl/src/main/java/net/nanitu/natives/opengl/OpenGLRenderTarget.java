@@ -24,16 +24,15 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.RenderPassDesc;
-import net.nanitu.graphics.RenderTarget;
-import net.nanitu.graphics.TextureFilter;
+import net.nanitu.graphics.pass.RenderPassDesc;
+import net.nanitu.graphics.pass.RenderTarget;
+import net.nanitu.graphics.texture.TextureFilter;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.*;
 
 /**
  * Off-screen render target backed by an OpenGL FBO with an RGBA8 color
@@ -54,7 +53,7 @@ final class OpenGLRenderTarget implements RenderTarget {
   /**
    * Creates an off-screen FBO.
    *
-   * @param ctx the GL device
+   * @param ctx    the GL device
    * @param width  the FBO width in pixels
    * @param height the FBO height in pixels
    * @throws RuntimeException if the FBO is incomplete after assembly
@@ -64,11 +63,11 @@ final class OpenGLRenderTarget implements RenderTarget {
 
     ctx.submit(() -> {
       colorTex = glGenTextures();
-      glBindTexture(GL_TEXTURE_2D, colorTex);
+      ctx.cache.setTexture(0, GL_TEXTURE_2D, colorTex);
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glBindTexture(GL_TEXTURE_2D, 0);
+      ctx.cache.setTexture(0, GL_TEXTURE_2D, 0);
 
       depthRbo = glGenRenderbuffers();
       glBindRenderbuffer(GL_RENDERBUFFER, depthRbo);
@@ -76,12 +75,12 @@ final class OpenGLRenderTarget implements RenderTarget {
       glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
       handle = glGenFramebuffers();
-      glBindFramebuffer(GL_FRAMEBUFFER, handle);
+      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, handle);
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTex, 0);
       glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRbo);
 
       int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
       if (status != GL_FRAMEBUFFER_COMPLETE) {
         throw new RuntimeException("OpenGLRenderTarget: FBO incomplete, status=0x" + Integer.toHexString(status));
       }
@@ -99,13 +98,14 @@ final class OpenGLRenderTarget implements RenderTarget {
   @Override
   public void acquire(@Nullable RenderPassDesc desc) {
     ctx.submit(() -> {
-      ctx.cache.bindFbo(handle);
+      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, handle);
       if (desc == null) {
         return;
       }
       int glMask = 0;
       if ((desc.clearMask() & RenderPassDesc.CLEAR_COLOR) != 0) {
-        glClearColor(desc.clearColor().red(), desc.clearColor().green(), desc.clearColor().blue(), desc.clearColor().alpha());
+        glClearColor(desc.clearColor().red(), desc.clearColor().green(), desc.clearColor().blue(),
+            desc.clearColor().alpha());
         glMask |= GL_COLOR_BUFFER_BIT;
       }
       if ((desc.clearMask() & RenderPassDesc.CLEAR_DEPTH) != 0) {
@@ -133,12 +133,11 @@ final class OpenGLRenderTarget implements RenderTarget {
     ctx.submit(() -> {
       OpenGLRenderTarget dst = (OpenGLRenderTarget) target;
       int glFilter = OpenGLUtils.textureFilter(filter);
-      glBindFramebuffer(GL_READ_FRAMEBUFFER, handle);
-      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst.handle);
+      ctx.cache.bindFramebuffer(GL_READ_FRAMEBUFFER, handle);
+      ctx.cache.bindFramebuffer(GL_DRAW_FRAMEBUFFER, dst.handle);
       glBlitFramebuffer(srcX, srcY, srcX + srcW, srcY + srcH, dstX, dstY, dstX + dstW, dstY + dstH,
           GL_COLOR_BUFFER_BIT, glFilter);
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      ctx.cache.fbo = 0;
+      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
     });
   }
 

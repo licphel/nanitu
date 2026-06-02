@@ -28,16 +28,7 @@ import net.nanitu.util.InternalApi;
 
 import java.util.Arrays;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
-import static org.lwjgl.opengl.GL33.glBindSampler;
+import static org.lwjgl.opengl.GL33.*;
 
 /**
  * OpenGL state cache — avoids redundant API calls by tracking the currently bound state.
@@ -53,8 +44,10 @@ final class OpenGLCache {
   final int[] textures = new int[32];
   final int[] samplers = new int[32];
   final int[] uniformBuffers = new int[32];
-
-  int fbo = 0;
+  // Scissor / viewport
+  final int[] scissorRect = new int[4];
+  final int[] viewportRect = new int[4];
+  int texActive = 0;
   int program = 0;
   int vao = 0;
   boolean blend = false;
@@ -72,20 +65,24 @@ final class OpenGLCache {
   // Depth
   boolean depthWrite = true;
   int depthFunc = GL_LESS;
-
+  int fboR = 0;
+  int fboW = 0;
   // Stencil (front)
-  int stencilFunc = GL_ALWAYS, stencilRef = 0, stencilMask = 0xFF;
-  int stencilFail = GL_KEEP, stencilZFail = GL_KEEP, stencilZPass = GL_KEEP;
+  int stencilFFunc = GL_ALWAYS, stencilFRef, stencilFMask = 0xFF;
+  int stencilFFail = GL_KEEP, stencilFZFail = GL_KEEP, stencilFZPass = GL_KEEP;
+  int stencilFWriteMask = 0xFF;
+  // Stencil (back)
+  int stencilBFunc = GL_ALWAYS, stencilBRef, stencilBMask = 0xFF;
+  int stencilBFail = GL_KEEP, stencilBZFail = GL_KEEP, stencilBZPass = GL_KEEP;
 
   // Rasterization
   int polyMode = GL_FILL;
   int cullMode = GL_BACK;
   int frontFace = GL_CCW;
   float depthBiasConstant = 0f, depthBiasSlope = 0f;
-
-  // Scissor / viewport
-  int[] scissorRect = new int[4];
-  int[] viewportRect = new int[4];
+  int stencilBWriteMask = 0xFF;
+  // Color write mask
+  boolean colorMaskR = true, colorMaskG = true, colorMaskB = true, colorMaskA = true;
   int viewportHeight = 0; // cached for Y-flip
 
   OpenGLCache() {
@@ -128,18 +125,6 @@ final class OpenGLCache {
   }
 
   /**
-   * Binds a framebuffer object.
-   *
-   * @param id the GL FBO handle
-   */
-  public void bindFbo(int id) {
-    if (fbo != id) {
-      glBindFramebuffer(GL_FRAMEBUFFER, id);
-      fbo = id;
-    }
-  }
-
-  /**
    * Binds a buffer object to the given target.
    *
    * @param target the GL buffer target (e.g. {@code GL_ARRAY_BUFFER})
@@ -154,6 +139,43 @@ final class OpenGLCache {
   }
 
   /**
+   * Binds a buffer object to the given target, not using cache.
+   *
+   * @param target the GL buffer target (e.g. {@code GL_ARRAY_BUFFER})
+   * @param id     the GL buffer handle
+   */
+  public void bindBufferForce(int target, int id) {
+    int idx = bufferIndex(target);
+    glBindBuffer(target, id);
+    buffers[idx] = id;
+  }
+
+  /**
+   * Binds a framebuffer object to the given target.
+   *
+   * @param target the GL framebuffer target (e.g. {@code GL_FRAMEBUFFER})
+   * @param id     the GL framebuffer handle
+   */
+  public void bindFramebuffer(int target, int id) {
+    if (target == GL_FRAMEBUFFER) {
+      if (fboR != id || fboW != id) {
+        fboR = fboW = id;
+        glBindFramebuffer(target, id);
+      }
+    } else if (target == GL_READ_FRAMEBUFFER) {
+      if (fboR != id) {
+        fboR = id;
+        glBindFramebuffer(target, id);
+      }
+    } else if (target == GL_DRAW_FRAMEBUFFER) {
+      if (fboW != id) {
+        fboW = id;
+        glBindFramebuffer(target, id);
+      }
+    }
+  }
+
+  /**
    * Binds a texture to the specified texture unit.
    *
    * @param unit   the texture unit index (0-based)
@@ -161,8 +183,12 @@ final class OpenGLCache {
    * @param id     the GL texture handle
    */
   public void setTexture(int unit, int target, int id) {
+    if (texActive != unit) {
+      glActiveTexture(unit);
+      texActive = unit;
+    }
+
     if (textures[unit] != id) {
-      glActiveTexture(GL_TEXTURE0 + unit);
       glBindTexture(target, id);
       textures[unit] = id;
     }
@@ -469,6 +495,62 @@ final class OpenGLCache {
         scissorRect[2] = w;
         scissorRect[3] = h;
       }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Stencil face (cached, per-face)
+  // -------------------------------------------------------------------------
+
+  public void setStencilFace(int face, int func, int ref, int mask, int fail, int zfail, int zpass, int writeMask) {
+    if (face == GL_FRONT) {
+      if (stencilFFunc != func || stencilFRef != ref || stencilFMask != mask) {
+        glStencilFuncSeparate(GL_FRONT, func, ref, mask);
+        stencilFFunc = func;
+        stencilFRef = ref;
+        stencilFMask = mask;
+      }
+      if (stencilFFail != fail || stencilFZFail != zfail || stencilFZPass != zpass) {
+        glStencilOpSeparate(GL_FRONT, fail, zfail, zpass);
+        stencilFFail = fail;
+        stencilFZFail = zfail;
+        stencilFZPass = zpass;
+      }
+      if (stencilFWriteMask != writeMask) {
+        glStencilMaskSeparate(GL_FRONT, writeMask);
+        stencilFWriteMask = writeMask;
+      }
+    } else {
+      if (stencilBFunc != func || stencilBRef != ref || stencilBMask != mask) {
+        glStencilFuncSeparate(GL_BACK, func, ref, mask);
+        stencilBFunc = func;
+        stencilBRef = ref;
+        stencilBMask = mask;
+      }
+      if (stencilBFail != fail || stencilBZFail != zfail || stencilBZPass != zpass) {
+        glStencilOpSeparate(GL_BACK, fail, zfail, zpass);
+        stencilBFail = fail;
+        stencilBZFail = zfail;
+        stencilBZPass = zpass;
+      }
+      if (stencilBWriteMask != writeMask) {
+        glStencilMaskSeparate(GL_BACK, writeMask);
+        stencilBWriteMask = writeMask;
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Colour write mask
+  // -------------------------------------------------------------------------
+
+  public void setColorMask(boolean r, boolean g, boolean b, boolean a) {
+    if (colorMaskR != r || colorMaskG != g || colorMaskB != b || colorMaskA != a) {
+      glColorMask(r, g, b, a);
+      colorMaskR = r;
+      colorMaskG = g;
+      colorMaskB = b;
+      colorMaskA = a;
     }
   }
 }

@@ -24,18 +24,15 @@
 
 package net.nanitu.natives.opengl;
 
-import net.nanitu.graphics.Texture;
-import net.nanitu.graphics.TextureDesc;
-import net.nanitu.graphics.TextureType;
+import net.nanitu.graphics.texture.Texture;
+import net.nanitu.graphics.texture.TextureDesc;
+import net.nanitu.graphics.texture.TextureType;
 import net.nanitu.math.Box3;
 import net.nanitu.util.InternalApi;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.glTexImage3D;
-import static org.lwjgl.opengl.GL12.glTexSubImage3D;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memFree;
 
@@ -83,7 +80,7 @@ public final class OpenGLTexture implements Texture {
 
     ctx.submit(() -> {
       handle = glGenTextures();
-      glBindTexture(target, handle);
+      ctx.cache.setTexture(0, target, handle);
 
       int[] fmt = OpenGLUtils.textureFormat(desc.format());
       int internal = fmt[0], pixFmt = fmt[1], pixType = fmt[2];
@@ -106,10 +103,14 @@ public final class OpenGLTexture implements Texture {
         memFree(data);
       }
 
+      glTexParameteri(target, GL_TEXTURE_BASE_LEVEL, 0);
+      glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, desc.mipLevels() - 1);
+
       if (desc.mipLevels() > 1) {
         glGenerateMipmap(target);
       }
-      glBindTexture(target, 0);
+
+      ctx.cache.setTexture(0, target, 0);
     });
   }
 
@@ -121,7 +122,7 @@ public final class OpenGLTexture implements Texture {
   @Override
   public void submit(byte[] bytes, Box3 region) {
     ctx.submit(() -> {
-      glBindTexture(target, handle);
+      ctx.cache.setTexture(0, target, handle);
       int[] fmt = OpenGLUtils.textureFormat(desc.format());
       int pixFmt = fmt[1], pixType = fmt[2];
       int x = (int) region.minX(), y = (int) region.minY(), z = (int) region.minZ();
@@ -142,7 +143,7 @@ public final class OpenGLTexture implements Texture {
       if (desc.mipLevels() > 1) {
         glGenerateMipmap(target);
       }
-      glBindTexture(target, 0);
+      ctx.cache.setTexture(0, target, 0);
     });
   }
 
@@ -160,18 +161,24 @@ public final class OpenGLTexture implements Texture {
       fbos[0] = glGenFramebuffers();
       fbos[1] = glGenFramebuffers();
       try {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[0]);
+        ctx.cache.bindFramebuffer(GL_READ_FRAMEBUFFER, fbos[0]);
         glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, handle, 0);
 
         OpenGLTexture dstTex = (OpenGLTexture) target2;
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[1]);
+        ctx.cache.bindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[1]);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dstTex.handle, 0);
 
         glBlitFramebuffer(sx, sy, sx + sw, sy + sh, dx, dy, dx + dw, dy + dh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        if (dstTex.desc.mipLevels() > 1) {
+          ctx.cache.setTexture(0, dstTex.target, dstTex.handle);
+          glGenerateMipmap(dstTex.target);
+          ctx.cache.setTexture(0, dstTex.target, 0);
+        }
       } finally {
         glDeleteFramebuffers(fbos[0]);
         glDeleteFramebuffers(fbos[1]);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
       }
     });
   }

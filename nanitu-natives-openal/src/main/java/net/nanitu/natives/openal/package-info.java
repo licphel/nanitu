@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
-@NullMarked package net.nanitu.natives.openal;
+@NullMarked
+package net.nanitu.natives.openal;
 
 import org.jspecify.annotations.NullMarked;
