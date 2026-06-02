@@ -1,0 +1,3 @@
+net.nanitu.ai.openai.OpenAiModelProvider
+net.nanitu.ai.anthropic.AnthropicModelProvider
+net.nanitu.ai.local.LocalModelProvider
