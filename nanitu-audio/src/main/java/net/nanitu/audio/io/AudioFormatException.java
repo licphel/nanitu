@@ -24,22 +24,10 @@
 
 package net.nanitu.audio.io;
 
-import net.nanitu.audio.Encoding;
-
 import java.io.Serial;
 
 /**
- * Thrown when an audio format is unrecognized, malformed, or not supported
- * by the active backend.
- *
- * <p>Common causes:
- * <ul>
- *   <li>The container header declares a codec ({@link Encoding}) that the
- *       decoder does not implement.</li>
- *   <li>A required header field is missing or contains an out-of-range value.</li>
- *   <li>The backend does not support the requested sample rate, bits depth,
- *       or channel count.</li>
- * </ul>
+ * Thrown to indicate an audio format is unrecognized, malformed, or not supported.
  *
  * @see AudioInputStream
  */
@@ -48,11 +36,21 @@ public class AudioFormatException extends RuntimeException {
   private static final long serialVersionUID = 2026053100L;
 
   /**
-   * Creates a new {@code AudioFormatException} with the given detail message.
+   * Creates an {@code AudioFormatException} with the given detail message.
    *
    * @param message description of why the format was rejected
    */
   public AudioFormatException(String message) {
     super(message);
+  }
+
+  /**
+   * Creates an {@code AudioFormatException} with the given message and cause.
+   *
+   * @param message description of why the format was rejected
+   * @param cause   the underlying cause
+   */
+  public AudioFormatException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

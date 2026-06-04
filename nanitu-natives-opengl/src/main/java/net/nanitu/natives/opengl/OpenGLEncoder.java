@@ -42,18 +42,15 @@ import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 /**
- * OpenGL implementation of {@link Encoder} that records GPU commands into a
- * list of {@link Runnable} lambdas.
+ * OpenGL implementation of {@link Encoder} that records GPU commands into a list of {@link Runnable} lambdas.
  *
  * <p>Commands are accumulated in an {@link ArrayList} on the calling thread.
- * When {@link #queuedExecute()} is called, the entire list is snapshot and
- * posted to the render thread as a single {@link OpenGLDevice#submit(Runnable)}
- * call. This batching avoids per-command queue overhead.
+ * When {@link #queuedExecute()} is called, the entire list is snapshot and posted to the render thread as a single
+ * {@link OpenGLDevice#submit(Runnable)} call. This batching avoids per-command queue overhead.
  *
  * <p><b>State tracking:</b> the encoder remembers the last-set pipeline,
- * vertex buffer, index buffer, and topology on the recording thread so that
- * {@link #draw} and {@link #drawIndexed} can capture the correct state
- * without requiring it to be re-specified before every draw call.
+ * vertex buffer, index buffer, and topology on the recording thread so that {@link #draw} and {@link #drawIndexed} can
+ * capture the correct state without requiring it to be re-specified before every draw call.
  *
  * <p><b>Thread safety:</b> recording is single-threaded per instance.
  * {@link #queuedExecute()} and {@link #reset()} may be called from any thread.
@@ -98,8 +95,7 @@ final class OpenGLEncoder implements Encoder {
    * Snapshots the command list and submits it to the render thread.
    *
    * <p>The snapshot decouples the submission from further recording:
-   * {@link #reset()} may be called immediately without affecting the
-   * batch that is about to execute.
+   * {@link #reset()} may be called immediately without affecting the batch that is about to execute.
    */
   @Override
   public void queuedExecute() {
@@ -163,8 +159,8 @@ final class OpenGLEncoder implements Encoder {
    * Records a non-indexed draw call.
    *
    * <p>Skips silently if no pipeline or vertex buffer has been set.
-   * Acquires a VAO for the current (VBO, 0) pair from the pipeline's
-   * VAO cache, binds it, issues {@code glDrawArrays}, and unbinds.
+   * Acquires a VAO for the current (VBO, 0) pair from the pipeline's VAO cache, binds it, issues {@code glDrawArrays},
+   * and unbinds.
    */
   @Override
   public void draw(int vertexCount, int firstVertex) {

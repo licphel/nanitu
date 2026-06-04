@@ -29,8 +29,7 @@ import net.nanitu.graphics.shader.ResourceSetLayout;
 import net.nanitu.graphics.shader.VertexLayout;
 
 /**
- * An immutable render pipeline that bundles all fixed-function and programmable
- * state for a draw call.
+ * An immutable render pipeline that bundles all fixed-function and programmable state for a draw call.
  *
  * <p>A {@code Pipeline} combines:
  * <ul>

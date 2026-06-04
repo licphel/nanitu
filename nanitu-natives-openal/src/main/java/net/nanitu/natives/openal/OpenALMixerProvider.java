@@ -37,13 +37,12 @@ import static org.lwjgl.openal.ALC10.*;
  * {@link MixerProvider} backed by OpenAL (via LWJGL).
  *
  * <p>Loaded automatically by {@link java.util.ServiceLoader} from
- * {@code META-INF/services/net.nanitu.audio.spi.MixerProvider}. Callers should
- * prefer using {@code ServiceLoader} or a DI container rather than
- * constructing this class directly.
+ * {@code META-INF/services/net.nanitu.audio.spi.MixerProvider}. Callers should prefer using {@code ServiceLoader} or a
+ * DI container rather than constructing this class directly.
  *
  * <p>{@link #isAvailable()} opens a temporary OpenAL device and context to
- * verify that LWJGL natives are present and a device can be obtained on the
- * current system, then tears it down immediately.
+ * verify that LWJGL natives are present and a device can be obtained on the current system, then tears it down
+ * immediately.
  */
 @InternalApi
 public final class OpenALMixerProvider implements MixerProvider {

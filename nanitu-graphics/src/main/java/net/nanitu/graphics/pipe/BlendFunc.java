@@ -25,8 +25,7 @@
 package net.nanitu.graphics.pipe;
 
 /**
- * Blend functions (equations) that determine how scaled source and destination
- * colors are combined.
+ * Blend functions (equations) that determine how scaled source and destination colors are combined.
  *
  * <p>The function is applied separately to RGB and alpha channels.
  *

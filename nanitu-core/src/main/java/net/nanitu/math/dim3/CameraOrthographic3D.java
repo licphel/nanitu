@@ -47,8 +47,7 @@ public class CameraOrthographic3D extends Camera3D {
   }
 
   /**
-   * Sets the width of the orthographic projection.
-   * Values below {@code 0.01} are clamped.
+   * Sets the width of the orthographic projection. Values below {@code 0.01} are clamped.
    *
    * @param value width
    */
@@ -70,8 +69,7 @@ public class CameraOrthographic3D extends Camera3D {
   }
 
   /**
-   * Sets the height of the orthographic projection.
-   * Values below {@code 0.01} are clamped.
+   * Sets the height of the orthographic projection. Values below {@code 0.01} are clamped.
    *
    * @param value height
    */
@@ -93,8 +91,7 @@ public class CameraOrthographic3D extends Camera3D {
   }
 
   /**
-   * Sets the zoom factor.
-   * Values below {@code 0.01} are clamped.
+   * Sets the zoom factor. Values below {@code 0.01} are clamped.
    *
    * @param value zoom factor
    */

@@ -30,14 +30,9 @@ import net.nanitu.util.Service;
 /**
  * Service interface for discovering and instantiating audio backend implementations.
  *
- * <p>Implementations are loaded via {@link java.util.ServiceLoader} and represent
- * concrete audio backends such as OpenAL, DirectSound, or CoreAudio.
- * Each implementation should register itself in
+ * <p>Implementations are loaded via {@link java.util.ServiceLoader} and
+ * represent concrete audio backends. Each implementation should register itself in
  * {@code META-INF/services/net.nanitu.audio.spi.MixerProvider}.
- *
- * <p>Before calling {@link #create(String)}, check {@link #isAvailable()} to verify
- * that the backend's native libraries are present and a device can be opened
- * on the current system.
  *
  * @see Mixer
  */

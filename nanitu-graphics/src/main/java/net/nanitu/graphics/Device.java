@@ -43,9 +43,8 @@ import net.nanitu.graphics.texture.TextureDesc;
  * Represents a graphics output device (hardware or software).
  *
  * <p>A {@code Device} is the entry point for all GPU resource creation.
- * It owns the connection to the underlying graphics backend (OpenGL, Vulkan, etc.)
- * and is the factory for all GPU resources — buffers, textures, samplers, shaders,
- * pipelines, resource sets, encoders, and render targets.
+ * It owns the connection to the underlying graphics backend (OpenGL, Vulkan, etc.) and is the factory for all GPU
+ * resources — buffers, textures, samplers, shaders, pipelines, resource sets, encoders, and render targets.
  *
  * <p><b>Lifecycle:</b>
  * <ol>
@@ -55,22 +54,6 @@ import net.nanitu.graphics.texture.TextureDesc;
  *   <li>Call {@link #pollEvents()} once per frame in the main loop.
  *   <li>Call {@link #close()} when shutting down the graphics subsystem.
  * </ol>
- *
- * <p>Typical usage:
- * <pre>{@code
- * Device device = DeviceProvider.create();
- *
- * Texture tex = device.createTexture(desc);
- * BufferObject vbo = device.createBuffer(BufferObjectDesc.vertex(BufferFrequency.DYNAMIC));
- * Pipeline pipe = device.createRenderPipe(pipeDesc);
- *
- * // In the main loop:
- * while (running) {
- *     device.pollEvents();
- *     // ... issue draw calls via Encoder ...
- * }
- * device.close();
- * }</pre>
  *
  * <p>Devices are generally long-lived; close them only when shutting down
  * the graphics subsystem entirely.
@@ -87,15 +70,15 @@ public interface Device extends AutoCloseable {
   DeviceInfo info();
 
   /**
-   * Loads this device onto the given surface.
+   * Loads this device onto the given view.
    *
-   * <p>The device extracts the opaque native handle via {@link Surface#procAddress()}
-   * and hooks internal callbacks (e.g. resize) on the surface automatically.
-   * Must be called before any resource creation.
+   * <p>The device extracts the opaque native handle via {@link View#procAddress()}
+   * and hooks internal callbacks (e.g. resize) on the view automatically. Must be called before any resource
+   * creation.
    *
-   * @param surface the surface to render into
+   * @param view the view to render into
    */
-  void load(Surface surface);
+  void load(View view);
 
   /**
    * Creates a new GPU buffer (vertex, index, or uniform).
@@ -160,8 +143,7 @@ public interface Device extends AutoCloseable {
    * Creates a new, empty resource set.
    *
    * <p>Bind textures, samplers, and uniform buffers via
-   * {@link ResourceSet#bindTexture} and {@link ResourceSet#bindUniform}
-   * before using the set in a draw call.
+   * {@link ResourceSet#bindTexture} and {@link ResourceSet#bindUniform} before using the set in a draw call.
    *
    * @param layout the resource set layout declaring valid slots
    * @return a new resource set backed by this device
@@ -179,7 +161,7 @@ public interface Device extends AutoCloseable {
   /**
    * Creates a render target wrapping the default framebuffer (swapchain).
    *
-   * <p>Use this for rendering directly to the window surface.
+   * <p>Use this for rendering directly to the window view.
    *
    * @return a render target for the default framebuffer
    */
@@ -233,8 +215,7 @@ public interface Device extends AutoCloseable {
   void execute();
 
   /**
-   * Checks for GPU errors. Submits via {@link #submit} so errors are
-   * reported in order with other queued work.
+   * Checks for GPU errors. Submits via {@link #submit} so errors are reported in order with other queued work.
    */
   void pollEvents();
 

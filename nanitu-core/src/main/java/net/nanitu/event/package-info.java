@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/**
+ * A high-speed, thread-safe event bus system for dispatching events to registered handlers.
+ */
 @NullMarked
 package net.nanitu.event;
 

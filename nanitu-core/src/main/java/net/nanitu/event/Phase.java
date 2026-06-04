@@ -25,40 +25,30 @@
 package net.nanitu.event;
 
 /**
- * Lifecycle phase of an event, used to post the same event type at different
- * points in processing.
+ * Lifecycle phase of an event, allowing the same event type to be posted at different points during processing.
  *
- * <p>Inspired by Minecraft Forge's {@code TickEvent.Phase}, this allows one
- * event class to be posted twice — once before processing ({@link #START})
- * and once after ({@link #END}). Handlers can filter by phase via
- * {@link Subscribe#phase()} or inspect {@link EventContext#phase()} at runtime.
- *
- * <p>{@link #NONE} is the default for events that do not use phases.
+ * <p>An event class can be posted once before an action ({@link #START}) and once after
+ * ({@link #END}). Handlers filter by phase via {@link Subscribe#phase()} or inspect {@link EventContext#phase()} at
+ * runtime. Use {@link #NONE} for events that do not distinguish phases.
  *
  * @see EventContext
  * @see Subscribe
  */
 public enum Phase {
-  /**
-   * No phase — the event is phase-agnostic.
-   */
+  /** No phase — the event is phase-agnostic. Always matches filtering. */
   NONE,
-  /**
-   * Before the action is performed.
-   */
+  /** Posted before the action is performed. */
   START,
-  /**
-   * After the action is completed.
-   */
+  /** Posted after the action is completed. */
   END;
 
   /**
    * Returns whether this phase filter matches the given dispatch phase.
    *
-   * <p>{@link #NONE} matches all phases; other values match only themselves.
+   * <p>{@link #NONE} matches all phases; all other values match only themselves.
    *
-   * @param other the dispatch phase
-   * @return {@code true} if this filter accepts the phase
+   * @param other the dispatch phase to test against this filter
+   * @return {@code true} if this filter accepts the given phase
    */
   boolean matches(Phase other) {
     return this == NONE || this == other;

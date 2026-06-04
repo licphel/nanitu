@@ -25,42 +25,25 @@
 package net.nanitu.event;
 
 /**
- * Three-state result carried by an {@link EventContext}.
- *
- * <p>Unlike the binary {@link EventContext#isCanceled() canceled} flag, this
- * captures semantic intent:
+ * Three-state result carried by an {@link EventContext}, capturing semantic intent beyond the binary
+ * {@link EventContext#isCanceled() canceled} flag.
  *
  * <ul>
  *   <li>{@link #DENY} — explicitly disallow the action</li>
- *   <li>{@link #DEFAULT} — no opinion, let subsequent handlers or default logic decide</li>
+ *   <li>{@link #DEFAULT} — no opinion; let subsequent handlers or default logic decide</li>
  *   <li>{@link #ALLOW} — explicitly allow the action</li>
  * </ul>
  *
- * <p>Typical usage pattern: every handler checks the current result and only
- * upgrades it — e.g. from {@code DEFAULT} to {@code DENY}. This way the
- * most-restrictive handler wins.
- *
- * <pre>{@code
- * bus.register(SpawnEvent.class, (ctx, event) -> {
- *     if (ctx.result() != Result.DENY && isTooCrowded(event.pos())) {
- *         ctx.setResult(Result.DENY);
- *     }
- * });
- * }</pre>
+ * <p>Handlers should only upgrade the result — for example, from {@code DEFAULT} to
+ * {@code DENY} — so that the most restrictive handler prevails.
  *
  * @see EventContext
  */
 public enum Result {
-  /**
-   * Disallow the action.
-   */
+  /** Disallow the action. */
   DENY,
-  /**
-   * No opinion — use the default behavior.
-   */
+  /** No opinion — use the default behavior. */
   DEFAULT,
-  /**
-   * Explicitly allow the action.
-   */
+  /** Explicitly allow the action. */
   ALLOW
 }

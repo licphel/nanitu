@@ -49,18 +49,15 @@ import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
 
 /**
- * OpenAL-backed {@link Mixer} that serializes all OpenAL calls onto a
- * single dedicated audio thread.
+ * OpenAL-backed {@link Mixer} that serializes all OpenAL calls onto a single dedicated audio thread.
  *
  * <p>OpenAL contexts are not thread-safe; every AL/ALC call must happen on
- * the thread that called {@code alcMakeContextCurrent}. This class enforces
- * that invariant by routing all work through a bounded
- * {@link BlockingQueue} consumed by one private daemon thread.
+ * the thread that called {@code alcMakeContextCurrent}. This class enforces that invariant by routing all work through
+ * a bounded {@link BlockingQueue} consumed by one private daemon thread.
  *
  * <p>The audio thread is started immediately in the constructor. It
- * initializes the OpenAL device and context, then blocks on the queue until
- * {@link #close()} interrupts it, at which point it destroys the context and
- * device before exiting.
+ * initializes the OpenAL device and context, then blocks on the queue until {@link #close()} interrupts it, at which
+ * point it destroys the context and device before exiting.
  */
 @InternalApi
 final class OpenALMixer implements Mixer {
@@ -73,12 +70,11 @@ final class OpenALMixer implements Mixer {
   private final Thread audioThread;
 
   /**
-   * Creates a new mixer, opens the default OpenAL device and context, and
-   * starts the audio thread.
+   * Creates a new mixer, opens the default OpenAL device and context, and starts the audio thread.
    *
    * <p>Construction returns immediately; the device/context initialization
-   * happens asynchronously on the audio thread. If device or context creation
-   * fails, the audio thread throws {@link IllegalStateException}.
+   * happens asynchronously on the audio thread. If device or context creation fails, the audio thread throws
+   * {@link IllegalStateException}.
    */
   @InternalApi
   public OpenALMixer() {
@@ -112,7 +108,7 @@ final class OpenALMixer implements Mixer {
         clip.offset = alGetSourcef(clip.source, AL_SEC_OFFSET);
 
         if (!clip.isPlaying()) {
-          if (clip.remainingLoops <= 0) {
+          if (clip.remainingLoops < 0) {
             gc.add(clip);
             clip.shouldClose = true;
           } else {
@@ -190,13 +186,15 @@ final class OpenALMixer implements Mixer {
         batch.add(queue.take());
         queue.drainTo(batch);
         for (Runnable task : batch) {
-          task.run();
+          try {
+            task.run();
+          } catch (Exception e) {
+            LOGGER.error("OpenAL consumer fault", e);
+          }
         }
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         break;
-      } catch (Exception e) {
-        LOGGER.warn("OpenAL consumer fault: {}", e.toString());
       }
     }
 
@@ -208,8 +206,7 @@ final class OpenALMixer implements Mixer {
    * Adds a clip to the tracking list for loop management.
    *
    * <p>Tracked clips are polled in {@link #pollEvents()} to
-   * detect playback completion and trigger subsequent loops.
-   * Has no effect if the clip is already tracked.
+   * detect playback completion and trigger subsequent loops. Has no effect if the clip is already tracked.
    *
    * @param clip the clip to track
    */

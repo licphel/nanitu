@@ -41,14 +41,13 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * OpenAL-backed {@link Clip} implementation.
  *
  * <p>Each clip owns one OpenAL source and (after {@link #open}) one buffer.
- * All AL calls are submitted to {@link OpenALMixer}'s audio thread via
- * {@link OpenALMixer#submit}; fields that are read from the calling thread
- * are declared {@code volatile} so that changes made on the audio thread are
- * visible without additional synchronization.
+ * All AL calls are submitted to {@link OpenALMixer}'s audio thread via {@link OpenALMixer#submit}; fields that are read
+ * from the calling thread are declared {@code volatile} so that changes made on the audio thread are visible without
+ * additional synchronization.
  *
  * <p>Loop management is handled manually: OpenAL natively supports only
- * infinite looping ({@code AL_LOOPING}), so finite repeat counts are tracked
- * in {@link #remainingLoops} and driven by {@link OpenALMixer#pollEvents()}.
+ * infinite looping ({@code AL_LOOPING}), so finite repeat counts are tracked in {@link #remainingLoops} and driven by
+ * {@link OpenALMixer#pollEvents()}.
  */
 @InternalApi
 final class OpenALClip implements Clip {
@@ -133,10 +132,10 @@ final class OpenALClip implements Clip {
      * OpenAL only supports infinite looping natively.
      */
     remainingLoops = count - 1;
-    mixer.track(this);
 
     mixer.submit(() -> {
       alSourcePlay(source);
+      mixer.track(this); // track at last. This prevents the clip from being removed instantly.
     });
   }
 

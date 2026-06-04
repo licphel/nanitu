@@ -28,8 +28,7 @@ package net.nanitu.graphics.shader;
  * Creates a new {@code ShaderModuleDesc} describing a single shader stage to be compiled.
  *
  * <p>Holds the GLSL source code and the pipeline stage it targets. Passed to
- * the backend to create a {@link ShaderModule}, which is then linked into a
- * {@link ShaderProgram}.
+ * the backend to create a {@link ShaderModule}, which is then linked into a {@link ShaderProgram}.
  *
  * @param type    the pipeline stage this module targets
  * @param code    GLSL source code for this stage

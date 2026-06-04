@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+/**
+ * The AI subsystem for chat-based language model interactions.
+ */
+
 @NullMarked
 package net.nanitu.ai;
 

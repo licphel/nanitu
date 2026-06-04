@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/**
+ * Provides the service provider interface for audio backend implementations.
+ */
 @NullMarked
 package net.nanitu.audio.spi;
 

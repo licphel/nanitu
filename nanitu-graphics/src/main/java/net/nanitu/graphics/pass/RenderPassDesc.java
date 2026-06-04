@@ -27,8 +27,7 @@ package net.nanitu.graphics.pass;
 import net.nanitu.math.Color;
 
 /**
- * Creates a new {@code RenderPassDesc} describing which attachments to clear
- * and to what values.
+ * Creates a new {@code RenderPassDesc} describing which attachments to clear and to what values.
  *
  * <p>The {@link #clearMask} bitmask selects which attachments are cleared.
  * Convenience factory {@link #of(Color)} clears all three.
@@ -36,8 +35,7 @@ import net.nanitu.math.Color;
  * @param clearColor   the clear color for the color attachment
  * @param clearDepth   the clear depth value (0.0–1.0)
  * @param clearStencil the clear stencil value
- * @param clearMask    bitmask of {@link #CLEAR_COLOR}, {@link #CLEAR_DEPTH},
- *                     {@link #CLEAR_STENCIL}
+ * @param clearMask    bitmask of {@link #CLEAR_COLOR}, {@link #CLEAR_DEPTH}, {@link #CLEAR_STENCIL}
  * @see RenderTarget#acquire(RenderPassDesc)
  */
 public record RenderPassDesc(Color clearColor, double clearDepth, int clearStencil, int clearMask) {

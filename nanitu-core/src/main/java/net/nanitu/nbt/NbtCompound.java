@@ -30,20 +30,17 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
- * NBT (Named Binary Tag) compound — a tree-structured key-value container
- * with optional path-based access.
+ * NBT (Named Binary Tag) compound — a tree-structured key-value container with optional path-based access.
  *
  * <p>Similar in concept to a JSON object, this is the primary data structure for
- * NBT serialization. Keys are strings; values may be primitives ({@code byte},
- * {@code short}, {@code int}, {@code long}, {@code float}, {@code double},
- * {@code boolean}, {@link String}, {@code byte[]}), or nested
+ * NBT serialization. Keys are strings; values may be primitives ({@code byte}, {@code short}, {@code int},
+ * {@code long}, {@code float}, {@code double}, {@code boolean}, {@link String}, {@code byte[]}), or nested
  * {@link NbtCompound} / {@link NbtList}.
  *
  * <h3>Path-based access</h3>
- * Keys starting with {@value #PATH_PREFIX} ({@code $}) are interpreted as
- * dot-separated paths into nested compounds. For example, {@code "$a.b.c"}
- * accesses key {@code "c"} inside compound {@code "b"} inside compound
- * {@code "a"}. Intermediate compounds are automatically created on write.
+ * Keys starting with {@value #PATH_PREFIX} ({@code $}) are interpreted as dot-separated paths into nested compounds.
+ * For example, {@code "$a.b.c"} accesses key {@code "c"} inside compound {@code "b"} inside compound {@code "a"}.
+ * Intermediate compounds are automatically created on write.
  *
  * <p>This class is <strong>not</strong> thread-safe.</p>
  *
@@ -55,8 +52,8 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    * Prefix character that enables dot-separated path traversal.
    *
    * <p>When a key starts with this character ({@code $}), it is interpreted
-   * as a path like {@code "$a.b.c"} rather than a literal key.
-   * Intermediate {@link NbtCompound} nodes are created automatically on write.
+   * as a path like {@code "$a.b.c"} rather than a literal key. Intermediate {@link NbtCompound} nodes are created
+   * automatically on write.
    */
   public static final char PATH_PREFIX = '$';
 
@@ -72,8 +69,8 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    * Deserializes an NBT compound from a binary buffer.
    *
    * <p>The wire format reads entries sequentially until a {@link Mark#END} tag
-   * is encountered. Each entry consists of a 1-byte type tag ({@link Mark#id()}),
-   * a length-prefixed UTF-8 key, and the value encoded according to its type.
+   * is encountered. Each entry consists of a 1-byte type tag ({@link Mark#id()}), a length-prefixed UTF-8 key, and the
+   * value encoded according to its type.
    *
    * @param buffer the source buffer positioned at the start of the compound data
    * @return the deserialized compound
@@ -258,8 +255,7 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
   }
 
   /**
-   * Stores a value. Supports path syntax with '$' prefix.
-   * Intermediate compounds are automatically created for paths.
+   * Stores a value. Supports path syntax with '$' prefix. Intermediate compounds are automatically created for paths.
    *
    * @param key   the key (may start with '$' for path)
    * @param value the value to store
@@ -692,9 +688,8 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
   }
 
   /**
-   * Serializes this NBT compound to a byte buffer.
-   * Format: for each entry -> [tag_type(byte)][name][value]
-   * Ends with TAG_END(0)
+   * Serializes this NBT compound to a byte buffer. Format: for each entry -> [tag_type(byte)][name][value] Ends with
+   * TAG_END(0)
    *
    * @param buffer the destination buffer
    */

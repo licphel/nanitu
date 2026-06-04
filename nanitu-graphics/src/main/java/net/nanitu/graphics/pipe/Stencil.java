@@ -25,12 +25,11 @@
 package net.nanitu.graphics.pipe;
 
 /**
- * Creates a new {@code Stencil} describing the stencil test and per-face
- * stencil operations.
+ * Creates a new {@code Stencil} describing the stencil test and per-face stencil operations.
  *
  * <p>The stencil test discards fragments based on a comparison between a
- * reference value and the stencil buffer. Separate front-face and back-face
- * configurations enable effects like two-sided stencil volumes.
+ * reference value and the stencil buffer. Separate front-face and back-face configurations enable effects like
+ * two-sided stencil volumes.
  *
  * <p>The {@link #DISABLED} preset disables stencil testing entirely.
  *

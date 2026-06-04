@@ -30,14 +30,12 @@ import java.nio.ByteOrder;
  * Byte order for multibyte reads and writes in {@link Buffer} and {@link Memory}.
  *
  * <p>Most serialization formats have a fixed byte order. This enum lets you
- * specify the desired order when reading or writing integers, floats, and other
- * multibyte values. Use {@link #LITTLE} for local persistence and most game
- * formats; use {@link #BIG} for network protocols (TCP/IP, WebSocket, etc.).
+ * specify the desired order when reading or writing integers, floats, and other multibyte values. Use {@link #LITTLE}
+ * for local persistence and most game formats; use {@link #BIG} for network protocols (TCP/IP, WebSocket, etc.).
  *
  * <p>For operations that don't know their byte order ahead of time — typically
- * network streams where the sender negotiates the order — use {@link #UNSURE}.
- * Most multibyte operations reject {@code UNSURE} with an
- * {@link IllegalArgumentException} to catch missing negotiation early.
+ * network streams where the sender negotiates the order — use {@link #UNSURE}. Most multibyte operations reject
+ * {@code UNSURE} with an {@link IllegalArgumentException} to catch missing negotiation early.
  *
  * @see Buffer
  * @see Memory
@@ -63,8 +61,7 @@ public enum Endianness {
    * Sentinel indicating that the byte order is not yet determined.
    *
    * <p>Most multibyte operations throw {@link IllegalArgumentException}
-   * when given {@code UNSURE}. Set the actual byte order before reading
-   * or writing multibyte values.
+   * when given {@code UNSURE}. Set the actual byte order before reading or writing multibyte values.
    */
   UNSURE;
 
@@ -72,9 +69,8 @@ public enum Endianness {
    * The native byte order of the current platform.
    *
    * <p>This reflects {@link ByteOrder#nativeOrder()} and is suitable for
-   * interop with native libraries. Serialization code should generally
-   * specify an explicit byte order rather than relying on this value,
-   * as native order varies across platforms.
+   * interop with native libraries. Serialization code should generally specify an explicit byte order rather than
+   * relying on this value, as native order varies across platforms.
    */
   public static final Endianness NATIVE = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN ? LITTLE : BIG;
 }

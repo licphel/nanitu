@@ -27,12 +27,11 @@ package net.nanitu.audio;
 /**
  * Immutable descriptor for a {@link Mixer} implementation.
  *
- * <p>Carries human-readable metadata that can be logged or displayed in a
- * settings UI, without requiring the mixer itself to be created first.
+ * <p>Provides human-readable metadata about a mixer without requiring
+ * the mixer to be created first.
  *
- * @param name                  display name of the mixer (e.g. {@code "OpenAL-Mixer"})
- * @param isHardwareAccelerated {@code true} if the mixer delegates mixing to
- *                              dedicated audio hardware
+ * @param name                  display name of the mixer
+ * @param isHardwareAccelerated {@code true} if the mixer uses dedicated audio hardware
  * @see Mixer
  */
 public record MixerInfo(String name, boolean isHardwareAccelerated) {

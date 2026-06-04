@@ -31,22 +31,11 @@ import java.util.Queue;
  * A thread-safe pool of {@link Buffer} instances that reduces allocation overhead.
  *
  * <p>Instead of allocating and freeing buffers repeatedly, acquire one from the
- * pool with {@link #acquire()}, use it, and return it with {@link #release(Buffer)}.
- * If no buffers are available in the pool, a new one is allocated transparently.
+ * pool with {@link #acquire()}, use it, and return it with {@link #release(Buffer)}. If no buffers are available in the
+ * pool, a new one is allocated transparently.
  *
  * <p>All buffers created by this pool are expandable — they grow automatically
  * when more space is needed — and share the same {@link Endianness} and capacity.
- *
- * <pre>{@code
- * BufferPool pool = new BufferPool(MemoryAllocator.HEAP, Endianness.LITTLE, 4096);
- * Buffer buf = pool.acquire();
- * try {
- *     buf.putString("hello");
- *     // ...
- * } finally {
- *     pool.release(buf);
- * }
- * }</pre>
  *
  * <p>This class is thread-safe. All public methods are synchronized.
  */
@@ -74,8 +63,8 @@ public final class BufferPool {
    * Acquires a buffer from the pool, or creates a new one if no buffers are available.
    *
    * <p>The returned buffer has its cursors reset ({@code readerIndex = 0},
-   * {@code writerIndex = 0}) and is ready for immediate use. Its capacity is
-   * the fixed size specified at pool creation.
+   * {@code writerIndex = 0}) and is ready for immediate use. Its capacity is the fixed size specified at pool
+   * creation.
    *
    * @return a cleared buffer of exactly {@link #capacity} bytes
    */

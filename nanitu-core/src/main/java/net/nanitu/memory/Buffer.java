@@ -31,9 +31,8 @@ import java.nio.charset.StandardCharsets;
  * A high-performance, cursor-based byte buffer for binary serialization.
  *
  * <p>A {@code Buffer} wraps a {@link Memory} region and maintains independent
- * read and write cursors. Data is written at {@link #writerIndex()} and read
- * from {@link #readerIndex()}; the region between them is <em>readable</em>
- * (already written but not yet consumed).
+ * read and write cursors. Data is written at {@link #writerIndex()} and read from {@link #readerIndex()}; the region
+ * between them is <em>readable</em> (already written but not yet consumed).
  *
  * <h3>Lifecycle</h3>
  * <ol>
@@ -193,8 +192,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Discards the already-read bytes by compacting the readable region to the front.
-   * After this call {@code readerIndex == 0} and {@code writerIndex == readableBytes()}.
+   * Discards the already-read bytes by compacting the readable region to the front. After this call
+   * {@code readerIndex == 0} and {@code writerIndex == readableBytes()}.
    *
    * @return {@code this} for chaining
    */
@@ -226,8 +225,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes a {@code boolean} (1 byte) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 1.
+   * Writes a {@code boolean} (1 byte) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 1.
    *
    * @param value the boolean to write
    * @return {@code this} for chaining
@@ -241,8 +240,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes a {@code short} (2 bytes) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 2.
+   * Writes a {@code short} (2 bytes) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 2.
    *
    * @param value the short to write
    * @return {@code this} for chaining
@@ -257,8 +256,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes an {@code int} (4 bytes) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 4.
+   * Writes an {@code int} (4 bytes) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 4.
    *
    * @param value the int to write
    * @return {@code this} for chaining
@@ -329,8 +328,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes a {@code long} (8 bytes) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 8.
+   * Writes a {@code long} (8 bytes) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 8.
    *
    * @param value the long to write
    * @return {@code this} for chaining
@@ -378,8 +377,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes a {@code float} (4 bytes) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 4.
+   * Writes a {@code float} (4 bytes) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 4.
    *
    * @param value the float to write
    * @return {@code this} for chaining
@@ -394,8 +393,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes a {@code double} (8 bytes) at the current write-cursor position using the buffer's
-   * byte order, then advances the cursor by 8.
+   * Writes a {@code double} (8 bytes) at the current write-cursor position using the buffer's byte order, then advances
+   * the cursor by 8.
    *
    * @param value the double to write
    * @return {@code this} for chaining
@@ -410,8 +409,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes all bytes from {@code src} at the current write-cursor position and advances
-   * the cursor by {@code src.length}.
+   * Writes all bytes from {@code src} at the current write-cursor position and advances the cursor by
+   * {@code src.length}.
    *
    * @param src the bytes to write
    * @return {@code this} for chaining
@@ -422,8 +421,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes {@code length} bytes from {@code src} starting at {@code srcOffset}, advancing
-   * the write cursor by {@code length}.
+   * Writes {@code length} bytes from {@code src} starting at {@code srcOffset}, advancing the write cursor by
+   * {@code length}.
    *
    * @param src       the source byte array
    * @param srcOffset starting offset within {@code src}
@@ -439,14 +438,14 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Writes {@code length} bytes from another {@code Buffer}'s readable region into this buffer,
-   * advancing both buffers' respective cursors.
+   * Writes {@code length} bytes from another {@code Buffer}'s readable region into this buffer, advancing both buffers'
+   * respective cursors.
    *
    * @param src    source buffer to read from
    * @param length number of bytes to transfer
    * @return {@code this} for chaining
-   * @throws IndexOutOfBoundsException if {@code src} has fewer than {@code length} readable bytes
-   *                                   or this buffer has insufficient writable space
+   * @throws IndexOutOfBoundsException if {@code src} has fewer than {@code length} readable bytes or this buffer has
+   *                                   insufficient writable space
    */
   public Buffer putBuffer(Buffer src, long length) {
     src.ensureReadable(length);
@@ -459,8 +458,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Encodes {@code s} to bytes using the given {@code charset} and writes them at the
-   * current write-cursor position, preceded by a 4-byte length prefix (int, buffer byte order).
+   * Encodes {@code s} to bytes using the given {@code charset} and writes them at the current write-cursor position,
+   * preceded by a 4-byte length prefix (int, buffer byte order).
    *
    * @param s       the string to write
    * @param charset the encoding to use
@@ -499,8 +498,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a {@code boolean} (1 byte) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 1.
+   * Reads a {@code boolean} (1 byte) at the current read-cursor position using the buffer's byte order, then advances
+   * the cursor by 1.
    *
    * @return the boolean value
    * @throws IndexOutOfBoundsException if fewer than 1 byte are available for reading
@@ -513,8 +512,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a {@code short} (2 bytes) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 2.
+   * Reads a {@code short} (2 bytes) at the current read-cursor position using the buffer's byte order, then advances
+   * the cursor by 2.
    *
    * @return the short value
    * @throws IndexOutOfBoundsException if fewer than 2 bytes are available for reading
@@ -528,8 +527,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads an {@code int} (4 bytes) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 4.
+   * Reads an {@code int} (4 bytes) at the current read-cursor position using the buffer's byte order, then advances the
+   * cursor by 4.
    *
    * @return the int value
    * @throws IndexOutOfBoundsException if fewer than 4 bytes are available for reading
@@ -576,8 +575,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a {@code long} (8 bytes) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 8.
+   * Reads a {@code long} (8 bytes) at the current read-cursor position using the buffer's byte order, then advances the
+   * cursor by 8.
    *
    * @return the long value
    * @throws IndexOutOfBoundsException if fewer than 8 bytes are available for reading
@@ -624,8 +623,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a {@code float} (4 bytes) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 4.
+   * Reads a {@code float} (4 bytes) at the current read-cursor position using the buffer's byte order, then advances
+   * the cursor by 4.
    *
    * @return the float value
    * @throws IndexOutOfBoundsException if fewer than 4 bytes are available for reading
@@ -639,8 +638,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a {@code double} (8 bytes) at the current read-cursor position using the buffer's
-   * byte order, then advances the cursor by 8.
+   * Reads a {@code double} (8 bytes) at the current read-cursor position using the buffer's byte order, then advances
+   * the cursor by 8.
    *
    * @return the double value
    * @throws IndexOutOfBoundsException if fewer than 8 bytes are available for reading
@@ -654,8 +653,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads {@code length} bytes from the current read-cursor position into a new array and
-   * advances the cursor by {@code length}.
+   * Reads {@code length} bytes from the current read-cursor position into a new array and advances the cursor by
+   * {@code length}.
    *
    * @param length number of bytes to read
    * @return a freshly allocated {@code byte[]} containing the read bytes
@@ -670,8 +669,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Reads a length-prefixed string from the current read-cursor position.
-   * The 4-byte int prefix (buffer byte order) encodes the byte length of the encoded string.
+   * Reads a length-prefixed string from the current read-cursor position. The 4-byte int prefix (buffer byte order)
+   * encodes the byte length of the encoded string.
    *
    * @param charset the charset to use for decoding
    * @return the decoded string
@@ -696,8 +695,8 @@ public final class Buffer implements AutoCloseable {
   }
 
   /**
-   * Returns a {@link Memory} slice of the current readable region
-   * {@code [readerIndex, writerIndex)}. The slice is a lightweight view — no data is copied.
+   * Returns a {@link Memory} slice of the current readable region {@code [readerIndex, writerIndex)}. The slice is a
+   * lightweight view — no data is copied.
    *
    * @return a {@code Memory} slice of readable bytes
    */

@@ -47,22 +47,8 @@ import java.util.stream.Stream;
  * <p>Each loader instance maintains its own set of loaded mods and a shared
  * global {@link EventBus}.
  *
- * <h3>Usage</h3>
- * <pre>{@code
- * ModLoader loader = new ModLoader();
- * loader.loadDirectory(Path.of("mods"));
- * List<Mod> order = loader.freeze();
- *
- * // Look up a mod
- * Mod mymod = loader.get("mymod");
- *
- * // Find which mod owns a class
- * Mod owner = loader.forClass(SomeClass.class);
- * }</pre>
- *
  * <p>Loading is not thread-safe — call {@code load} and {@code freeze} from
- * a single coordinating thread. Reads ({@code get}, {@code all}, {@code forClass})
- * may be called concurrently.
+ * a single coordinating thread. Reads ({@code get}, {@code all}, {@code forClass}) may be called concurrently.
  *
  * @see Mod
  * @see ModInfo
@@ -128,8 +114,8 @@ public final class ModLoader {
   }
 
   /**
-   * Returns the mod that loaded the given class, or {@code null} if the
-   * class was not loaded from any mod's {@link ClassLoader}.
+   * Returns the mod that loaded the given class, or {@code null} if the class was not loaded from any mod's
+   * {@link ClassLoader}.
    *
    * @param clazz the class to look up
    * @return the owning mod, or {@code null}
@@ -146,14 +132,12 @@ public final class ModLoader {
    * Loads a single mod from the given JAR file.
    *
    * <p>The JAR must contain {@code mod.json} at its root. The entrypoint
-   * class (if declared) is loaded from the same JAR via a
-   * {@link URLClassLoader}. {@code @Subscribe} methods on the entrypoint
-   * are registered on both the mod's private event bus and the global event bus.
+   * class (if declared) is loaded from the same JAR via a {@link URLClassLoader}. {@code @Subscribe} methods on the
+   * entrypoint are registered on both the mod's private event bus and the global event bus.
    *
    * @param jarPath path to the mod JAR file
    * @return the loaded mod
-   * @throws ModException if the JAR is missing, mod.json is invalid,
-   *                      or a mod with the same ID is already loaded
+   * @throws ModException if the JAR is missing, mod.json is invalid, or a mod with the same ID is already loaded
    */
   public Mod load(Path jarPath) {
     if (!Files.exists(jarPath)) {
@@ -243,15 +227,13 @@ public final class ModLoader {
   }
 
   /**
-   * Topologically sorts all loaded mods by their dependency graph using
-   * Kahn's algorithm.
+   * Topologically sorts all loaded mods by their dependency graph using Kahn's algorithm.
    *
    * <p>After freezing, each entrypoint that implements {@link ModInitializer}
    * has its {@code onPostLoad()} called in the sorted order.
    *
    * @return the sorted list of mods in dependency-respecting load order
-   * @throws ModException if a dependency cycle is detected or a required
-   *                      dependency is missing
+   * @throws ModException if a dependency cycle is detected or a required dependency is missing
    */
   public List<Mod> freeze() {
     Map<String, Mod> modMap = new HashMap<>(mods);

@@ -27,8 +27,7 @@ package net.nanitu.graphics.texture;
 import net.nanitu.math.Color;
 
 /**
- * Creates a new {@code SamplerDesc} describing texture filtering, wrapping,
- * and level-of-detail parameters.
+ * Creates a new {@code SamplerDesc} describing texture filtering, wrapping, and level-of-detail parameters.
  *
  * <p>The {@link Builder} has sensible defaults (linear, repeat, no anisotropy).
  *
@@ -56,8 +55,7 @@ public record SamplerDesc(TextureFilter magFilter, TextureFilter minFilter, Text
   public static final SamplerDesc DEFAULT = new Builder().build();
 
   /**
-   * Nearest filtering, repeat wrapping, no anisotropy.
-   * Suitable for pixel rendering.
+   * Nearest filtering, repeat wrapping, no anisotropy. Suitable for pixel rendering.
    */
   public static final SamplerDesc PIXEL =
       new Builder().minFilter(TextureFilter.NEAREST).magFilter(TextureFilter.NEAREST).build();
@@ -134,7 +132,8 @@ public record SamplerDesc(TextureFilter magFilter, TextureFilter minFilter, Text
     }
 
     public SamplerDesc build() {
-      return new SamplerDesc(magFilter, minFilter, mipmapFilter, wrapX, wrapY, wrapZ, wrapBorderColor, lodBias, minLod, maxLod, anisotropyLevel, mipmapLevel, sampleCount);
+      return new SamplerDesc(magFilter, minFilter, mipmapFilter, wrapX, wrapY, wrapZ, wrapBorderColor, lodBias,
+          minLod, maxLod, anisotropyLevel, mipmapLevel, sampleCount);
     }
   }
 }

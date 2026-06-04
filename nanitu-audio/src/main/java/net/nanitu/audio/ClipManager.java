@@ -28,24 +28,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Background service that automatically closes {@link Clip}s once they finish playing.
+ * Manages automatic cleanup of {@link Clip}s that have finished playing.
  *
- * <p>Register a clip after starting playback; the manager's cleanup thread
- * polls all registered clips every 100 ms and closes any for which
- * {@link Clip#shouldClose()} returns {@code true}. This removes the need for
- * callers to track playback completion manually.
+ * <p>After registering a clip with {@link #register(Clip)}, a background
+ * thread monitors the clip and calls {@link Clip#close()} once playback completes. This removes the need for callers to
+ * track playback completion manually.
  *
- * <pre>{@code
- * ClipManager manager = new ClipManager();
- * Clip clip = mixer.getClip();
- * clip.open(format, data);
- * clip.play();
- * manager.register(clip);  // clip is closed automatically when done
- * }</pre>
- *
- * <p>Clips that are still playing when {@link #close()} is called are closed
- * immediately. The cleanup thread is a daemon thread and does not prevent JVM
- * shutdown.
+ * <p>Clips that are still playing when the manager is closed are stopped
+ * and released immediately.
  *
  * @see Clip
  */
@@ -55,11 +45,7 @@ public final class ClipManager implements AutoCloseable {
   private volatile boolean running = true;
 
   /**
-   * Creates a new manager and starts the background cleanup thread.
-   *
-   * <p>The cleanup thread runs as a daemon; no explicit shutdown is required
-   * unless clips need to be closed before JVM exit, in which case call
-   * {@link #close()}.
+   * Creates a new {@code ClipManager} and starts the background cleanup thread.
    */
   public ClipManager() {
     cleanupThread = new Thread(this::cleanupLoop, "ClipManager-Cleanup");
@@ -70,10 +56,9 @@ public final class ClipManager implements AutoCloseable {
   /**
    * Registers a clip for automatic lifecycle management.
    *
-   * <p>After registration, the background thread will call {@link Clip#close()}
-   * on the clip the next time it finds {@link Clip#shouldClose()} returning
-   * {@code true}. Registering the same clip instance more than once has no
-   * additional effect (identity-based deduplication).
+   * <p>Once registered, the clip will be closed automatically when
+   * {@link Clip#shouldClose()} returns {@code true}. Registering the same clip instance more than once has no
+   * additional effect.
    *
    * @param clip the clip to manage
    */
@@ -84,9 +69,7 @@ public final class ClipManager implements AutoCloseable {
   /**
    * Removes a clip from automatic management without closing it.
    *
-   * <p>Use this when you want to take back manual control of a clip's
-   * lifecycle before it finishes playing. Has no effect if the clip is
-   * not currently registered.
+   * <p>Has no effect if the clip is not currently registered.
    *
    * @param clip the clip to stop managing
    */
@@ -97,15 +80,15 @@ public final class ClipManager implements AutoCloseable {
   /**
    * Returns the number of clips currently registered with this manager.
    *
-   * <p>This count includes clips that have already finished playing but have
-   * not yet been cleaned up by the background thread.
-   *
    * @return number of registered clips
    */
   public int activeCount() {
     return clips.size();
   }
 
+  /**
+   * Runs the cleanup loop, periodically checking registered clips and closing those that have finished playing.
+   */
   @SuppressWarnings("BusyWait")
   private void cleanupLoop() {
     while (running) {
@@ -132,12 +115,6 @@ public final class ClipManager implements AutoCloseable {
     }
   }
 
-  /**
-   * Stops the cleanup thread and closes all remaining registered clips.
-   *
-   * <p>After this call the manager must not be used again. Clips that were
-   * still playing are stopped and released immediately.
-   */
   @Override
   public void close() {
     running = false;

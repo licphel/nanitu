@@ -28,8 +28,7 @@ package net.nanitu.graphics.pipe;
  * Face culling modes that discard triangles based on orientation.
  *
  * <p>Back-face culling is the standard technique for skipping fragments
- * on surfaces facing away from the camera, roughly halving fragment shader
- * invocations for closed meshes.
+ * on views facing away from the camera, roughly halving fragment shader invocations for closed meshes.
  *
  * @see RasterizationDesc
  */

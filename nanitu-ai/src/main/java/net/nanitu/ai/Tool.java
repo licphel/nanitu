@@ -27,21 +27,21 @@ package net.nanitu.ai;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A callable tool that a model may invoke during a response.
+ * A callable function that a model may choose to invoke during a chat completion.
  *
- * <p>Tools extend the model's capabilities by providing access to external
- * functions, APIs, or computations. When a model decides to use a tool,
- * the tool's {@link #invoke} method is called with the arguments supplied
- * by the model.
+ * <p>Tools give models access to external computation, data retrieval, or
+ * side effects. When the model requests a tool call, the framework invokes {@link #invoke(Object[])} with the arguments
+ * the model supplied.
  *
- * <p>Implementations must be thread-safe if they may be called concurrently.
+ * <p>Implementations must be safe for concurrent use if multiple invocations
+ * may overlap.
  */
 @FunctionalInterface
 public interface Tool {
   /**
-   * Invokes this tool with the given arguments.
+   * Executes this tool with the arguments provided by the model.
    *
-   * @param args the arguments supplied by the model, or {@code null}
+   * @param args the arguments the model supplied, or {@code null}
    * @return the result of the invocation, or {@code null}
    */
   @Nullable Object invoke(@Nullable Object[] args);

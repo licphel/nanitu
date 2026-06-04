@@ -322,8 +322,7 @@ public record Matrix4x4(float m00, float m10, float m20, float m30, float m01, f
   }
 
   /**
-   * Returns the inverse of this matrix.
-   * If the matrix is singular (determinant near zero), returns {@link #IDENTITY}.
+   * Returns the inverse of this matrix. If the matrix is singular (determinant near zero), returns {@link #IDENTITY}.
    *
    * @return inverse matrix
    */

@@ -27,13 +27,11 @@ package net.nanitu.graphics.shader;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A compiled shader module representing a single programmable stage of the
- * graphics pipeline.
+ * A compiled shader module representing a single programmable stage of the graphics pipeline.
  *
  * <p>A {@code ShaderModule} is the result of compiling GLSL (or other shading
- * language) source code for one stage — vertex, fragment, geometry, or compute.
- * Modules are linked together into a {@link ShaderProgram} before they can be
- * used in a render pipeline.
+ * language) source code for one stage — vertex, fragment, geometry, or compute. Modules are linked together into a
+ * {@link ShaderProgram} before they can be used in a render pipeline.
  *
  * <p>Once compiled, a module is immutable. Compilation errors are reported
  * as exceptions at creation time.

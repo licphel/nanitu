@@ -262,8 +262,7 @@ public record Matrix2x2(float m00, float m10, float m01, float m11) {
   }
 
   /**
-   * Returns the inverse of this matrix.
-   * Returns {@link #IDENTITY} if the matrix is singular.
+   * Returns the inverse of this matrix. Returns {@link #IDENTITY} if the matrix is singular.
    *
    * @return inverse matrix
    */

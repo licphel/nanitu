@@ -28,8 +28,7 @@ package net.nanitu.graphics.pipe;
  * Creates a new {@code Depth} describing depth-test and depth-write behavior.
  *
  * <p>Depth testing discards fragments that fail a comparison against the
- * existing depth-buffer value. Depth writes control whether passing fragments
- * update the depth buffer.
+ * existing depth-buffer value. Depth writes control whether passing fragments update the depth buffer.
  *
  * <p>Two presets are provided in addition to {@link #DISABLED}:
  * <ul>
@@ -53,8 +52,7 @@ public record Depth(boolean depthTest, boolean depthWrite, CompareOp depthCompar
   public static final Depth LEQ = new Depth(true, true, CompareOp.LESS_OR_EQUAL);
 
   /**
-   * Reversed depth test: pass if the new depth ≥ the stored depth (used with floating-point depth
-   * buffers).
+   * Reversed depth test: pass if the new depth ≥ the stored depth (used with floating-point depth buffers).
    */
   public static final Depth GEQ = new Depth(true, true, CompareOp.GREATER_OR_EQUAL);
 }

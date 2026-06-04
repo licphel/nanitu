@@ -28,8 +28,8 @@ package net.nanitu.graphics.texture;
  * Texture pixel formats specifying the number of channels, bits depth, and data type.
  *
  * <p>Integer formats (e.g. {@link #RGBA8}) store unsigned normalized bytes.
- * Float formats (e.g. {@link #RGBA16F}) store half-precision or full-precision
- * floating point. Depth formats are used for shadow maps and depth attachments.
+ * Float formats (e.g. {@link #RGBA16F}) store half-precision or full-precision floating point. Depth formats are used
+ * for shadow maps and depth attachments.
  *
  * @see TextureDesc
  */

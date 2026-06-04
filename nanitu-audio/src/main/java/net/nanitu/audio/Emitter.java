@@ -31,25 +31,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * A node in the audio volume hierarchy.
+ * A node in an audio volume hierarchy.
  *
- * <p>Emitters form a tree: each emitter's <em>effective</em> volume is the
- * product of its own {@link #volume() local volume} and the effective volumes
- * of all its ancestors. This makes it easy to implement category-level volume
- * controls — muting a "music" emitter silences every clip that plays through
- * it, regardless of each clip's individual volume setting.
+ * <p>Emitters form a tree where each node's effective volume is the product
+ * of its own local volume and the effective volumes of all its ancestors. This enables category-level volume control,
+ * where adjusting a parent emitter affects all descendants.
  *
- * <pre>{@code
- * Emitter master = new Emitter("master");
- * Emitter music  = master.derive("music");
- * Emitter sfx    = master.derive("sfx");
- *
- * master.setVolume(0.8f);  // 80% overall
- * music.setVolume(0.5f);   // music plays at 0.8 × 0.5 = 40% effective volume
- * }</pre>
- *
- * <p>This class is thread-safe: {@link #setVolume} and all hierarchy
- * mutations use {@code volatile} writes and a {@link CopyOnWriteArrayList}.
+ * <p>This class is thread-safe.
  *
  * @see Clip
  */
@@ -60,9 +48,9 @@ public final class Emitter {
   private volatile float volume = 1.0F;
 
   /**
-   * Creates a root emitter with the given name and a local volume of {@code 1.0}.
+   * Creates a root emitter with the given name.
    *
-   * @param name human-readable label, used in {@link #toString()} and for debugging
+   * @param name human-readable label for this emitter
    */
   public Emitter(String name) {
     this.name = name;
@@ -77,41 +65,35 @@ public final class Emitter {
   /**
    * Returns this emitter's name.
    *
-   * @return the name passed to the constructor or {@link #derive}
+   * @return the emitter name
    */
   public String name() {
     return name;
   }
 
   /**
-   * Returns the parent emitter, or {@code null} if this is a root emitter.
+   * Returns the parent emitter.
    *
-   * @return parent emitter, or {@code null} for a root
+   * @return the parent emitter, or {@code null} if this is a root
    */
   public @Nullable Emitter parent() {
     return parent;
   }
 
   /**
-   * Returns a live, unmodifiable view of the direct children of this emitter.
+   * Returns an unmodifiable view of this emitter's direct children.
    *
-   * <p>The list reflects subsequent calls to {@link #derive} and {@link #remove}
-   * without any additional synchronization required by the caller.
-   *
-   * @return unmodifiable view of the child emitters
+   * @return unmodifiable list of child emitters
    */
   public List<Emitter> children() {
     return Collections.unmodifiableList(children);
   }
 
   /**
-   * Creates a new child emitter under this one and returns it.
+   * Creates a new child emitter and attaches it to this emitter.
    *
-   * <p>The child starts with a local volume of {@code 1.0}, so it inherits
-   * this emitter's effective volume unchanged until its own volume is changed.
-   *
-   * @param childName name for the new child emitter
-   * @return the newly created child
+   * @param childName name for the new child
+   * @return the newly created child emitter
    */
   public Emitter derive(String childName) {
     Emitter child = new Emitter(childName, this);
@@ -120,11 +102,9 @@ public final class Emitter {
   }
 
   /**
-   * Detaches a direct child from this emitter's hierarchy.
+   * Detaches a direct child from this emitter.
    *
-   * <p>After removal, {@code child.parent()} returns {@code null} and the
-   * child's {@link #effectiveVolume()} no longer incorporates this emitter's
-   * volume. Has no effect if {@code child} is not a direct child.
+   * <p>Has no effect if the given emitter is not a direct child.
    *
    * @param child the child emitter to detach
    */
@@ -137,10 +117,7 @@ public final class Emitter {
   /**
    * Returns this emitter's local volume, not accounting for ancestors.
    *
-   * <p>The initial value is {@code 1.0}. Use {@link #effectiveVolume()} to
-   * get the volume that clips actually hear.
-   *
-   * @return local volume ({@code 0.0} = silent, {@code 1.0} = full, {@code >1.0} = amplification)
+   * @return local volume, where {@code 0.0} is silent and {@code 1.0} is full
    */
   public float volume() {
     return volume;
@@ -149,25 +126,21 @@ public final class Emitter {
   /**
    * Sets this emitter's local volume.
    *
-   * <p>Values less than {@code 0.0} are clamped to {@code 0.0}.
-   * The change takes effect immediately and propagates to all descendants
-   * via their {@link #effectiveVolume()} calculations.
+   * <p>Values below {@code 0.0} are clamped to {@code 0.0}.
    *
-   * @param volume new local volume ({@code 0.0} = silent, {@code 1.0} = full,
-   *               {@code >1.0} = amplification)
+   * @param volume new local volume
    */
   public void setVolume(float volume) {
     this.volume = Math.max(0.0F, volume);
   }
 
   /**
-   * Returns the effective volume seen by clips that play through this emitter.
+   * Returns the effective volume as seen by clips played through this emitter.
    *
-   * <p>Computed as the product of this emitter's {@link #volume() local volume}
-   * and the effective volumes of all its ancestors, walking up to the root.
-   * For a root emitter, this equals the local volume.
+   * <p>Computed as the product of this emitter's local volume and the
+   * effective volume of all ancestors.
    *
-   * @return effective volume in the range {@code [0.0, ∞)}
+   * @return effective volume
    */
   public float effectiveVolume() {
     return parent == null ? volume : volume * parent.effectiveVolume();

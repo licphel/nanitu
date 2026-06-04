@@ -355,8 +355,7 @@ public record Matrix3x3(float m00, float m10, float m20, float m01, float m11, f
   }
 
   /**
-   * Returns the inverse of this matrix.
-   * Returns {@link #IDENTITY} if the matrix is singular.
+   * Returns the inverse of this matrix. Returns {@link #IDENTITY} if the matrix is singular.
    *
    * @return inverse matrix
    */

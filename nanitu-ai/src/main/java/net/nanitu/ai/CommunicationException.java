@@ -27,30 +27,30 @@ package net.nanitu.ai;
 import java.io.Serial;
 
 /**
- * Thrown when an AI operation fails.
+ * Indicates a failure to communicate with an AI model backend.
  *
- * <p>This is the base exception for all errors originating from AI model
- * communication — network failures, authentication errors, rate limiting,
- * invalid responses, and backend-specific error conditions.
+ * <p>This exception covers network-level failures, authentication rejections,
+ * rate-limiting responses, and any other error preventing a successful completion from reaching the caller. It extends
+ * {@link RuntimeException} so callers may handle it without a checked-exception requirement.
  */
 public class CommunicationException extends RuntimeException {
   @Serial
   private static final long serialVersionUID = 2026060100L;
 
   /**
-   * Creates an {@code CommunicationException} with a descriptive message.
+   * Creates a {@code CommunicationException} with a descriptive message.
    *
-   * @param message a human-readable description of the error
+   * @param message a human-readable description of the failure
    */
   public CommunicationException(String message) {
     super(message);
   }
 
   /**
-   * Creates an {@code CommunicationException} with a descriptive message and cause.
+   * Creates a {@code CommunicationException} with a descriptive message and an underlying cause.
    *
-   * @param message a human-readable description of the error
-   * @param cause   the underlying exception that triggered this error
+   * @param message a human-readable description of the failure
+   * @param cause   the originating error
    */
   public CommunicationException(String message, Throwable cause) {
     super(message, cause);

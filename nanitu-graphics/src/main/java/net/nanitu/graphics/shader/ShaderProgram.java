@@ -28,17 +28,15 @@ import net.nanitu.graphics.pipe.PipelineDesc;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A linked shader program composed of one or more compiled {@link ShaderModule}
- * instances.
+ * A linked shader program composed of one or more compiled {@link ShaderModule} instances.
  *
  * <p>A graphics pipeline requires a linked program (vertex + fragment at
- * minimum; geometry is optional). Compute pipelines use a single compute
- * module. Linking resolves cross-stage references and validates interface
- * matching. Link errors are reported as exceptions at creation time.
+ * minimum; geometry is optional). Compute pipelines use a single compute module. Linking resolves cross-stage
+ * references and validates interface matching. Link errors are reported as exceptions at creation time.
  *
  * <p>Once linked, the program is immutable. The individual modules may be
- * retained or closed independently after linking — the linked program
- * holds its own references to the compiled GPU objects.
+ * retained or closed independently after linking — the linked program holds its own references to the compiled GPU
+ * objects.
  *
  * <p><b>Thread safety:</b> immutable after linking — safe to read from any
  * thread.

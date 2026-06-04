@@ -11,14 +11,12 @@
 - Apply `@NullMarked` for each file (include enums and exceptions), never use `@NonNull`
 - Use `@Nullable` explicitly for parameters/returns that may be null
 - Never accept null where a meaningful default exists
-- You needn't explain an argument's never `null`. However, you may point out if it might be `null`.
 
 ### Exception Handling
 
 - Extend `RuntimeException` for unchecked exceptions
 - For exception classes, include `@Serial` with `serialVersionUID` set to `YYYYMMDD00` format
 - Provide descriptive exception messages with context
-- Document thrown exceptions in Javadoc with `@throws`
 
 ### Record Usage
 
@@ -44,13 +42,8 @@
 
 ### Documentation
 
-- Javadoc for all public classes, interfaces, and methods
-- Use U.S. English, no British English spellings
-- Include all `@param`, `@return`, `@throws` tags even if the method is simple
-- Write code examples for complex APIs. Relatively simple APIs excluded
-- Use `{@code}`, `{@see}` and `{@link}` as possible
-- Overridden methods, if necessary (special clarifications, etc.), can have Javadocs.
-- Records' compact constructors should be documentated like `Creates a new {ClassName} {OtherInfo}`
+- You do not to write any Javadocs
+- You can write in-line comments if the logic here is tricky or hard to understand
 
 ### Constants
 

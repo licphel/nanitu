@@ -30,8 +30,8 @@ import net.nanitu.math.*;
  * Abstract base class for a 3D camera (Y-up convention).
  *
  * <p>This class provides common camera functionality including view matrix
- * management, clipping planes, and frustum culling. Subclasses implement
- * {@link #buildProjectionMatrix()} to supply perspective or orthographic projection.
+ * management, clipping planes, and frustum culling. Subclasses implement {@link #buildProjectionMatrix()} to supply
+ * perspective or orthographic projection.
  *
  * <p>All expensive matrix products are computed lazily and cached until camera
  * parameters change.
@@ -184,8 +184,7 @@ public abstract class Camera3D {
   }
 
   /**
-   * Returns the view matrix (camera to world space).
-   * Rebuilt lazily when camera parameters change.
+   * Returns the view matrix (camera to world space). Rebuilt lazily when camera parameters change.
    *
    * @return view matrix
    */
@@ -195,8 +194,7 @@ public abstract class Camera3D {
   }
 
   /**
-   * Returns the projection matrix.
-   * Rebuilt lazily when camera parameters change.
+   * Returns the projection matrix. Rebuilt lazily when camera parameters change.
    *
    * @return projection matrix
    */
@@ -206,8 +204,7 @@ public abstract class Camera3D {
   }
 
   /**
-   * Returns the combined view-projection matrix (projection × view).
-   * Rebuilt lazily when camera parameters change.
+   * Returns the combined view-projection matrix (projection × view). Rebuilt lazily when camera parameters change.
    *
    * @return view-projection matrix
    */
@@ -217,8 +214,7 @@ public abstract class Camera3D {
   }
 
   /**
-   * Returns the view frustum for culling.
-   * Rebuilt lazily when camera parameters change.
+   * Returns the view frustum for culling. Rebuilt lazily when camera parameters change.
    *
    * @return view frustum
    */
@@ -273,8 +269,7 @@ public abstract class Camera3D {
    *
    * @param worldPosition world-space position (Y-up)
    * @param viewport      viewport rectangle (Y-down screen coordinates)
-   * @param out           receives {@code [screenX, screenY, depth]}; depth is in NDC Z range
-   *                      (−1..1)
+   * @param out           receives {@code [screenX, screenY, depth]}; depth is in NDC Z range (−1..1)
    * @return {@code true} if the point is within the NDC cube and the result is valid
    */
   public boolean project(Vector3 worldPosition, Box2 viewport, float[] out) {
@@ -314,8 +309,7 @@ public abstract class Camera3D {
   }
 
   /**
-   * Computes and returns a fresh projection matrix.
-   * Called once per dirty rebuild; subclasses implement this.
+   * Computes and returns a fresh projection matrix. Called once per dirty rebuild; subclasses implement this.
    *
    * @return the projection matrix
    */

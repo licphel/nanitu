@@ -32,9 +32,8 @@ import org.jspecify.annotations.Nullable;
  * A GPU buffer holding vertex, index, or uniform data.
  *
  * <p>{@code BufferObject} represents a linear allocation in GPU memory that
- * the CPU can write to and the GPU can read from during draw calls or compute
- * dispatches. The buffer's type — {@code VERTEX}, {@code INDEX}, or {@code UNIFORM}
- * — is declared once at creation time via {@link BufferObjectDesc}.
+ * the CPU can write to and the GPU can read from during draw calls or compute dispatches. The buffer's type —
+ * {@code VERTEX}, {@code INDEX}, or {@code UNIFORM} — is declared once at creation time via {@link BufferObjectDesc}.
  *
  * <p><b>Lifecycle:</b>
  * <ol>
@@ -70,8 +69,7 @@ public interface BufferObject extends AutoCloseable {
    * Returns the current capacity of this buffer in bytes.
    *
    * <p>The capacity may grow beyond the initial allocation if
-   * {@link #canExpand()} returns {@code true} and a {@link #submit} call
-   * overflows.
+   * {@link #canExpand()} returns {@code true} and a {@link #submit} call overflows.
    *
    * @return current byte capacity
    */
@@ -81,8 +79,8 @@ public interface BufferObject extends AutoCloseable {
    * Returns whether this buffer automatically expands on {@link #submit}.
    *
    * <p>When {@code true}, an upload that would overflow the current capacity
-   * triggers a reallocation before the data is written. The new capacity is
-   * at least double the previous size, or exactly the required size if larger.
+   * triggers a reallocation before the data is written. The new capacity is at least double the previous size, or
+   * exactly the required size if larger.
    *
    * @return {@code true} if the buffer grows automatically
    */
@@ -92,8 +90,8 @@ public interface BufferObject extends AutoCloseable {
    * Allocates (or reallocates) GPU storage for this buffer.
    *
    * <p>Any previous contents are discarded. If {@code data} is non-null,
-   * its length must equal {@code capacity} and the bytes are copied into
-   * the new allocation; otherwise the storage is left uninitialized.
+   * its length must equal {@code capacity} and the bytes are copied into the new allocation; otherwise the storage is
+   * left uninitialized.
    *
    * <p>This is a potentially expensive operation — prefer {@link #submit}
    * for incremental updates.
@@ -110,8 +108,7 @@ public interface BufferObject extends AutoCloseable {
    * returns {@code true}, the buffer is transparently reallocated.
    *
    * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
-   * orphans the previous allocation before writing, which avoids pipeline
-   * stalls.
+   * orphans the previous allocation before writing, which avoids pipeline stalls.
    *
    * @param data   the bytes to upload
    * @param offset byte offset within the buffer to start writing

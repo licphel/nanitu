@@ -40,15 +40,14 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * OpenGL 1D/2D/3D texture implementation.
  *
  * <p>The texture object is created and configured on the render thread during
- * construction. Pixel data uploads ({@link #submit}) and blits ({@link #blit})
- * are also enqueued to the render thread.
+ * construction. Pixel data uploads ({@link #submit}) and blits ({@link #blit}) are also enqueued to the render thread.
  *
  * <p>Mipmaps are generated automatically after upload if
  * {@link TextureDesc#mipLevels()} &gt; 1.
  *
  * <p><b>Thread safety:</b> all GL work is submitted via
- * {@link OpenGLDevice#submit(Runnable)}. Reads of {@link #desc()} and the
- * convenience dimension methods are safe from any thread.
+ * {@link OpenGLDevice#submit(Runnable)}. Reads of {@link #desc()} and the convenience dimension methods are safe from
+ * any thread.
  */
 @InternalApi
 public final class OpenGLTexture implements Texture {
@@ -67,8 +66,8 @@ public final class OpenGLTexture implements Texture {
    * Creates a new OpenGL texture from the given descriptor.
    *
    * <p>Texture creation and initial data upload are enqueued to the render
-   * thread. If the descriptor includes {@link TextureDesc#initialBytes()},
-   * they are uploaded immediately after creation.
+   * thread. If the descriptor includes {@link TextureDesc#initialBytes()}, they are uploaded immediately after
+   * creation.
    *
    * @param ctx  the GL context
    * @param desc the texture dimensions, format, type, and optional initial data
@@ -151,8 +150,7 @@ public final class OpenGLTexture implements Texture {
    * Blits a region of this texture into another 2D texture using FBO blitting.
    *
    * <p>Creates temporary FBOs for the source and destination, attaches the
-   * textures, performs the blit, and then cleans up the FBOs. Uses
-   * nearest-neighbor filtering.
+   * textures, performs the blit, and then cleans up the FBOs. Uses nearest-neighbor filtering.
    */
   @Override
   public void blit(Texture target2, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {

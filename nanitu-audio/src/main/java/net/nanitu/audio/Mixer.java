@@ -25,69 +25,45 @@
 package net.nanitu.audio;
 
 /**
- * Represents an audio output device (hardware or software).
+ * Represents an audio output device.
  *
- * <p>A mixer is the entry point for all audio playback. It owns the connection
- * to the underlying audio backend and is the factory for {@link Clip} instances.
- *
- * <p>Typical usage:
- * <pre>{@code
- * Mixer mixer = mixerProvider.create();
- *
- * Clip clip = mixer.getClip();
- * clip.open(AudioFormat.stereo(44100, 16), pcmData);
- * clip.play();
- *
- * // In the main loop:
- * mixer.pollEvents();
- * }</pre>
- *
- * <p>Mixers are generally long-lived; close them only when shutting down
- * the audio subsystem entirely.
+ * <p>A mixer owns the connection to the underlying audio backend and is the
+ * factory for creating {@link Clip} instances. Mixers are long-lived resources; close them only when shutting down the
+ * audio subsystem.
  *
  * @see MixerInfo
  * @see Clip
  */
 public interface Mixer extends AutoCloseable {
   /**
-   * Returns static information about this mixer implementation.
+   * Returns static information about this mixer.
    *
-   * @return name and hardware-acceleration flag for this mixer
+   * @return mixer information
    */
   MixerInfo info();
 
   /**
    * Processes pending mixer events.
    *
-   * <p>Must be called regularly (e.g. once per frame) to update playback state
-   * and trigger loop callbacks. Typically called from the application loop.
+   * <p>Must be called regularly to update playback state and trigger
+   * loop callbacks.
    */
   void pollEvents();
 
   /**
    * Creates a new, unopened {@link Clip} backed by this mixer.
    *
-   * <p>Call {@link Clip#open} on the returned instance before starting playback.
-   * The clip's resources are tied to this mixer; closing the mixer while clips
-   * are still playing results in undefined behavior.
-   *
-   * @return a new, unopened clip
+   * @return a new clip in unopened state
    */
   Clip getClip();
 
   /**
    * Enqueues a block of work to run on the audio thread.
    *
-   * <p>Thread-safe: may be called from any thread.
-   *
-   * @param work the audio commands to execute
+   * @param work the commands to execute
    */
   void submit(Runnable work);
 
-  /**
-   * Closes an audio mixer.
-   * Generally, audio mixers are always alive.
-   */
   @Override
   void close();
 }

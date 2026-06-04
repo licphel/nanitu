@@ -29,52 +29,37 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
- * Parameters for a chat completion request.
+ * Parameters for a chat completion submitted to a {@link Model}.
  *
- * <p>Encapsulates all configurable options for a call to
- * {@link Model#chat(ChatRequest)} or {@link Model#chatStream(ChatRequest, StreamHandler)}.
+ * <p>Bundles the conversation messages, an optional model override, and
+ * generation hyperparameters. Convenience constructors supply sensible defaults for temperature, maximum tokens, and
+ * top-p when they are not given explicitly.
  *
- * <p>Use the convenience constructors for common cases:
- * <pre>{@code
- * ChatRequest req = new ChatRequest(List.of(ChatMessage.user("Hello")));
- * ChatRequest req = new ChatRequest(List.of(ChatMessage.user("Hello")), "gpt-4");
- * }</pre>
- *
- * @param messages    the conversation history and current prompt
- * @param model       model name to use, or {@code null} to use the implementation default
- * @param temperature sampling temperature (0.0–2.0), defaults to 0.7
- * @param maxTokens   maximum number of tokens to generate, defaults to 1024
- * @param topP        nucleus sampling parameter (0.0–1.0), defaults to 1.0
+ * @param messages    the ordered messages that compose the prompt
+ * @param model       the model name, or {@code null} to let the implementation decide
+ * @param temperature the sampling temperature, clamped to {@code [0.0, 2.0]}
+ * @param maxTokens   the maximum number of tokens the model may generate
+ * @param topP        the nucleus sampling cutoff, clamped to {@code [0.0, 1.0]}
  */
 public record ChatRequest(List<ChatMessage> messages, @Nullable String model, double temperature, int maxTokens,
                           double topP) {
-  /**
-   * Default temperature value.
-   */
+  /** The default temperature ({@code 0.7}). */
   public static final double DEFAULT_TEMPERATURE = 0.7;
-
-  /**
-   * Default maximum tokens to generate.
-   */
+  /** The default maximum number of tokens to generate ({@code 1024}). */
   public static final int DEFAULT_MAX_TOKENS = 1024;
-
-  /**
-   * Default top-p value (no truncation).
-   */
+  /** The default top-p value ({@code 1.0}), which disables nucleus truncation. */
   public static final double DEFAULT_TOP_P = 1.0;
 
   /**
-   * Creates a ChatRequest, validating request parameters.
+   * Creates a {@code ChatRequest} instance.
    *
-   * @param messages    the conversation history and current prompt
-   * @param model       model name to use, or {@code null} to use the implementation default
-   * @param temperature sampling temperature (0.0–2.0), defaults to 0.7
-   * @param maxTokens   maximum number of tokens to generate, defaults to 1024
-   * @param topP        nucleus sampling parameter (0.0–1.0), defaults to 1.0
-   * @throws IllegalArgumentException if {@code messages} is empty,
-   *                                  {@code temperature} is out of range,
-   *                                  {@code maxTokens} is not positive,
-   *                                  or {@code topP} is out of range
+   * @param messages    the ordered messages that compose the prompt
+   * @param model       the model name, or {@code null} to let the implementation decide
+   * @param temperature the sampling temperature, must be in {@code [0.0, 2.0]}
+   * @param maxTokens   the maximum number of tokens to generate, must be positive
+   * @param topP        the nucleus sampling cutoff, must be in {@code [0.0, 1.0]}
+   * @throws IllegalArgumentException if {@code messages} is empty, {@code temperature} is outside {@code [0.0, 2.0]},
+   *                                  {@code maxTokens} is not positive, or {@code topP} is outside {@code [0.0, 1.0]}
    */
   public ChatRequest {
     if (messages.isEmpty()) {
@@ -92,31 +77,31 @@ public record ChatRequest(List<ChatMessage> messages, @Nullable String model, do
   }
 
   /**
-   * Creates a request with default parameters and no model override.
+   * Creates a request using all default generation parameters and no model override.
    *
-   * @param messages the conversation messages
+   * @param messages the ordered messages that compose the prompt
    */
   public ChatRequest(List<ChatMessage> messages) {
     this(messages, null, DEFAULT_TEMPERATURE, DEFAULT_MAX_TOKENS, DEFAULT_TOP_P);
   }
 
   /**
-   * Creates a request with default parameters.
+   * Creates a request with default generation parameters and an explicit model selection.
    *
-   * @param messages the conversation messages
-   * @param model    the model name, or {@code null} for implementation default
+   * @param messages the ordered messages that compose the prompt
+   * @param model    the model name, or {@code null} to let the implementation decide
    */
   public ChatRequest(List<ChatMessage> messages, @Nullable String model) {
     this(messages, model, DEFAULT_TEMPERATURE, DEFAULT_MAX_TOKENS, DEFAULT_TOP_P);
   }
 
   /**
-   * Creates a request with explicit parameters and default {@code topP}.
+   * Creates a request with explicit temperature and maximum tokens while using the default top-p value.
    *
-   * @param messages    the conversation messages
-   * @param model       the model name, or {@code null} for implementation default
-   * @param temperature sampling temperature
-   * @param maxTokens   maximum tokens to generate
+   * @param messages    the ordered messages that compose the prompt
+   * @param model       the model name, or {@code null} to let the implementation decide
+   * @param temperature the sampling temperature, must be in {@code [0.0, 2.0]}
+   * @param maxTokens   the maximum number of tokens to generate, must be positive
    */
   public ChatRequest(List<ChatMessage> messages, @Nullable String model, double temperature, int maxTokens) {
     this(messages, model, temperature, maxTokens, DEFAULT_TOP_P);

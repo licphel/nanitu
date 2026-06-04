@@ -33,9 +33,8 @@ import net.nanitu.math.Box3;
  * A GPU texture resource holding 1D, 2D, or 3D image data.
  *
  * <p>Textures are created from a {@link TextureDesc} that specifies dimensions,
- * format, mipmap levels, and optional initial pixel data. After creation,
- * sub-regions can be updated with {@link #submit} and the texture can be
- * bound to a shader slot via {@link ResourceSet#bindTexture}.
+ * format, mipmap levels, and optional initial pixel data. After creation, sub-regions can be updated with
+ * {@link #submit} and the texture can be bound to a shader slot via {@link ResourceSet#bindTexture}.
  *
  * <p><b>Lifecycle:</b>
  * <ol>
@@ -60,8 +59,7 @@ import net.nanitu.math.Box3;
  */
 public interface Texture extends AutoCloseable {
   /**
-   * Returns the descriptor that defines this texture's dimensions, format,
-   * and type.
+   * Returns the descriptor that defines this texture's dimensions, format, and type.
    *
    * @return the immutable texture descriptor
    */
@@ -98,15 +96,13 @@ public interface Texture extends AutoCloseable {
    * Uploads pixel data to a sub-region of this texture.
    *
    * <p>The byte array must contain pixel data matching the texture's format
-   * and large enough to fill the specified region. The region is clamped to
-   * the texture's dimensions.
+   * and large enough to fill the specified region. The region is clamped to the texture's dimensions.
    *
    * <p>If mipmaps are enabled ({@link TextureDesc#mipLevels()} &gt; 1), they are
    * regenerated after the upload.
    *
    * @param data   raw pixel bytes in the texture's format
-   * @param region the target sub-region in texel coordinates (x, y, z,
-   *               width, height, depth)
+   * @param region the target sub-region in texel coordinates (x, y, z, width, height, depth)
    */
   void submit(byte[] data, Box3 region);
 

@@ -26,7 +26,7 @@ package net.nanitu.natives.opengl;
 
 import net.nanitu.graphics.Device;
 import net.nanitu.graphics.DeviceInfo;
-import net.nanitu.graphics.Surface;
+import net.nanitu.graphics.View;
 import net.nanitu.graphics.buffer.BufferObject;
 import net.nanitu.graphics.buffer.BufferObjectDesc;
 import net.nanitu.graphics.cmd.Encoder;
@@ -41,6 +41,8 @@ import net.nanitu.graphics.texture.SamplerDesc;
 import net.nanitu.graphics.texture.Texture;
 import net.nanitu.graphics.texture.TextureDesc;
 import net.nanitu.util.InternalApi;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
@@ -51,38 +53,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * OpenGL implementation of {@link Device}.
  *
  * <p>GL commands are submitted from any thread via {@link #submit(Runnable)}
- * into a lock-free queue, then executed on the calling thread by
- * {@link #pollEvents()} (the "command buffer execution" pattern).
- *
- * <p><b>Startup:</b>
- * <pre>{@code
- * Surface surface = SurfaceProvider.create();
- * Device device = DeviceProvider.create();
- * device.load(surface);
- *
- * Texture tex = device.createTexture(desc);
- *
- * // Main loop:
- * while (!surface.shouldClose()) {
- *     surface.pollEvents();
- *     device.pollEvents();   // executes pending GL commands
- *     device.getSwapchain().present();
- * }
- * device.close();
- * surface.close();
- * }</pre>
+ * into a lock-free queue, then executed on the calling thread by {@link #pollEvents()} (the "command buffer execution"
+ * pattern).
  *
  * <p><b>Thread safety:</b> {@link #submit} is safe from any thread.
- * {@link #pollEvents()} drains and executes queued work on the calling
- * thread (which must be the GL context thread). The {@link #cache} is
- * only touched during {@code pollEvents}.
+ * {@link #pollEvents()} drains and executes queued work on the calling thread (which must be the GL context thread).
+ * The {@link #cache} is only touched during {@code pollEvents}.
  *
  * @see OpenGLCache
- * @see Surface
+ * @see View
  * @see Device
  */
 @InternalApi
 final class OpenGLDevice implements Device {
+  private static final Logger LOGGER = LogManager.getLogger();
   /**
    * Shared GL state cache — only accessed during {@link #pollEvents()}.
    */
@@ -96,14 +80,10 @@ final class OpenGLDevice implements Device {
   /**
    * Creates a new device.
    *
-   * <p>Call {@link #load(Surface)} before any GPU resource creation.
+   * <p>Call {@link #load(View)} before any GPU resource creation.
    */
   OpenGLDevice() {
   }
-
-  // -------------------------------------------------------------------------
-  // Device API
-  // -------------------------------------------------------------------------
 
   @Override
   public DeviceInfo info() {
@@ -111,18 +91,18 @@ final class OpenGLDevice implements Device {
   }
 
   /**
-   * Loads this device onto the given surface.
+   * Loads this device onto the given view.
    *
    * <p>Binds the GL context to the calling thread and initializes GL
    * capabilities. Must be called before any resource creation.
    */
   @Override
-  public void load(Surface surface) {
-    ((Runnable) surface.procAddress()).run();
+  public void load(View view) {
+    ((Runnable) view.procAddress()).run();
     GL.createCapabilities();
-    fbHeight = surface.height();
-    surface.onResize((w, h) -> submit(() -> onResize(w, h)));
-    surface.initializeHooks(this);
+    fbHeight = view.height();
+    view.hook().onResize((w, h) -> submit(() -> onResize(w, h)));
+    view.initializeHooks(this);
   }
 
   @Override
@@ -192,10 +172,6 @@ final class OpenGLDevice implements Device {
     return swapchain;
   }
 
-  // -------------------------------------------------------------------------
-  // Command execution
-  // -------------------------------------------------------------------------
-
   @Override
   public void submit(Runnable work) {
     queue.add(work);
@@ -205,7 +181,11 @@ final class OpenGLDevice implements Device {
   public void execute() {
     Runnable task;
     while ((task = queue.poll()) != null) {
-      task.run();
+      try {
+        task.run();
+      } catch (Exception e) {
+        LOGGER.error("OpenGL execution error", e);
+      }
     }
   }
 
@@ -214,7 +194,7 @@ final class OpenGLDevice implements Device {
     submit(() -> {
       int err;
       while ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
-        System.err.println("[OpenGL] Error: 0x" + Integer.toHexString(err));
+        LOGGER.warn("OpenGL error: 0x{}", Integer.toHexString(err));
       }
     });
   }
@@ -223,10 +203,6 @@ final class OpenGLDevice implements Device {
   public void close() {
     execute();
   }
-
-  // -------------------------------------------------------------------------
-  // Resize
-  // -------------------------------------------------------------------------
 
   /**
    * Called when the framebuffer is resized.

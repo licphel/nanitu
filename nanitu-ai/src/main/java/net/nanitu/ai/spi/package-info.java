@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+/**
+ * Service provider interfaces for the AI subsystem.
+ */
+
 @NullMarked
 package net.nanitu.ai.spi;
 

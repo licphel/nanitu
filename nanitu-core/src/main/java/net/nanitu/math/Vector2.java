@@ -209,8 +209,7 @@ public record Vector2(float x, float y) {
   }
 
   /**
-   * Returns a normalized copy of this vector.
-   * If the vector length is near zero, returns {@link #ZERO}.
+   * Returns a normalized copy of this vector. If the vector length is near zero, returns {@link #ZERO}.
    *
    * @return unit vector in the same direction
    */
@@ -240,8 +239,7 @@ public record Vector2(float x, float y) {
   }
 
   /**
-   * Returns the reflection of this vector off a surface with the given normal.
-   * Assumes the normal is normalized.
+   * Returns the reflection of this vector off a surface with the given normal. Assumes the normal is normalized.
    *
    * @param normal the surface normal
    * @return reflected vector

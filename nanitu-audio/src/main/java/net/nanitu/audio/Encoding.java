@@ -27,59 +27,38 @@ package net.nanitu.audio;
 /**
  * Identifies the sample encoding used in a PCM audio stream.
  *
- * <p>The encoding describes how each sample value is represented as bytes.
- * Not all encodings are supported by every {@link Mixer} backend.
+ * <p>Describes how each sample value is represented as bytes.
  *
  * @see AudioFormat
  */
 public enum Encoding {
-  /**
-   * Signed integer PCM (e.g. 16-bit two's complement, the most common format).
-   */
+  /** Signed integer PCM. */
   PCM_SIGNED,
 
-  /**
-   * Unsigned integer PCM (e.g. 8-bit WAV, where 128 represents silence).
-   */
+  /** Unsigned integer PCM. */
   PCM_UNSIGNED,
 
-  /**
-   * IEEE 754 floating-point PCM (e.g. 32-bit float WAV).
-   */
+  /** IEEE 754 floating-point PCM. */
   PCM_FLOAT,
 
-  /**
-   * ITU-T G.711 A-law companded 8-bit PCM.
-   */
+  /** ITU-T G.711 A-law companded PCM. */
   ALAW,
 
-  /**
-   * ITU-T G.711 μ-law companded 8-bit PCM.
-   */
+  /** ITU-T G.711 μ-law companded PCM. */
   ULAW,
 
-  /**
-   * MPEG-1/2 Audio Layer III compressed audio.
-   */
+  /** MPEG-1/2 Audio Layer III compressed audio. */
   MP3,
 
-  /**
-   * Advanced Audio Coding compressed audio.
-   */
+  /** Advanced Audio Coding compressed audio. */
   AAC,
 
-  /**
-   * Ogg Vorbis compressed audio.
-   */
+  /** Ogg Vorbis compressed audio. */
   VORBIS,
 
-  /**
-   * Opus compressed audio.
-   */
+  /** Opus compressed audio. */
   OPUS,
 
-  /**
-   * Free Lossless Audio Codec compressed audio.
-   */
+  /** Free Lossless Audio Codec compressed audio. */
   FLAC
 }

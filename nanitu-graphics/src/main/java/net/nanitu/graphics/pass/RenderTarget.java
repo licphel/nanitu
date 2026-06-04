@@ -33,17 +33,10 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>A {@code RenderTarget} may represent either:
  * <ul>
- *   <li>The default swapchain surface (the visible window), or
+ *   <li>The default swapchain view (the visible window), or
  *   <li>An off-screen framebuffer object (FBO) with color and depth/stencil
  *       attachments.
  * </ul>
- *
- * <p><b>Per-frame usage:</b>
- * <pre>{@code
- * target.acquire(clearDesc);      // bind + optional clear
- * // ... issue draw calls via an Encoder ...
- * target.present();               // swap buffers (if swapchain)
- * }</pre>
  *
  * <p>For off-screen targets, {@link #present()} is typically a no-op;
  * the rendered result is consumed via {@link #blit} or by reading the
@@ -57,12 +50,10 @@ import org.jspecify.annotations.Nullable;
  */
 public interface RenderTarget extends AutoCloseable {
   /**
-   * Binds this render target for subsequent draw calls and optionally
-   * performs clear operations.
+   * Binds this render target for subsequent draw calls and optionally performs clear operations.
    *
    * <p>If {@code desc} is non-null, the attachments specified by its
-   * {@link RenderPassDesc#of(Color)} are cleared to the corresponding
-   * clear values.
+   * {@link RenderPassDesc#of(Color)} are cleared to the corresponding clear values.
    *
    * @param desc clear configuration, or {@code null} to skip clearing
    */
@@ -80,9 +71,9 @@ public interface RenderTarget extends AutoCloseable {
   /**
    * Presents (swaps) the rendered frame to the display.
    *
-   * <p>For the default swapchain surface, this flips the back buffer to
-   * the front. For off-screen targets, this is a no-op — the results
-   * stay in GPU memory for later use via {@link #blit}.
+   * <p>For the default swapchain view, this flips the back buffer to
+   * the front. For off-screen targets, this is a no-op — the results stay in GPU memory for later use via
+   * {@link #blit}.
    */
   void present();
 
@@ -90,8 +81,8 @@ public interface RenderTarget extends AutoCloseable {
    * Blits (copies) a rectangular region of this render target into another.
    *
    * <p>Both the source and destination must be render targets. The filter
-   * only applies when the regions differ in size; for 1:1 copies use
-   * {@link TextureFilter#NEAREST} to avoid unnecessary sampling overhead.
+   * only applies when the regions differ in size; for 1:1 copies use {@link TextureFilter#NEAREST} to avoid unnecessary
+   * sampling overhead.
    *
    * @param target the destination render target
    * @param srcX   left edge of the source region
@@ -108,8 +99,8 @@ public interface RenderTarget extends AutoCloseable {
             TextureFilter filter);
 
   /**
-   * Registers a hook invoked (on the render thread) just before buffer swap
-   * during {@link #present()}. Default no-op; swapchain targets override.
+   * Registers a hook invoked (on the render thread) just before buffer swap during {@link #present()}. Default no-op;
+   * swapchain targets override.
    *
    * @param hook the hook to add
    */

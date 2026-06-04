@@ -28,8 +28,8 @@ package net.nanitu.graphics.pipe;
  * Stencil operations performed when the stencil test passes or fails.
  *
  * <p>Each value specifies an action on the stencil buffer — keep the current
- * value, replace it, increment, etc. Used in {@link StencilFace}
- * for fail, depth-fail, and pass operations independently.
+ * value, replace it, increment, etc. Used in {@link StencilFace} for fail, depth-fail, and pass operations
+ * independently.
  *
  * @see StencilFace
  */

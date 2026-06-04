@@ -25,8 +25,7 @@
 package net.nanitu.math.noise;
 
 /**
- * Turbulence octave noise — sums the absolute value of each layer to produce
- * fluid, folded patterns.
+ * Turbulence octave noise — sums the absolute value of each layer to produce fluid, folded patterns.
  *
  * <p>Each octave applies {@code n = |n * 2 − 1|} before accumulating, which
  * creates sharp edges and a "turbulent" appearance.

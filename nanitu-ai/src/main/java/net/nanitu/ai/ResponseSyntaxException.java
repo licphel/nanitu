@@ -27,10 +27,10 @@ package net.nanitu.ai;
 import java.io.Serial;
 
 /**
- * Thrown when a model's response cannot be parsed or has an unexpected structure.
+ * Indicates that a model response could not be interpreted because its structure or format was unexpected.
  *
- * <p>This typically indicates a malformed response from the API or an
- * incompatible response format that the client cannot interpret.
+ * <p>This covers malformed payloads, missing required fields, and any other
+ * response content the client cannot parse into a valid result.
  */
 public class ResponseSyntaxException extends RuntimeException {
   @Serial
@@ -39,17 +39,17 @@ public class ResponseSyntaxException extends RuntimeException {
   /**
    * Creates a {@code ResponseSyntaxException} with a descriptive message.
    *
-   * @param message a human-readable description of the parse error
+   * @param message a human-readable description of the parsing failure
    */
   public ResponseSyntaxException(String message) {
     super(message);
   }
 
   /**
-   * Creates a {@code ResponseSyntaxException} with a descriptive message and cause.
+   * Creates a {@code ResponseSyntaxException} with a descriptive message and an underlying cause.
    *
-   * @param message a human-readable description of the parse error
-   * @param cause   the underlying parse exception
+   * @param message a human-readable description of the parsing failure
+   * @param cause   the originating error
    */
   public ResponseSyntaxException(String message, Throwable cause) {
     super(message, cause);

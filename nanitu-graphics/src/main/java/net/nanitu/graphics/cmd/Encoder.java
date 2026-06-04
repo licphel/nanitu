@@ -34,28 +34,15 @@ import net.nanitu.graphics.shader.ResourceSet;
  * Records GPU commands (draw calls, state changes, dispatches) for batched submission.
  *
  * <p>The encoder is the central recording API for issuing GPU work. Commands
- * are accumulated in a lightweight command list on the calling thread and then
- * submitted to the render thread as a single batch via {@link #queuedExecute()}.
- *
- * <p><b>Typical per-frame usage:</b>
- * <pre>{@code
- * encoder.reset();
- * encoder.setRenderPipe(pipe);
- * encoder.setBuffer(vbo);
- * encoder.setBuffer(ebo);
- * encoder.setViewport(0, 0, width, height);
- * encoder.setResource(0, resourceSet);
- * encoder.drawIndexed(indexCount, 0);
- * encoder.queuedExecute();
- * }</pre>
+ * are accumulated in a lightweight command list on the calling thread and then submitted to the render thread as a
+ * single batch via {@link #queuedExecute()}.
  *
  * <p><b>Command ordering:</b> commands execute in recording order.
- * State set by {@code setRenderPipe}, {@code setViewport}, {@code setScissor},
- * and {@code setResource} persists across draw calls until changed.
+ * State set by {@code setRenderPipe}, {@code setViewport}, {@code setScissor}, and {@code setResource} persists across
+ * draw calls until changed.
  *
  * <p><b>Thread safety:</b> recording is single-threaded — do not interleave
- * calls from multiple threads. {@link #queuedExecute()} and {@link #reset()}
- * may be called from any thread.
+ * calls from multiple threads. {@link #queuedExecute()} and {@link #reset()} may be called from any thread.
  *
  * @see Pipeline
  * @see BufferObject
@@ -74,8 +61,7 @@ public interface Encoder extends AutoCloseable {
    * Submits the recorded commands to the render thread for execution.
    *
    * <p>The commands are copied into a snapshot before submission, so
-   * {@link #reset()} may be called immediately without affecting the
-   * batch that is about to execute.
+   * {@link #reset()} may be called immediately without affecting the batch that is about to execute.
    */
   void queuedExecute();
 

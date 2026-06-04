@@ -27,13 +27,11 @@ package net.nanitu.graphics.texture;
 import net.nanitu.graphics.shader.ResourceSet;
 
 /**
- * An immutable GPU sampler object that controls texture filtering, wrapping,
- * and level-of-detail parameters.
+ * An immutable GPU sampler object that controls texture filtering, wrapping, and level-of-detail parameters.
  *
  * <p>Samplers are separate from textures: the same texture can be sampled
- * with different samplers (e.g. one draw call with linear filtering, another
- * with nearest). A sampler is created once from a {@link SamplerDesc} and
- * reused across many draw calls.
+ * with different samplers (e.g. one draw call with linear filtering, another with nearest). A sampler is created once
+ * from a {@link SamplerDesc} and reused across many draw calls.
  *
  * <p><b>Thread safety:</b> immutable after creation — safe to read from any
  * thread.

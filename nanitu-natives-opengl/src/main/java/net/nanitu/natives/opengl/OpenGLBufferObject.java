@@ -38,29 +38,24 @@ import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memFree;
 
 /**
- * OpenGL buffer object implementation supporting vertex, index, and uniform
- * buffer usage.
+ * OpenGL buffer object implementation supporting vertex, index, and uniform buffer usage.
  *
  * <p>Every buffer has a target ({@code GL_ARRAY_BUFFER}, {@code GL_ELEMENT_ARRAY_BUFFER},
- * or {@code GL_UNIFORM_BUFFER}) and a usage hint derived from its
- * {@link BufferFrequency}. All GL calls are enqueued via
- * {@link OpenGLDevice#submit(Runnable)} for execution on the render thread.
+ * or {@code GL_UNIFORM_BUFFER}) and a usage hint derived from its {@link BufferFrequency}. All GL calls are enqueued
+ * via {@link OpenGLDevice#submit(Runnable)} for execution on the render thread.
  *
  * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
- * a {@link #submit(byte[], int)} call at offset 0 discards the previous
- * allocation (via an extra {@code glBufferData}) before writing. This
- * technique avoids GPU pipeline stalls by letting the driver rotate through
- * fresh backing storage each frame. The trade-off is an extra allocation
- * per frame.
+ * a {@link #submit(byte[], int)} call at offset 0 discards the previous allocation (via an extra {@code glBufferData})
+ * before writing. This technique avoids GPU pipeline stalls by letting the driver rotate through fresh backing storage
+ * each frame. The trade-off is an extra allocation per frame.
  *
  * <p><b>Auto-expansion:</b> {@link #canExpand()} always returns {@code true}.
- * If a {@link #submit} would overflow the current capacity, the buffer is
- * transparently reallocated to at least double the previous size.
+ * If a {@link #submit} would overflow the current capacity, the buffer is transparently reallocated to at least double
+ * the previous size.
  *
  * <p><b>Thread safety:</b> creation, mutation ({@link #allocate}, {@link #submit}),
- * and {@link #close()} submit work to the render thread and are safe to call
- * from any thread. Reads ({@link #desc()}, {@link #capacity()}) return
- * values that may be stale if a pending submission has not yet executed.
+ * and {@link #close()} submit work to the render thread and are safe to call from any thread. Reads ({@link #desc()},
+ * {@link #capacity()}) return values that may be stale if a pending submission has not yet executed.
  */
 @InternalApi
 final class OpenGLBufferObject implements BufferObject {

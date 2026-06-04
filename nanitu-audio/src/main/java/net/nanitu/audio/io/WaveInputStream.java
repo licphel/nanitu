@@ -36,26 +36,11 @@ import java.nio.charset.StandardCharsets;
 /**
  * {@link AudioInputStream} implementation for the RIFF/WAVE container.
  *
- * <p>Parses the WAVE header on construction, then exposes the raw PCM bytes
- * from the {@code data} chunk as a plain {@link InputStream}.
- * Supported format tags:
- * <ul>
- *   <li>{@code 0x0001} — WAVE_FORMAT_PCM:
- *       8-bit samples are mapped to {@link Encoding#PCM_UNSIGNED},
- *       all wider depths to {@link Encoding#PCM_SIGNED}.</li>
- *   <li>{@code 0x0003} — WAVE_FORMAT_IEEE_FLOAT:
- *       mapped to {@link Encoding#PCM_FLOAT}.</li>
- *   <li>{@code 0xFFFE} — WAVE_FORMAT_EXTENSIBLE:
- *       subtype GUID is inspected; PCM and IEEE-float subtypes are accepted,
- *       others throw {@link IOException}.</li>
- * </ul>
+ * <p>Parses the WAVE header on construction and exposes the raw PCM bytes
+ * from the data chunk. Supported format tags include WAVE_FORMAT_PCM, WAVE_FORMAT_IEEE_FLOAT, and
+ * WAVE_FORMAT_EXTENSIBLE.
  *
- * <p>Chunk padding (odd-sized chunks carry a one-byte pad per the RIFF spec)
- * is consumed automatically. Unknown chunks are skipped transparently.
- * The {@code fmt} chunk must appear before the {@code data} chunk.
- *
- * <p>Instances are not thread-safe. Read operations must not be called
- * concurrently from multiple threads.
+ * <p>Instances are not thread-safe.
  *
  * @see AudioInputStream
  */
@@ -74,10 +59,10 @@ public final class WaveInputStream extends AudioInputStream {
   private long remaining;
 
   /**
-   * Creates a WaveInputStream from a {@link InputStream}.
+   * Creates a decoder for a WAVE audio stream.
    *
-   * @param source wrapped input stream
-   * @throws IOException if header parsing fails or source stream reading fails
+   * @param source the input stream to decode
+   * @throws IOException if header parsing fails
    */
   public WaveInputStream(InputStream source) throws IOException {
     BufferedInputStream buffered = source instanceof BufferedInputStream b ? b : new BufferedInputStream(source);
@@ -88,6 +73,9 @@ public final class WaveInputStream extends AudioInputStream {
     remaining = header.dataSize;
   }
 
+  /**
+   * Parses the RIFF/WAVE container header and returns the format and data chunk information.
+   */
   private static Header parseHeader(InputStream in) throws IOException {
     expectAscii(in, "RIFF");
     skipFully(in, 4);
@@ -120,6 +108,9 @@ public final class WaveInputStream extends AudioInputStream {
     return new Header(format, dataSize);
   }
 
+  /**
+   * Parses the WAVE {@code fmt} chunk and returns the corresponding {@link AudioFormat}.
+   */
   private static AudioFormat readFmtChunk(InputStream in, int chunkSize) throws IOException {
     int formatTag = readShortLE(in);
     int channels = readShortLE(in);
@@ -226,6 +217,10 @@ public final class WaveInputStream extends AudioInputStream {
     return b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
   }
 
+  /**
+   * Skips exactly {@code n} bytes from the input stream, throwing {@link EOFException} if the stream ends before the
+   * requested number of bytes has been skipped.
+   */
   private static void skipFully(InputStream in, long n) throws IOException {
     while (n > 0) {
       long skipped = in.skip(n);
@@ -239,29 +234,11 @@ public final class WaveInputStream extends AudioInputStream {
     }
   }
 
-  /**
-   * Returns the PCM format decoded from the WAVE {@code fmt} chunk.
-   *
-   * <p>The format is determined at construction time and never changes.
-   * {@code bigEndian} is always {@code false} — WAVE stores samples
-   * in little-endian byte order.
-   *
-   * @return audio format of the {@code data} chunk
-   */
   @Override
   public AudioFormat format() {
     return format;
   }
 
-  /**
-   * Reads the next byte from the {@code data} chunk.
-   *
-   * <p>Returns {@code -1} once all bytes declared in the {@code data} chunk
-   * header have been consumed, even if the underlying stream has more data.
-   *
-   * @return the next byte as an unsigned value {@code [0, 255]}, or {@code -1} at end of data
-   * @throws IOException if an I/O error occurs on the underlying stream
-   */
   @Override
   public int read() throws IOException {
     if (remaining <= 0) {
@@ -274,19 +251,6 @@ public final class WaveInputStream extends AudioInputStream {
     return value;
   }
 
-  /**
-   * Reads up to {@code len} bytes from the {@code data} chunk into {@code b}.
-   *
-   * <p>Clamps {@code len} to the number of bytes remaining in the chunk so
-   * that callers never read beyond the declared audio data, even if the
-   * underlying stream contains trailing RIFF chunks.
-   *
-   * @param b   destination buffer
-   * @param off offset into {@code b}
-   * @param len maximum number of bytes to read
-   * @return number of bytes actually read, or {@code -1} at end of data
-   * @throws IOException if an I/O error occurs on the underlying stream
-   */
   @Override
   public int read(byte[] b, int off, int len) throws IOException {
     if (remaining <= 0) {

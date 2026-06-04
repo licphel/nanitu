@@ -30,8 +30,7 @@ import java.util.List;
  * Base interface for pseudo-random number generators (PRNGs).
  *
  * <p>All implementations must be deterministic: given the same initial state,
- * they produce the same sequence of random numbers. This is essential for
- * reproducible simulations.
+ * they produce the same sequence of random numbers. This is essential for reproducible simulations.
  *
  * <p>The default instance is {@link Xoroshiro128Random}, a fast, high-quality
  * generator suitable for most scenarios.
@@ -42,8 +41,7 @@ public interface RandomGenerator {
    * Global default instance (Xoroshiro128+).
    *
    * <p>This generator is thread-safe but not recommended for concurrent
-   * use from multiple threads. For multithreaded scenarios, create
-   * separate instances per thread.
+   * use from multiple threads. For multithreaded scenarios, create separate instances per thread.
    */
   RandomGenerator DEFAULT = new Xoroshiro128Random();
 
@@ -126,9 +124,8 @@ public interface RandomGenerator {
    * Returns a random Gaussian (normal) distribution value mapped to {@code [0, 1]}.
    *
    * <p>Uses the Box-Muller transform to generate a standard normal deviate,
-   * then applies {@code tanh(z * 0.5)} to map it to the approximate range
-   * {@code [0, 1]}. The mapping is sigmoidal: most values cluster near 0.5,
-   * with tails approaching 0 and 1.
+   * then applies {@code tanh(z * 0.5)} to map it to the approximate range {@code [0, 1]}. The mapping is sigmoidal:
+   * most values cluster near 0.5, with tails approaching 0 and 1.
    *
    * @return a pseudo-Gaussian value in {@code [0, 1]}
    */
@@ -151,8 +148,8 @@ public interface RandomGenerator {
   }
 
   /**
-   * Returns the current internal state of the generator as a string.
-   * The length and interpretation of the string are implementation-specific.
+   * Returns the current internal state of the generator as a string. The length and interpretation of the string are
+   * implementation-specific.
    *
    * @return a copy of the current state
    */
@@ -192,8 +189,7 @@ public interface RandomGenerator {
    * Creates a derived generator with a perturbed state.
    *
    * <p>Different {@code x} values produce statistically independent sequences.
-   * This is not a true state-space jump, but a fast way to generate multiple
-   * independent RNGs from a single parent.
+   * This is not a true state-space jump, but a fast way to generate multiple independent RNGs from a single parent.
    *
    * @param x perturbation value (different values yield different sequences)
    * @return a new generator with perturbed state

@@ -27,21 +27,13 @@ package net.nanitu.mod;
 import java.net.URI;
 
 /**
- * A domain-qualified resource identifier, similar to Minecraft's
- * {@code ResourceLocation}.
+ * A domain-qualified resource identifier, similar to Minecraft's {@code ResourceLocation}.
  *
  * <p>Format: {@code domain:path}. The domain is a {@link Domain} namespace;
- * the path is a forward-slash-separated resource path string (not a filesystem
- * path).
+ * the path is a forward-slash-separated resource path string (not a filesystem path).
  *
  * <p>If the string form contains no colon, the domain defaults to
  * {@link Domain#UNKNOWN}.
- *
- * <pre>{@code
- * Identifier id = Identifier.of("mymod:textures/example.png");
- * Domain domain = id.domain();   // Domain("mymod")
- * String path = id.path();       // "textures/example.png"
- * }</pre>
  *
  * <p>Instances are immutable and safe to use as map keys.
  *

@@ -31,8 +31,8 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 
 /**
- * A contiguous region of memory with explicit lifetime management.
- * It offers low-level control of a memory block with no extra assertions.
+ * A contiguous region of memory with explicit lifetime management. It offers low-level control of a memory block with
+ * no extra assertions.
  */
 public final class Memory implements AutoCloseable {
   private final MemorySegment segment;
@@ -52,8 +52,8 @@ public final class Memory implements AutoCloseable {
   }
 
   /**
-   * Creates a non-owning slice view over an existing segment.
-   * Disposing this instance has no effect on the underlying memory.
+   * Creates a non-owning slice view over an existing segment. Disposing this instance has no effect on the underlying
+   * memory.
    *
    * @param segment the sub-segment to view
    */
@@ -91,9 +91,8 @@ public final class Memory implements AutoCloseable {
   }
 
   /**
-   * Returns the raw backing {@link MemorySegment}.
-   * Prefer the typed accessor methods ({@link #getByte}, {@link #putByte}, etc.) over direct
-   * segment access when possible.
+   * Returns the raw backing {@link MemorySegment}. Prefer the typed accessor methods ({@link #getByte},
+   * {@link #putByte}, etc.) over direct segment access when possible.
    *
    * @return the backing segment
    * @throws IllegalStateException if this memory has been disposed
@@ -161,8 +160,7 @@ public final class Memory implements AutoCloseable {
    * @param endianness byte order for the read
    * @return the short value at {@code offset}
    * @throws IllegalStateException     if this memory has been disposed
-   * @throws IndexOutOfBoundsException if the range [{@code offset}, {@code offset+2}) is out of
-   *                                   bounds
+   * @throws IndexOutOfBoundsException if the range [{@code offset}, {@code offset+2}) is out of bounds
    * @throws IllegalArgumentException  if {@code endianness} is {@link Endianness#UNSURE}
    */
   public short getShort(long offset, Endianness endianness) {
@@ -329,8 +327,8 @@ public final class Memory implements AutoCloseable {
   }
 
   /**
-   * Copies {@code length} bytes from this region starting at {@code srcOffset} into {@code dst}
-   * starting at {@code dstOffset}.
+   * Copies {@code length} bytes from this region starting at {@code srcOffset} into {@code dst} starting at
+   * {@code dstOffset}.
    *
    * @param srcOffset byte offset in this region to start copying from
    * @param dst       destination memory region

@@ -30,8 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * A namespace that uniquely identifies a mod or resource origin.
  *
  * <p>Domains are interned — {@link #of(String)} returns the same instance for
- * equal names. Valid domain names consist of alphanumeric characters plus
- * {@code :_/$.-}
+ * equal names. Valid domain names consist of alphanumeric characters plus {@code :_/$.-}
  *
  * <p>The {@link #UNKNOWN} constant serves as a fallback when no specific domain
  * is known.

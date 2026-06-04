@@ -24,39 +24,57 @@
 
 package net.nanitu.audio;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Identifies the real-time controls available on a {@link Clip}.
  *
- * <p>Pass a {@code Controller} constant to {@link Clip#get} or {@link Clip#set}
- * to read or change a specific parameter while the clip is playing.
+ * <p>Each constant represents a parameter that can be read or modified
+ * during playback via {@link Clip#get(Controller)} and {@link Clip#set(Controller, float)}.
  *
  * @see Clip
  */
 public enum Controller {
   /**
-   * Gain (amplitude) multiplier.
+   * Gain multiplier for the clip.
    *
-   * <p>A value of {@code 1.0} means full volume as opened; {@code 0.0} is
-   * silent. Values greater than {@code 1.0} amplify the signal. Negative
-   * values are clamped to {@code 0.0}.
+   * <p>A value of {@code 1.0} is full volume; {@code 0.0} is silent.
+   * Values above {@code 1.0} amplify the signal. Negative values are clamped to {@code 0.0}.
    */
-  VOLUME,
+  VOLUME(float.class),
 
   /**
-   * Playback speed relative to the clip's original rate.
+   * Playback speed relative to the original rate.
    *
-   * <p>A value of {@code 1.0} means normal speed; {@code 2.0} doubles the
-   * speed (and raises pitch by one octave); {@code 0.5} halves it.
-   * Negative values are clamped to {@code 0.0}.
+   * <p>A value of {@code 1.0} is normal speed; {@code 2.0} doubles the
+   * speed and raises pitch by one octave; {@code 0.5} halves it. Negative values are clamped to {@code 0.0}.
    */
-  PITCH,
+  PITCH(float.class),
 
   /**
    * Playback position within the current repetition, in seconds.
    *
-   * <p>Read-only in practice: the value is updated asynchronously by the
-   * audio backend during playback. Writing a position offset is supported
-   * by the backend but may not be perfectly accurate for looping clips.
+   * <p>The value is updated asynchronously by the audio backend during
+   * playback.
    */
-  POSITION
+  POSITION(float.class);
+
+  /** The expected Java type for values of this controller. */
+  private final Class<?> clazz;
+
+  Controller(Class<?> clazz) {
+    this.clazz = clazz;
+  }
+
+  /**
+   * Validates that a value is of the correct type for this controller.
+   *
+   * @param value the value to validate, may be {@code null}
+   * @throws IllegalArgumentException if the value is not of the expected type
+   */
+  public void validate(@Nullable Object value) {
+    if (!clazz.isInstance(value)) {
+      throw new IllegalArgumentException("Invalid value for controller " + name() + ": " + value);
+    }
+  }
 }

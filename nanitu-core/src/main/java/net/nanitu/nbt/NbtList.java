@@ -33,12 +33,12 @@ import java.util.*;
  * An ordered, heterogeneous list of NBT values.
  *
  * <p>Unlike standard Minecraft NBT (where every list element shares the same type),
- * this list stores a type tag per element. This enables lossless round-tripping of
- * JSON arrays that mix numbers, strings, booleans, and nested structures.
+ * this list stores a type tag per element. This enables lossless round-tripping of JSON arrays that mix numbers,
+ * strings, booleans, and nested structures.
  *
  * <p>Values can be primitives ({@code byte}, {@code short}, {@code int}, {@code long},
- * {@code float}, {@code double}, {@code boolean}, {@link String}, {@code byte[]}),
- * or nested {@link NbtCompound} / {@link NbtList}.
+ * {@code float}, {@code double}, {@code boolean}, {@link String}, {@code byte[]}), or nested {@link NbtCompound} /
+ * {@link NbtList}.
  *
  * @see NbtCompound
  * @see Mark
@@ -474,8 +474,8 @@ public final class NbtList implements Iterable<@Nullable Object> {
    * Creates a deep copy of this list.
    *
    * <p>Nested {@link NbtCompound} and {@code NbtList} elements are recursively
-   * copied. {@code byte[]} elements are cloned. All other values are shared
-   * by reference (they are immutable primitives or strings).
+   * copied. {@code byte[]} elements are cloned. All other values are shared by reference (they are immutable primitives
+   * or strings).
    *
    * @return a new list with independent copies of all nested structures
    */

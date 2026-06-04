@@ -31,19 +31,16 @@ import net.nanitu.util.InternalApi;
 import static org.lwjgl.opengl.GL33.*;
 
 /**
- * OpenGL sampler object that controls texture filtering, wrapping, and LOD
- * parameters.
+ * OpenGL sampler object that controls texture filtering, wrapping, and LOD parameters.
  *
  * <p>The sampler is created and configured on the render thread during
- * construction. All parameters from the {@link SamplerDesc} are applied
- * immediately via {@code glSamplerParameteri/f}.
+ * construction. All parameters from the {@link SamplerDesc} are applied immediately via {@code glSamplerParameteri/f}.
  *
  * <p>Anisotropic filtering is enabled when {@link SamplerDesc#anisotropyLevel()}
  * &gt; 1, using the {@code GL_TEXTURE_MAX_ANISOTROPY} extension parameter.
  *
  * <p><b>Thread safety:</b> immutable after construction. The descriptor
- * can be read from any thread. {@link #close()} submits work to the
- * render thread.
+ * can be read from any thread. {@link #close()} submits work to the render thread.
  */
 @InternalApi
 public final class OpenGLSampler implements Sampler {

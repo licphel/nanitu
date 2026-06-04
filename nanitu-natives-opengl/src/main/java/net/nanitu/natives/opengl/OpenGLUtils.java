@@ -42,12 +42,11 @@ import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
  * Stateless converter from engine enums to OpenGL integer constants.
  *
  * <p>Every method maps a single {@code net.nanitu.graphics} enum value to
- * the corresponding {@code GL_*} integer. The class is a pure function
- * collection — it holds no state and every method is deterministic.
+ * the corresponding {@code GL_*} integer. The class is a pure function collection — it holds no state and every method
+ * is deterministic.
  *
  * <p><b>Usage note:</b> these methods are called on the calling thread
- * during command recording (not deferred to the render thread), so they
- * must not make any GL calls themselves.
+ * during command recording (not deferred to the render thread), so they must not make any GL calls themselves.
  */
 @InternalApi
 public final class OpenGLUtils {
@@ -325,8 +324,8 @@ public final class OpenGLUtils {
    * Maps a {@link ShaderType} to its GL shader stage constant.
    *
    * @param t the shader stage
-   * @return {@code GL_VERTEX_SHADER}, {@code GL_FRAGMENT_SHADER},
-   * {@code GL_GEOMETRY_SHADER}, or {@code GL_COMPUTE_SHADER}
+   * @return {@code GL_VERTEX_SHADER}, {@code GL_FRAGMENT_SHADER}, {@code GL_GEOMETRY_SHADER}, or
+   * {@code GL_COMPUTE_SHADER}
    */
   public static int shaderType(ShaderType t) {
     return switch (t) {

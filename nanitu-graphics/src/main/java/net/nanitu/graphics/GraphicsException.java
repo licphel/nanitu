@@ -47,10 +47,21 @@ public class GraphicsException extends RuntimeException {
   /**
    * Creates a new {@code GraphicsException} with the given detail message.
    *
-   * @param message description of the failure, including any relevant
-   *                context (e.g. shader type, FBO status code, format name)
+   * @param message description of the failure, including any relevant context (e.g. shader type, FBO status code,
+   *                format name)
    */
   public GraphicsException(String message) {
     super(message);
+  }
+
+  /**
+   * Creates a new {@code GraphicsException} with the given detail message and cause
+   *
+   * @param message description of the failure, including any relevant context (e.g. shader type, FBO status code,
+   *                format name)
+   * @param cause   the originating error
+   */
+  public GraphicsException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

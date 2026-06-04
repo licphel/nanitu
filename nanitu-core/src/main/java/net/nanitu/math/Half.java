@@ -25,8 +25,7 @@
 package net.nanitu.math;
 
 /**
- * IEEE 754 float16 (half-precision) utility.
- * Cast float to half-precision.
+ * IEEE 754 float16 (half-precision) utility. Cast float to half-precision.
  *
  * @see Color#packToHalves()
  */
@@ -35,8 +34,8 @@ public final class Half {
   }
 
   /**
-   * Quickly converts a 32-bit float to a 16-bit half-precision float (IEEE 754 half).
-   * No special handling for NaN/Infinity - simple truncation for graphics use.
+   * Quickly converts a 32-bit float to a 16-bit half-precision float (IEEE 754 half). No special handling for
+   * NaN/Infinity - simple truncation for graphics use.
    *
    * @param f the float value to convert
    * @return the half-precision bit pattern as an unsigned short

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/**
+ * Provides the core audio API for playback, volume control, and format handling.
+ */
 @NullMarked
 package net.nanitu.audio;
 

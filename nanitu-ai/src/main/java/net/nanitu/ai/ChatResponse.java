@@ -27,28 +27,26 @@ package net.nanitu.ai;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The result of a chat completion request.
+ * The outcome of a chat completion request.
  *
- * <p>Contains the assistant's response text along with metadata about
- * token usage and the reason generation stopped.
+ * <p>Holds the text the model generated together with metadata about token usage
+ * and the condition under which generation ended.
  *
- * @param content          the generated response text
- * @param finishReason     why generation stopped ({@code "stop"}, {@code "length"},
- *                         {@code "content_filter"}, etc.), or {@code null} if unknown
- * @param promptTokens     number of tokens consumed by the prompt
- * @param completionTokens number of tokens generated in the response
+ * @param content          the text produced by the model
+ * @param finishReason     the reason generation halted (e.g. {@code "stop"}, {@code "length"},
+ *                         {@code "content_filter"}), or {@code null} when not available
+ * @param promptTokens     the number of tokens from the input prompt, must be non-negative
+ * @param completionTokens the number of tokens generated, must be non-negative
  */
 public record ChatResponse(String content, @Nullable String finishReason, int promptTokens, int completionTokens) {
   /**
-   * Creates a ChatResponse, validating response fields.
+   * Creates a {@code ChatResponse} instance.
    *
-   * @param content          the generated response text
-   * @param finishReason     why generation stopped ({@code "stop"}, {@code "length"},
-   *                         {@code "content_filter"}, etc.), or {@code null} if unknown
-   * @param promptTokens     number of tokens consumed by the prompt
-   * @param completionTokens number of tokens generated in the response
-   * @throws IllegalArgumentException if {@code content} is {@code null}
-   *                                  or token counts are negative
+   * @param content          the text produced by the model
+   * @param finishReason     the reason generation halted, or {@code null} when not available
+   * @param promptTokens     the number of tokens from the input prompt
+   * @param completionTokens the number of tokens generated
+   * @throws IllegalArgumentException if {@code promptTokens} or {@code completionTokens} is negative
    */
   public ChatResponse {
     if (promptTokens < 0) {
@@ -60,9 +58,9 @@ public record ChatResponse(String content, @Nullable String finishReason, int pr
   }
 
   /**
-   * Returns the total number of tokens consumed by this request and response.
+   * Returns the combined token count for the request and response.
    *
-   * @return the sum of prompt and completion tokens
+   * @return the sum of {@code promptTokens} and {@code completionTokens}
    */
   public int totalTokens() {
     return promptTokens + completionTokens;

@@ -35,8 +35,8 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.opengl.GL33.*;
 
 /**
- * Off-screen render target backed by an OpenGL FBO with an RGBA8 color
- * attachment and a depth24/stencil8 render buffer.
+ * Off-screen render target backed by an OpenGL FBO with an RGBA8 color attachment and a depth24/stencil8 render
+ * buffer.
  *
  * <p>For the swapchain (screen), use {@link OpenGLSwapchain}.
  *

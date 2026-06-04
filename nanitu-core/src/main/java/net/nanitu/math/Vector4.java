@@ -85,8 +85,8 @@ public record Vector4(float x, float y, float z, float w) {
   }
 
   /**
-   * Returns the squared Euclidean distance between two vectors.
-   * Use this when only comparing distances, as it avoids an expensive square root.
+   * Returns the squared Euclidean distance between two vectors. Use this when only comparing distances, as it avoids an
+   * expensive square root.
    *
    * @param a first vector
    * @param b second vector
@@ -212,8 +212,7 @@ public record Vector4(float x, float y, float z, float w) {
   }
 
   /**
-   * Returns a normalized copy of this vector.
-   * If the vector length is near zero, returns {@link #ZERO}.
+   * Returns a normalized copy of this vector. If the vector length is near zero, returns {@link #ZERO}.
    *
    * @return unit vector in the same direction
    */
@@ -242,8 +241,7 @@ public record Vector4(float x, float y, float z, float w) {
   }
 
   /**
-   * Returns the reflection of this vector off a surface with the given normal.
-   * Assumes the normal is normalized.
+   * Returns the reflection of this vector off a surface with the given normal. Assumes the normal is normalized.
    *
    * @param normal the surface normal
    * @return reflected vector

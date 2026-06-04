@@ -28,17 +28,10 @@ import net.nanitu.graphics.pipe.PipelineDesc;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Baked layout declaring the shader resource bindings (textures, samplers,
- * uniform buffers) expected by a pipeline.
+ * Baked layout declaring the shader resource bindings (textures, samplers, uniform buffers) expected by a pipeline.
  *
  * <p>Call {@link #bake(Slot...)} to assign binding indices automatically in
- * declaration order:
- * <pre>{@code
- * ResourceSetLayout layout = ResourceSetLayout.bake(
- *     new ResourceSetLayout.Slot(1, "uTransform", ShaderType.VERTEX_BIT, ResourceType.UNIFORM_BUFFER),
- *     new ResourceSetLayout.Slot(1, "uTexture",  ShaderType.FRAGMENT_BIT, ResourceType.TEXTURE)
- * );
- * }</pre>
+ * declaration order.
  *
  * <p>The resulting layout is immutable and is stored in
  * {@link PipelineDesc#resourceLayouts()}.
@@ -56,8 +49,7 @@ public final class ResourceSetLayout {
   }
 
   /**
-   * Bakes a resource-set layout, assigning sequential binding indices
-   * starting from 0.
+   * Bakes a resource-set layout, assigning sequential binding indices starting from 0.
    *
    * @param slots slot declarations in desired binding order
    * @return a baked layout with resolved binding indices
@@ -66,7 +58,7 @@ public final class ResourceSetLayout {
     Slot[] baked = new Slot[slots.length];
     for (int i = 0; i < slots.length; i++) {
       Slot s = slots[i];
-      baked[i] = new Slot(s.count, s.name, s.stages, s.type, i);
+      baked[i] = new Slot(s.count(), s.name(), s.stages(), s.type(), i);
     }
     return new ResourceSetLayout(baked);
   }
@@ -89,37 +81,10 @@ public final class ResourceSetLayout {
     }
 
     for (int i = 0; i < slots.length; i++) {
-      if (slots[i].type != other.slots[i].type || slots[i].binding != other.slots[i].binding) {
+      if (slots[i].type() != other.slots[i].type() || slots[i].binding() != other.slots[i].binding()) {
         return false;
       }
     }
     return true;
-  }
-
-  /**
-   * Creates a new {@code Slot} declaring a single shader resource binding.
-   *
-   * @param count   the number of resources in this binding (e.g. array size, normally 1)
-   * @param name    the shader-side variable name
-   * @param stages  bitmask of {@link ShaderType} flags indicating which stages access this resource
-   * @param type    the kind of resource ({@link ResourceType#TEXTURE} or
-   *                {@link ResourceType#UNIFORM_BUFFER})
-   * @param binding the resolved GPU binding index (assigned by {@link ResourceSetLayout#bake})
-   */
-  public record Slot(int count, String name, int stages, ResourceType type, int binding) {
-    /**
-     * Creates a new {@code Slot} without a resolved binding index.
-     *
-     * <p>The binding is set to 0 and will be assigned by
-     * {@link ResourceSetLayout#bake}.
-     *
-     * @param count  the number of resources in this binding
-     * @param name   the shader-side variable name
-     * @param stages bitmask of {@link ShaderType} flags
-     * @param type   the kind of resource
-     */
-    public Slot(int count, String name, int stages, ResourceType type) {
-      this(count, name, stages, type, 0);
-    }
   }
 }

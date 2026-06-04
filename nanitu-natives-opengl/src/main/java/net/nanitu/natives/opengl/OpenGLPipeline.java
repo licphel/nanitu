@@ -36,17 +36,16 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL33.*;
 
 /**
- * Immutable OpenGL render pipeline that applies all fixed-function and
- * programmable state via the {@link OpenGLCache} diff mechanism.
+ * Immutable OpenGL render pipeline that applies all fixed-function and programmable state via the {@link OpenGLCache}
+ * diff mechanism.
  *
  * <p>On {@link #apply(OpenGLCache, int)}, each pipeline state block (blend, depth,
- * stencil, rasterization) is diffed against the cache so that only changed
- * GL calls are issued. The shader program is bound via {@code glUseProgram}.
+ * stencil, rasterization) is diffed against the cache so that only changed GL calls are issued. The shader program is
+ * bound via {@code glUseProgram}.
  *
  * <p><b>VAO caching:</b> OpenGL VAOs record buffer bindings at setup time,
- * so a unique VAO is required for each (VBO handle, IBO handle) pair. This
- * class maintains a {@link HashMap} keyed by the combined handles so that
- * repeated draws with the same buffer pair reuse the same VAO.
+ * so a unique VAO is required for each (VBO handle, IBO handle) pair. This class maintains a {@link HashMap} keyed by
+ * the combined handles so that repeated draws with the same buffer pair reuse the same VAO.
  *
  * <p><b>Thread safety:</b> immutable after construction. {@link #apply} and
  * {@link #acquireVao} must be called on the render thread.
@@ -58,8 +57,8 @@ final class OpenGLPipeline implements Pipeline {
   private final OpenGLDevice ctx;
   private final PipelineDesc desc;
   /**
-   * LRU VAO cache keyed by {@code vboHandle | ((long) eboHandle << 32)}.
-   * Evicts the least recently accessed VAO when over {@value #MAX_VAO_CACHE} entries.
+   * LRU VAO cache keyed by {@code vboHandle | ((long) eboHandle << 32)}. Evicts the least recently accessed VAO when
+   * over {@value #MAX_VAO_CACHE} entries.
    */
   private final Map<Long, Integer> vaoCache = new LinkedHashMap<>(MAX_VAO_CACHE, 0.75F, true) {
     @Override
@@ -148,12 +147,10 @@ final class OpenGLPipeline implements Pipeline {
   }
 
   /**
-   * Returns a configured VAO for the given buffer pair, creating one if
-   * necessary.
+   * Returns a configured VAO for the given buffer pair, creating one if necessary.
    *
    * <p>Must be called on the render thread. The VAO encodes the vertex
-   * attribute pointers for the given VBO, using the vertex layout from
-   * the pipeline descriptor.
+   * attribute pointers for the given VBO, using the vertex layout from the pipeline descriptor.
    *
    * @param vboHandle the GL vertex buffer handle (must be non-zero)
    * @param eboHandle the GL index buffer handle (0 if not indexed)

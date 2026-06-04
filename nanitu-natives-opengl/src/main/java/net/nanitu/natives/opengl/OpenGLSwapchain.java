@@ -39,13 +39,11 @@ import static org.lwjgl.opengl.GL33.*;
  * Swapchain render target wrapping the default framebuffer ({@code FBO 0}).
  *
  * <p>Obtain the singleton via {@link OpenGLDevice#getSwapchain()}.
- * Before presenting, listeners registered via {@link #onPresent(Runnable)} are
- * invoked on the render thread — this is where the windowing system hooks
- * {@code swapBuffers}.
+ * Before presenting, listeners registered via {@link #onPresent(Runnable)} are invoked on the render thread — this is
+ * where the windowing system hooks {@code swapBuffers}.
  *
  * <p><b>Thread safety:</b> all GL work is submitted via
- * {@link OpenGLDevice#submit(Runnable)}. The listener list is a
- * {@link CopyOnWriteArrayList}.
+ * {@link OpenGLDevice#submit(Runnable)}. The listener list is a {@link CopyOnWriteArrayList}.
  */
 @InternalApi
 public final class OpenGLSwapchain implements RenderTarget {
@@ -108,8 +106,7 @@ public final class OpenGLSwapchain implements RenderTarget {
   }
 
   /**
-   * Registers a hook invoked (on the render thread) just before
-   * {@code swapBuffers} during {@link #present()}.
+   * Registers a hook invoked (on the render thread) just before {@code swapBuffers} during {@link #present()}.
    *
    * @param hook the hook to add
    */

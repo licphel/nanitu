@@ -25,8 +25,7 @@
 package net.nanitu.graphics.pipe;
 
 /**
- * Creates a new {@code StencilFace} with the specified stencil operation
- * and comparison parameters for a single face.
+ * Creates a new {@code StencilFace} with the specified stencil operation and comparison parameters for a single face.
  *
  * @param failOp      action when the stencil test fails
  * @param passOp      action when both stencil and depth tests pass

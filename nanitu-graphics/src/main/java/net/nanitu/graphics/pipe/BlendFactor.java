@@ -25,12 +25,10 @@
 package net.nanitu.graphics.pipe;
 
 /**
- * Blend factors that control how source and destination pixel colors are
- * combined during blending.
+ * Blend factors that control how source and destination pixel colors are combined during blending.
  *
  * <p>Each factor scales either the source (fragment shader output) or
- * destination (framebuffer) color in the blend equation
- * {@code result = src * srcFactor + dst * dstFactor}.
+ * destination (framebuffer) color in the blend equation {@code result = src * srcFactor + dst * dstFactor}.
  *
  * @see Blend
  */

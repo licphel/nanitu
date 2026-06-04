@@ -36,8 +36,8 @@ import org.jspecify.annotations.Nullable;
  * OpenGL resource set with a unified descriptor slot space.
  *
  * <p>Texture and uniform-buffer bindings share the same slot indices —
- * matching Vulkan's model where all descriptors live in one namespace.
- * Binding to an already-occupied slot replaces the previous binding.
+ * matching Vulkan's model where all descriptors live in one namespace. Binding to an already-occupied slot replaces the
+ * previous binding.
  *
  * <p>Bindings are recorded on the calling thread and applied in bulk on
  * the render thread via {@link #apply(OpenGLCache)}.
@@ -104,9 +104,8 @@ final class OpenGLResourceSet implements ResourceSet {
    * Applies all recorded bindings to the GL state cache.
    *
    * <p>Must be called on the render thread. Iterates slots in order,
-   * dispatching based on the recorded descriptor type. Slot indices
-   * map directly to GL binding points — no rearrangement needed
-   * because the unified namespace matches OpenGL's flat binding model.
+   * dispatching based on the recorded descriptor type. Slot indices map directly to GL binding points — no
+   * rearrangement needed because the unified namespace matches OpenGL's flat binding model.
    */
   public void apply(OpenGLCache cache) {
     int texUnit = 0;

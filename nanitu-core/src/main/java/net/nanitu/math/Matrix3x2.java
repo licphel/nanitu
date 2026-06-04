@@ -339,8 +339,7 @@ public record Matrix3x2(float m00, float m10, float m01, float m11, float m02, f
   }
 
   /**
-   * Returns the inverse of this affine matrix.
-   * Returns {@link #IDENTITY} if the matrix is singular.
+   * Returns the inverse of this affine matrix. Returns {@link #IDENTITY} if the matrix is singular.
    *
    * @return inverse matrix
    */
@@ -365,8 +364,7 @@ public record Matrix3x2(float m00, float m10, float m01, float m11, float m02, f
   }
 
   /**
-   * Transforms a bounding box by this matrix (computes the axis-aligned bounding box
-   * of the four transformed corners).
+   * Transforms a bounding box by this matrix (computes the axis-aligned bounding box of the four transformed corners).
    *
    * @param box the box to transform
    * @return the transformed bounding box

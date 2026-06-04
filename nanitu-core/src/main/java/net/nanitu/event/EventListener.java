@@ -28,14 +28,8 @@ package net.nanitu.event;
  * A listener for events of a specific type.
  *
  * <p>This is a functional interface whose functional method is
- * {@link #handle(EventContext, Event)}. The first parameter is the mutable
- * dispatch context (for canceling, etc.); the second is the immutable event data.
- *
- * <pre>{@code
- * bus.register(DamageEvent.class, (ctx, event) -> {
- *     if (event.amount() < 0) ctx.setCanceled(true);
- * });
- * }</pre>
+ * {@link #handle(EventContext, Event)}. The first parameter provides the mutable dispatch context; the second carries
+ * the immutable event data.
  *
  * @param <T> the event type this listener handles
  * @see Event
@@ -47,7 +41,7 @@ public interface EventListener<T extends Event> {
   /**
    * Handles the given event.
    *
-   * @param ctx   the dispatch context, carrying cancel state
+   * @param ctx   the dispatch context, providing access to cancel and result state
    * @param event the event data
    */
   void handle(EventContext<T> ctx, T event);

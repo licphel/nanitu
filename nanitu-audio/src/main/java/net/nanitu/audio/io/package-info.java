@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/**
+ * Provides classes for reading and decoding audio file formats.
+ */
 @NullMarked
 package net.nanitu.audio.io;
 

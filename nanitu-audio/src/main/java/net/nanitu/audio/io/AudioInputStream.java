@@ -25,7 +25,6 @@
 package net.nanitu.audio.io;
 
 import net.nanitu.audio.AudioFormat;
-import net.nanitu.audio.Encoding;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -34,41 +33,20 @@ import java.io.InputStream;
 /**
  * Abstract base for decoded PCM audio streams.
  *
- * <p>Subclasses wrap a specific container format (e.g. WAVE) and expose its
- * decoded samples as a plain {@link InputStream} of raw PCM bytes.
- * The sample layout — rate, bits depth, channel count, and byte order — is
- * described by {@link #format()}, which is valid as soon as the decoder is
- * constructed and before any bytes are read.
- *
- * <p>Use the factory method {@link #open(InputStream)} to obtain an instance
- * without knowing the underlying format in advance.
- *
- * <p>Mark/reset is not supported; once bytes are consumed they cannot be
- * replayed unless the underlying stream itself supports seeking.
+ * <p>Subclasses wrap a specific audio container format and expose its
+ * decoded samples as an {@link InputStream} of raw PCM bytes. The sample layout is described by {@link #format()},
+ * which is valid as soon as the decoder is constructed.
  *
  * @see WaveInputStream
  * @see AudioFormat
  */
 public abstract class AudioInputStream extends InputStream {
   /**
-   * Probes {@code in} for a known audio container and returns a decoder for it.
+   * Probes an input stream for a known audio container and returns a decoder for it.
    *
-   * <p>The method reads the first 12 bytes to identify the container, then
-   * resets the stream so the decoder can re-read the full header.
-   * Currently supported containers:
-   * <ul>
-   *   <li>RIFF/WAVE — PCM ({@link Encoding#PCM_SIGNED} / {@link Encoding#PCM_UNSIGNED}),
-   *       IEEE float ({@link Encoding#PCM_FLOAT}), and WAVE extensible variants</li>
-   * </ul>
-   *
-   * <p>The returned stream does <em>not</em> own the underlying {@code in};
-   * callers are responsible for closing it.
-   *
-   * @param in source stream; must support {@link InputStream#mark(int) mark}/reset
-   *           or be wrapped automatically by this method into a
-   *           {@link BufferedInputStream}
-   * @return a decoder whose {@link #format()} reflects the detected PCM layout
-   * @throws IOException          if an I/O error occurs while reading the header
+   * @param in source stream, must support mark and reset
+   * @return a decoder whose {@link #format()} reflects the detected layout
+   * @throws IOException          if an I/O error occurs
    * @throws AudioFormatException if the container is not recognized or the header is malformed
    */
   public static AudioInputStream open(InputStream in) throws IOException, AudioFormatException {
@@ -87,32 +65,19 @@ public abstract class AudioInputStream extends InputStream {
   /**
    * Returns the PCM format of the decoded audio data.
    *
-   * <p>The format is determined at construction time and remains constant for
-   * the lifetime of the stream. Read it before consuming any bytes so that
-   * downstream code can allocate buffers of the right size and interpret
-   * samples correctly.
-   *
    * @return audio format describing sample rate, bit depth, channel count, and byte order
    */
   public abstract AudioFormat format();
 
   /**
-   * Always throws {@link IOException} — audio decoders do not support reset.
+   * Throws {@link IOException} unconditionally.
+   *
+   * <p>Audio decoders do not support mark and reset.
    *
    * @throws IOException always
    */
   @Override
   public void reset() throws IOException {
     throw new IOException("Audio decoding cannot be reset");
-  }
-
-  /**
-   * Returns {@code false} — mark/reset is not supported by audio decoders.
-   *
-   * @return {@code false} always
-   */
-  @Override
-  public boolean markSupported() {
-    return false;
   }
 }

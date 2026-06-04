@@ -27,12 +27,11 @@ package net.nanitu.graphics.shader;
 import net.nanitu.graphics.pipe.PipelineDesc;
 
 /**
- * Baked vertex attribute layout describing how vertex data is interleaved in
- * a buffer.
+ * Baked vertex attribute layout describing how vertex data is interleaved in a buffer.
  *
  * <p>Call {@link #bake(Attr...)} to compute byte offsets and strides from a
- * list of attribute descriptors. The resulting layout is immutable and can be
- * shared across pipelines with the same vertex structure.
+ * list of attribute descriptors. The resulting layout is immutable and can be shared across pipelines with the same
+ * vertex structure.
  *
  * <p><b>Example — two attributes (position + UV):</b>
  * <pre>{@code
@@ -64,8 +63,7 @@ public final class VertexLayout {
    * Bakes a vertex layout from a sequence of attribute descriptors.
    *
    * <p>Each attribute's {@code offset} is computed as the running sum of
-   * previous attribute sizes. {@code location} is assigned sequentially
-   * starting from 0.
+   * previous attribute sizes. {@code location} is assigned sequentially starting from 0.
    *
    * @param attrs attribute descriptors in declaration order
    * @return a baked layout with computed offsets and stride
@@ -104,9 +102,8 @@ public final class VertexLayout {
    */
   public record Attr(int components, VertexAttributeType type, boolean normalized, int location, int offset, int size) {
     /**
-     * Creates a new {@code Attr} for an unresolved attribute — location,
-     * offset, and size are set to 0 and will be computed by
-     * {@link VertexLayout#bake}.
+     * Creates a new {@code Attr} for an unresolved attribute — location, offset, and size are set to 0 and will be
+     * computed by {@link VertexLayout#bake}.
      *
      * @param components number of components (1–4)
      * @param type       the component data type

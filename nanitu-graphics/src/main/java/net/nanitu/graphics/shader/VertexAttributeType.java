@@ -28,8 +28,7 @@ package net.nanitu.graphics.shader;
  * Component data types for vertex attributes.
  *
  * <p>Integer types (signed or unsigned) can be normalized to [0,1] or [-1,1]
- * in the shader by setting {@link VertexLayout.Attr#normalized()} to {@code true}.
- * Float types are never normalized.
+ * in the shader by setting {@link VertexLayout.Attr#normalized()} to {@code true}. Float types are never normalized.
  *
  * @see VertexLayout.Attr
  */

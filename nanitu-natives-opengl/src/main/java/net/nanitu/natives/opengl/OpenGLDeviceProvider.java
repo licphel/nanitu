@@ -25,7 +25,7 @@
 package net.nanitu.natives.opengl;
 
 import net.nanitu.graphics.Device;
-import net.nanitu.graphics.Surface;
+import net.nanitu.graphics.View;
 import net.nanitu.graphics.spi.DeviceProvider;
 import net.nanitu.util.InternalApi;
 import net.nanitu.util.Service;
@@ -36,13 +36,11 @@ import java.util.ServiceLoader;
  * {@link DeviceProvider} backed by OpenGL (via LWJGL).
  *
  * <p>Loaded automatically by {@link ServiceLoader} from
- * {@code META-INF/services/net.nanitu.graphics.spi.DeviceProvider}.
- * Callers should prefer using {@link Service#get Service.get}
- * or a DI container rather than constructing this class directly.
+ * {@code META-INF/services/net.nanitu.graphics.spi.DeviceProvider}. Callers should prefer using
+ * {@link Service#get Service.get} or a DI container rather than constructing this class directly.
  *
  * <p>{@link #isAvailable()} verifies that the LWJGL OpenGL bindings are on
- * the classpath — it does not touch GLFW, keeping the graphics backend
- * decoupled from the windowing system.
+ * the classpath — it does not touch GLFW, keeping the graphics backend decoupled from the windowing system.
  */
 @InternalApi
 public final class OpenGLDeviceProvider implements DeviceProvider {
@@ -50,7 +48,7 @@ public final class OpenGLDeviceProvider implements DeviceProvider {
    * Returns whether the LWJGL OpenGL bindings are loadable.
    *
    * <p>Does not touch GLFW — the windowing system is decoupled via
-   * {@link Surface#procAddress()}.
+   * {@link View#procAddress()}.
    *
    * @return {@code true} if LWJGL OpenGL classes can be loaded
    */
@@ -68,7 +66,7 @@ public final class OpenGLDeviceProvider implements DeviceProvider {
    * Creates a new {@link OpenGLDevice}.
    *
    * <p>The device must be loaded onto a surface via
-   * {@link Device#load(Surface)} before use.
+   * {@link Device#load(View)} before use.
    *
    * @return a new OpenGL graphics device
    */

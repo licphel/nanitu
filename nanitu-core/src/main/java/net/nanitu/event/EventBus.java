@@ -40,45 +40,29 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * A high-speed, thread-safe event bus for dispatching {@link Event} instances
- * to registered handlers.
+ * A thread-safe event bus for dispatching {@link Event} instances to registered handlers.
  *
- * <p>Inspired by the Minecraft Forge EventBus, this implementation supports
- * priority-ordered handler dispatch, cancel and {@link Result} propagation,
- * phase-aware posting, annotation-driven subscriber discovery, lambda
- * registration, and classpath scanning.
- *
- * <h3>Registration styles</h3>
- *
- * <p><strong>Lambda (inline):</strong>
- * <pre>{@code
- * bus.register(DamageEvent.class, (ctx, event) -> {
- *     if (event.amount() > 100) ctx.setResult(Result.DENY);
- * });
- * }</pre>
- *
- * <p><strong>Instance methods:</strong>
- * <pre>{@code
- * bus.register(myHandler); // discovers @Subscribe methods on myHandler
- * }</pre>
- *
- * <p><strong>Static methods (classpath scan):</strong>
- * <pre>{@code
- * bus.scan("com.example.mymod.events"); // discovers @Subscribe static methods
- * }</pre>
+ * <h3>Registration</h3>
+ * <p>Handlers can be registered in several ways:
+ * <ul>
+ *   <li><strong>Lambda:</strong> via {@link #register(Class, EventListener)}</li>
+ *   <li><strong>Instance methods:</strong> via {@link #register(Object)}, which discovers
+ *       {@link Subscribe @Subscribe}-annotated methods on the object</li>
+ *   <li><strong>Static methods:</strong> via {@link #register(Class)} for a single class, or
+ *       {@link #scan(String)} for classpath scanning of entire packages</li>
+ * </ul>
  *
  * <h3>Dispatch</h3>
- * Handlers run in priority order ({@link Priority#HIGHEST} first).
- * All handlers always receive the event — canceling an event does not stop
- * propagation. Handlers that wish to respect cancellation should check
- * {@link EventContext#isCanceled()} and return early.
+ * <p>Handlers run in priority order, from {@link Priority#HIGHEST} to {@link Priority#LOWEST}.
+ * All handlers always receive the event — canceling an event does not stop propagation.
+ * Handlers that wish to respect cancellation should check {@link EventContext#isCanceled()}
+ * and return early.
  *
- * <p>Handlers registered for a supertype receive events of subtypes. For
- * example, a handler for {@code Event} receives every posted event.
+ * <p>Handlers registered for a supertype or interface also receive events of subtypes.
  *
  * <h3>Phases</h3>
- * Use {@link #post(Event, Phase)} to fire the same event type at different
- * lifecycle points. Handlers can filter by phase via {@link Subscribe#phase()}.
+ * <p>Use {@link #post(Event, Phase)} to post the same event type at different lifecycle
+ * points. Handlers filter by phase via {@link Subscribe#phase()}.
  *
  * <p>This class is thread-safe. All public methods may be called concurrently.
  *
@@ -122,14 +106,12 @@ public final class EventBus {
   }
 
   /**
-   * Registers all {@link Subscribe @Subscribe}-annotated static methods on the
-   * given class as event handlers.
+   * Registers all {@link Subscribe @Subscribe}-annotated static methods on the given class as event handlers.
    *
-   * <p>Annotated methods must accept exactly two parameters: an
-   * {@link EventContext} and an {@link Event} subtype. The event type is
-   * determined from the second parameter.
+   * <p>Annotated methods must accept an {@link EventContext} as the first parameter and an
+   * {@link Event} subtype as the second.
    *
-   * @param clazz the class to scan for static handler methods
+   * @param clazz the class to scan for annotated static handler methods
    * @throws IllegalArgumentException if any annotated method has an invalid signature
    */
   public void register(Class<?> clazz) {
@@ -146,15 +128,13 @@ public final class EventBus {
   }
 
   /**
-   * Registers all {@link Subscribe @Subscribe}-annotated instance methods on the
-   * given object as event handlers.
+   * Registers all {@link Subscribe @Subscribe}-annotated instance methods on the given object as event handlers.
    *
-   * <p>Annotated methods must accept exactly two parameters: an
-   * {@link EventContext} and an {@link Event} subtype. Static methods on the
-   * object's class are skipped. Handlers registered this way can later be
-   * removed via {@link #unregister(Object)}.
+   * <p>Annotated methods must accept an {@link EventContext} as the first parameter and an
+   * {@link Event} subtype as the second. Static methods are skipped. Handlers registered this way can be removed via
+   * {@link #unregister(Object)}.
    *
-   * @param instance the object whose annotated methods should be registered
+   * @param instance the object whose annotated instance methods should be registered
    * @throws IllegalArgumentException if any annotated method has an invalid signature
    */
   public void register(Object instance) {
@@ -175,8 +155,7 @@ public final class EventBus {
   }
 
   /**
-   * Registers a listener for events of the given type at
-   * {@link Priority#NORMAL} matching all phases.
+   * Registers a listener for events of the given type at {@link Priority#NORMAL} matching all phases.
    *
    * @param eventType the event type to listen for
    * @param listener  the handler callback
@@ -187,13 +166,12 @@ public final class EventBus {
   }
 
   /**
-   * Registers a listener for events of the given type with the specified
-   * priority and phase filter.
+   * Registers a listener for events of the given type with the specified priority and phase filter.
    *
    * @param eventType the event type to listen for
    * @param listener  the handler callback
-   * @param priority  the handler priority
-   * @param phase     the phase filter ({@link Phase#NONE} matches all phases)
+   * @param priority  the handler priority; determines dispatch order
+   * @param phase     the phase filter; {@link Phase#NONE} to match all phases
    * @param <T>       the event type
    */
   @SuppressWarnings("unchecked")
@@ -204,10 +182,9 @@ public final class EventBus {
   }
 
   /**
-   * Unregisters all instance-method handlers that were registered via
-   * {@link #register(Object)} with the given instance.
+   * Removes all instance-method handlers that were registered via {@link #register(Object)} with the given instance.
    *
-   * <p>Handlers registered via lambda or static methods are not affected.
+   * <p>Handlers registered via lambda or static method registration are not affected.
    *
    * @param instance the object whose handlers should be removed
    */
@@ -239,16 +216,14 @@ public final class EventBus {
   }
 
   /**
-   * Scans the given package (and all subdirectories) for classes with
-   * {@link Subscribe @Subscribe}-annotated static methods and registers them.
+   * Scans the given package and its sub-packages for classes with {@link Subscribe @Subscribe}-annotated static methods
+   * and registers them.
    *
-   * <p>The scanner reads {@code .class} files from both directory-based and
-   * JAR-based classpath entries. Inner classes (those with {@code $} in their
-   * simple name) are skipped.
+   * <p>The scanner searches both directory-based and JAR-based classpath entries. Inner
+   * classes are skipped.
    *
-   * @param packageName the fully-qualified package name to scan,
-   *                    e.g. {@code "com.example.mymod.events"}
-   * @throws UncheckedIOException if an I/O error occurs during scanning
+   * @param packageName the fully qualified package name to scan, e.g. {@code "com.example.mymod.events"}
+   * @throws UncheckedIOException if an I/O error occurs while reading classpath entries
    */
   public void scan(String packageName) {
     String path = packageName.replace('.', '/');
@@ -269,29 +244,27 @@ public final class EventBus {
   }
 
   /**
-   * Posts an event at {@link Phase#NONE}.
+   * Posts an event to this bus at {@link Phase#NONE}.
    *
-   * <p>Equivalent to {@code post(event, Phase.NONE)}.
-   *
-   * @param event the event to post
+   * @param event the event to dispatch
    * @param <T>   the event type
-   * @return the dispatch context, carrying final cancel and result state
+   * @return the dispatch context with final cancel and result state
    */
   public <T extends Event> EventContext<T> post(T event) {
     return post(event, Phase.NONE);
   }
 
   /**
-   * Posts an event at the given lifecycle phase.
+   * Posts an event to this bus at the given lifecycle phase.
    *
-   * <p>All matching handlers are invoked in priority order. Canceled events
-   * continue to propagate — handlers that wish to respect cancellation must
-   * check {@link EventContext#isCanceled()} and return early.
+   * <p>All matching handlers are invoked in priority order. Canceled events still
+   * propagate to remaining handlers — handlers that wish to respect cancellation should check
+   * {@link EventContext#isCanceled()} and return early.
    *
-   * @param event the event to post
-   * @param phase the lifecycle phase
+   * @param event the event to dispatch
+   * @param phase the lifecycle phase for filtering handlers
    * @param <T>   the event type
-   * @return the dispatch context, carrying final cancel and result state
+   * @return the dispatch context with final cancel and result state
    */
   @SuppressWarnings("unchecked")
   public <T extends Event> EventContext<T> post(T event, Phase phase) {
@@ -313,7 +286,7 @@ public final class EventBus {
   /**
    * Posts an event asynchronously at {@link Phase#NONE}.
    *
-   * @param event the event to post
+   * @param event the event to dispatch
    * @param <T>   the event type
    * @return a {@link CompletableFuture} that completes with the dispatch context
    */
@@ -322,10 +295,10 @@ public final class EventBus {
   }
 
   /**
-   * Posts an event asynchronously at the given phase.
+   * Posts an event asynchronously at the given lifecycle phase.
    *
-   * @param event the event to post
-   * @param phase the lifecycle phase
+   * @param event the event to dispatch
+   * @param phase the lifecycle phase for filtering handlers
    * @param <T>   the event type
    * @return a {@link CompletableFuture} that completes with the dispatch context
    */

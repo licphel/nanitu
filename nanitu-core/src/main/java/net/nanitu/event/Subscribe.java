@@ -29,16 +29,8 @@ import java.lang.annotation.*;
 /**
  * Marks a method as an event handler for automatic discovery by {@link EventBus}.
  *
- * <p>Annotated methods must accept exactly two parameters: an
- * {@link EventContext} and an {@link Event} subtype. The event type is
- * determined from the second parameter.
- *
- * <pre>{@code
- * @Subscribe(priority = Priority.HIGH, phase = Phase.START)
- * private static void onTick(EventContext<TickEvent> ctx, TickEvent event) {
- *     // only called for START phase
- * }
- * }</pre>
+ * <p>Annotated methods must accept an {@link EventContext} as the first parameter and
+ * an {@link Event} subtype as the second. The event type is determined from the second parameter.
  *
  * @see Event
  * @see EventContext
@@ -50,22 +42,21 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface Subscribe {
   /**
-   * The priority at which this handler runs.
+   * The priority at which this handler runs during dispatch.
    *
-   * <p>Higher-priority handlers run first. Default is {@link Priority#NORMAL}.
+   * <p>Higher-priority handlers are invoked first.
    *
-   * @return the handler priority
+   * @return the handler priority; defaults to {@link Priority#NORMAL}
    */
   Priority priority() default Priority.NORMAL;
 
   /**
    * The phase during which this handler receives events.
    *
-   * <p>When set to a value other than {@link Phase#NONE}, this handler is
-   * only called for events posted with that phase. The default
-   * ({@link Phase#NONE}) matches all phases.
+   * <p>When set to a value other than {@link Phase#NONE}, this handler is only called for
+   * events posted with that specific phase.
    *
-   * @return the phase filter
+   * @return the phase filter; defaults to {@link Phase#NONE} (all phases)
    */
   Phase phase() default Phase.NONE;
 }

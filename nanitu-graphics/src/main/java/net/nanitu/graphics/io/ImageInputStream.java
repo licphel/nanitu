@@ -32,8 +32,8 @@ import java.io.InputStream;
  * Abstract base for decoded image streams.
  *
  * <p>Subclasses wrap a specific image format (e.g. PNG) and expose decoded
- * pixel data as a plain {@link InputStream} of raw RGBA bytes.
- * Image dimensions and channel count are described by {@link #info()}.
+ * pixel data as a plain {@link InputStream} of raw RGBA bytes. Image dimensions and channel count are described by
+ * {@link #info()}.
  *
  * <p>Use {@link #open(InputStream)} to obtain an instance without knowing
  * the underlying format.

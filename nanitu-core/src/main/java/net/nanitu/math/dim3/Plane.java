@@ -32,8 +32,7 @@ import org.jspecify.annotations.Nullable;
  * Immutable 3D plane defined by a normal vector and a signed distance from the origin.
  *
  * <p>The plane equation is: {@code normal · x + distance = 0}.
- * That is, for any point X on the plane,
- * {@code normal.x * X.x + normal.y * X.y + normal.z * X.z + distance = 0}.
+ * That is, for any point X on the plane, {@code normal.x * X.x + normal.y * X.y + normal.z * X.z + distance = 0}.
  *
  * <p>The distance is measured from the origin along the normal direction.
  * For a normalized normal, {@code distance} is the signed distance from the origin to the plane.
@@ -187,8 +186,7 @@ public record Plane(Vector3 normal, float distance) {
    * Transforms this plane by a matrix.
    *
    * <p>The normal is transformed by the inverse-transpose of the matrix's
-   * 3×3 rotation/scale submatrix. A point on the plane is transformed and
-   * the new distance is recomputed.
+   * 3×3 rotation/scale submatrix. A point on the plane is transformed and the new distance is recomputed.
    *
    * @param m transformation matrix
    * @return transformed plane

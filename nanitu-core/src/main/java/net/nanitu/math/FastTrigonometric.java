@@ -28,9 +28,8 @@ package net.nanitu.math;
  * Provides table-based fast trigonometric calculations.
  *
  * <p>Uses a 4096-entry sine lookup table with linear interpolation.
- * Cosine is derived from sine via a quarter-period offset.
- * Accuracy is approximately 3–4 decimal places; use {@link Math#sin}/{@link Math#cos}
- * when full precision is required.
+ * Cosine is derived from sine via a quarter-period offset. Accuracy is approximately 3–4 decimal places; use
+ * {@link Math#sin}/{@link Math#cos} when full precision is required.
  */
 public final class FastTrigonometric {
   private static final int TABLE_SIZE = 4096;

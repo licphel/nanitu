@@ -25,8 +25,7 @@
 package net.nanitu.graphics;
 
 /**
- * Creates a new {@code DeviceInfo} describing a {@link Device}
- * implementation.
+ * Creates a new {@code DeviceInfo} describing a {@link Device} implementation.
  *
  * @param name                  a human-readable name for this graphics backend
  * @param isHardwareAccelerated {@code true} if rendering is hardware-accelerated

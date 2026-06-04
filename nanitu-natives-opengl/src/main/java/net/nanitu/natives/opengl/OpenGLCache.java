@@ -498,10 +498,6 @@ final class OpenGLCache {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Stencil face (cached, per-face)
-  // -------------------------------------------------------------------------
-
   public void setStencilFace(int face, int func, int ref, int mask, int fail, int zfail, int zpass, int writeMask) {
     if (face == GL_FRONT) {
       if (stencilFFunc != func || stencilFRef != ref || stencilFMask != mask) {
@@ -539,10 +535,6 @@ final class OpenGLCache {
       }
     }
   }
-
-  // -------------------------------------------------------------------------
-  // Colour write mask
-  // -------------------------------------------------------------------------
 
   public void setColorMask(boolean r, boolean g, boolean b, boolean a) {
     if (colorMaskR != r || colorMaskG != g || colorMaskB != b || colorMaskA != a) {

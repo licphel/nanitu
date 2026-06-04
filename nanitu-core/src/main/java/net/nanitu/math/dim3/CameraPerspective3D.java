@@ -45,8 +45,7 @@ public class CameraPerspective3D extends Camera3D {
   }
 
   /**
-   * Sets the vertical field of view in radians.
-   * Values are clamped to {@code (0.01, π − 0.01)}.
+   * Sets the vertical field of view in radians. Values are clamped to {@code (0.01, π − 0.01)}.
    *
    * @param value field of view in radians
    */
@@ -68,8 +67,7 @@ public class CameraPerspective3D extends Camera3D {
   }
 
   /**
-   * Sets the aspect ratio.
-   * Values below {@code 0.01} are clamped.
+   * Sets the aspect ratio. Values below {@code 0.01} are clamped.
    *
    * @param value aspect ratio
    */

@@ -25,29 +25,23 @@
 package net.nanitu.ai;
 
 /**
- * A single message in a chat conversation.
+ * A single message in a chat conversation, associating a speaker role with text content.
  *
- * <p>Each message has a {@link #role} identifying the speaker and a
- * {@link #content} carrying the message body. Use the static factory
- * methods for the most common roles.
+ * <p>Messages are the fundamental unit of a chat completion prompt. The role identifies
+ * the speaker: {@code "system"} for instructions that shape model behavior, {@code "user"} for human input, and
+ * {@code "assistant"} for model output from earlier turns. Use the static factory methods to create properly-typed
+ * instances.
  *
- * <pre>{@code
- * ChatMessage sys = ChatMessage.system("You are a helpful assistant.");
- * ChatMessage usr = ChatMessage.user("What is AI?");
- * ChatMessage ast = ChatMessage.assistant("AI stands for...");
- * }</pre>
- *
- * @param role    the speaker role ({@code "system"}, {@code "user"}, or {@code "assistant"})
- * @param content the message body
+ * @param role    the speaker role, conventionally {@code "system"}, {@code "user"}, or {@code "assistant"}
+ * @param content the message text
  */
 public record ChatMessage(String role, String content) {
   /**
-   * Creates a ChatMessage, validating that {@code role} is not blank and {@code content} is not
-   * {@code null}.
+   * Creates a {@code ChatMessage} instance.
    *
-   * @param role    the speaker role ({@code "system"}, {@code "user"}, or {@code "assistant"})
-   * @param content the message body
-   * @throws IllegalArgumentException if {@code role} is blank or {@code content} is {@code null}
+   * @param role    the speaker role, must not be blank
+   * @param content the message text
+   * @throws IllegalArgumentException if {@code role} is blank
    */
   public ChatMessage {
     if (role.isBlank()) {
@@ -56,35 +50,38 @@ public record ChatMessage(String role, String content) {
   }
 
   /**
-   * Creates a system message.
+   * Creates a message with the {@code "system"} role.
    *
-   * <p>System messages set the behavior and context for the assistant.
+   * <p>System messages convey instructions about the desired behavior, tone,
+   * and constraints the model should follow throughout the conversation.
    *
-   * @param content the system instruction
-   * @return a message with role {@code "system"}
+   * @param content the system instruction text
+   * @return a new system message
    */
   public static ChatMessage system(String content) {
     return new ChatMessage("system", content);
   }
 
   /**
-   * Creates a user message.
+   * Creates a message with the {@code "user"} role.
    *
-   * @param content the user's input
-   * @return a message with role {@code "user"}
+   * <p>User messages carry the human participant's input for the current turn.
+   *
+   * @param content the user's input text
+   * @return a new user message
    */
   public static ChatMessage user(String content) {
     return new ChatMessage("user", content);
   }
 
   /**
-   * Creates an assistant message.
+   * Creates a message with the {@code "assistant"} role.
    *
-   * <p>Useful for priming the conversation with example responses or
-   * for recording the assistant's previous output in a multi-turn context.
+   * <p>Assistant messages record previous model output, allowing multi-turn
+   * exchanges to include conversational context from earlier interactions.
    *
    * @param content the assistant's response text
-   * @return a message with role {@code "assistant"}
+   * @return a new assistant message
    */
   public static ChatMessage assistant(String content) {
     return new ChatMessage("assistant", content);

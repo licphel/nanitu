@@ -25,12 +25,11 @@
 package net.nanitu.graphics.pipe;
 
 /**
- * Creates a new {@code RasterizationDesc} describing how primitives are converted
- * to fragments.
+ * Creates a new {@code RasterizationDesc} describing how primitives are converted to fragments.
  *
  * <p>Controls polygon rendering mode (fill, wireframe, points), face culling
- * (back, front, none, or both), front-face winding order, and depth-bias
- * parameters for shadow-mapping and decal rendering.
+ * (back, front, none, or both), front-face winding order, and depth-bias parameters for shadow-mapping and decal
+ * rendering.
  *
  * <p>Two presets are provided:
  * <ul>
@@ -38,15 +37,13 @@ package net.nanitu.graphics.pipe;
  *   <li>{@link #NOT_CULL} — fill, no culling
  * </ul>
  *
- * @param polygonMode             how to rasterize polygons ({@link PolygonMode#FILL},
- *                                {@link PolygonMode#LINE},
- *                                or {@link PolygonMode#POINT})
+ * @param polygonMode             how to rasterize polygons ({@link PolygonMode#FILL}, {@link PolygonMode#LINE}, or
+ *                                {@link PolygonMode#POINT})
  * @param cullMode                which faces to cull ({@link CullMode#NONE} disables culling)
  * @param frontFace               winding order of front-facing triangles
  * @param depthBiasEnable         {@code true} to apply a depth offset
  * @param depthBiasConstantFactor constant factor added to each fragment's depth
- * @param depthBiasClamp          maximum (or minimum) depth bias clamp (currently unused by the GL
- *                                backend)
+ * @param depthBiasClamp          maximum (or minimum) depth bias clamp (currently unused by the GL backend)
  * @param depthBiasSlopeFactor    scale factor applied to the fragment's depth slope
  */
 public record RasterizationDesc(PolygonMode polygonMode, CullMode cullMode, FrontFace frontFace,

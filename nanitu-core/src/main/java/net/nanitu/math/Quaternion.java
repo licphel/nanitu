@@ -28,8 +28,8 @@ package net.nanitu.math;
  * Immutable unit quaternion for representing 3D rotations.
  *
  * <p>Convention: {@code q = xi + yj + zk + w}, where {@code w} is the scalar part.
- * Quaternions are not automatically normalized on construction — callers are responsible
- * for passing unit quaternions to rotation methods.
+ * Quaternions are not automatically normalized on construction — callers are responsible for passing unit quaternions
+ * to rotation methods.
  *
  * @param x i component
  * @param y j component
@@ -109,8 +109,7 @@ public record Quaternion(float x, float y, float z, float w) {
   }
 
   /**
-   * Spherical linear interpolation between two quaternions.
-   * Takes the shortest path.
+   * Spherical linear interpolation between two quaternions. Takes the shortest path.
    *
    * @param a start quaternion
    * @param b end quaternion
@@ -138,8 +137,7 @@ public record Quaternion(float x, float y, float z, float w) {
   }
 
   /**
-   * Normalized linear interpolation between two quaternions.
-   * Faster than {@link #slerp} but not constant velocity.
+   * Normalized linear interpolation between two quaternions. Faster than {@link #slerp} but not constant velocity.
    *
    * @param a start quaternion
    * @param b end quaternion
@@ -240,8 +238,7 @@ public record Quaternion(float x, float y, float z, float w) {
   }
 
   /**
-   * Returns a normalized copy of this quaternion.
-   * If the length is near zero, returns {@link #IDENTITY}.
+   * Returns a normalized copy of this quaternion. If the length is near zero, returns {@link #IDENTITY}.
    *
    * @return unit quaternion
    */
@@ -260,8 +257,7 @@ public record Quaternion(float x, float y, float z, float w) {
   }
 
   /**
-   * Returns the inverse of this quaternion.
-   * For unit quaternions, this is the same as {@link #conjugate}.
+   * Returns the inverse of this quaternion. For unit quaternions, this is the same as {@link #conjugate}.
    *
    * @return inverse
    */

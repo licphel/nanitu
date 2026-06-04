@@ -38,23 +38,6 @@ import java.util.jar.JarFile;
  *
  * <p>Resources are resolved at {@code <domain>/<path>} inside the
  * owning mod's JAR.
- *
- * <h3>Usage</h3>
- * <pre>{@code
- * ModLoader loader = new ModLoader();
- * loader.loadDirectory(Path.of("mods"));
- * ResourceFinder rf = new ResourceFinder(loader);
- *
- * // By identifier — finds the mod by the identifier's domain
- * try (InputStream in = rf.open(Identifier.of("mymod:textures/stone.png"))) {
- *     // reads from mymod.jar at assets/mymod/textures/stone.png
- * }
- *
- * // By owning class — finds the mod that loaded the class
- * try (InputStream in = rf.open(MyMod.class, "textures/stone.png")) {
- *     // reads from the JAR that contains MyMod
- * }
- * }</pre>
  */
 public final class ResourceFinder {
   private final ModLoader loader;
@@ -126,8 +109,7 @@ public final class ResourceFinder {
    * @param owner a class loaded by the target mod's {@link java.net.URLClassLoader}
    * @param path  the resource path (without the {@code assets/<domain>/} prefix)
    * @return an input stream for the resource
-   * @throws ResourceException if the class does not belong to any loaded mod
-   *                           or the resource is not found
+   * @throws ResourceException if the class does not belong to any loaded mod or the resource is not found
    */
   public InputStream open(Class<?> owner, String path) {
     Mod mod = loader.forClass(owner);

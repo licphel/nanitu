@@ -30,13 +30,6 @@ package net.nanitu.graphics.buffer;
  * <p>Specifies the buffer's type (vertex, index, or uniform) and its expected
  * update frequency, which the GPU driver uses as an allocation hint.
  *
- * <p>Convenience factory methods are provided for the common cases:
- * <pre>{@code
- * BufferObjectDesc vbo = BufferObjectDesc.vertex(BufferFrequency.DYNAMIC);
- * BufferObjectDesc ibo = BufferObjectDesc.index(BufferFrequency.STATIC);
- * BufferObjectDesc ubo = BufferObjectDesc.uniform();
- * }</pre>
- *
  * @param frequency how often the buffer contents are updated
  * @param type      the buffer's role in the pipeline
  * @param usage     access-pattern hints (see {@link BufferUsage})

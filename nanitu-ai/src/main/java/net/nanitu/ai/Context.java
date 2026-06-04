@@ -30,25 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages a multi-turn conversation with a {@link Model}.
+ * Manages a multi-turn conversation with a {@link Model}, tracking message history automatically.
  *
- * <p>A context automatically tracks the conversation history — each call to
- * {@link #chat(String)} appends the user message, sends the full history
- * to the model, and records the assistant's response. The next call includes
- * all previous messages, maintaining conversational continuity.
+ * <p>Each call to {@link #chat(String)} appends the user message, submits the
+ * accumulated conversation to the model, and records the assistant response for subsequent turns. Use {@link #clear()}
+ * to discard the history while retaining the model binding and any system message. Obtain an instance via
+ * {@link Model#createContext()}.
  *
- * <pre>{@code
- * Context ctx = model.createContext();
- * ctx.setSystemMessage("You are a helpful assistant.");
- * ctx.chat("What is the capital of France?");
- * ctx.chat("What about Germany?"); // model remembers the previous Q&A
- * }</pre>
- *
- * <p>Instances are created via {@link Model#createContext()} and are bound
- * to that model for their lifetime. Use {@link #clear()} to reset the
- * conversation while keeping the same model binding.
- *
- * <p>This class is thread-safe.
+ * <p>Instances are safe for concurrent use.
  */
 public final class Context {
   private final Model model;
@@ -56,7 +45,7 @@ public final class Context {
   private @Nullable ChatMessage systemMessage;
 
   /**
-   * Creates a new context backed by the given model.
+   * Creates a new conversation context backed by the given model.
    *
    * @param model the model to use for completions
    */
@@ -66,27 +55,26 @@ public final class Context {
   }
 
   /**
-   * Sets the system message for this conversation.
+   * Sets or removes the system message that precedes every request in this conversation.
    *
-   * <p>The system message is prepended to the message history on every
-   * request and establishes the assistant's behavior and constraints.
-   * Pass {@code null} to remove the system message.
+   * <p>The system message establishes behavior, tone, and constraints for the
+   * model. Passing {@code null} removes the current system message.
    *
-   * @param message the system instruction, or {@code null} to remove
+   * @param message the system instruction text, or {@code null} to remove
    */
   public void setSystemMessage(@Nullable String message) {
     this.systemMessage = message != null ? ChatMessage.system(message) : null;
   }
 
   /**
-   * Sends a user message and returns the model's response.
+   * Sends a user message and blocks until the model responds.
    *
-   * <p>The user message and the assistant's response are appended to the
+   * <p>The user message and the model's response are appended to the
    * conversation history automatically.
    *
-   * @param userMessage the user's input
+   * @param userMessage the user's input text
    * @return the model's response
-   * @throws CommunicationException if the request fails
+   * @throws CommunicationException if the request cannot be completed
    */
   public ChatResponse chat(String userMessage) {
     history.add(ChatMessage.user(userMessage));
@@ -97,14 +85,15 @@ public final class Context {
   }
 
   /**
-   * Sends a user message and streams the model's response.
+   * Sends a user message and delivers the response as it is generated.
    *
-   * <p>The user message and the assistant's full response are appended
-   * to the conversation history after the stream completes.
+   * <p>The user message and the assembled assistant response are appended to
+   * the history when the stream completes successfully. If an error occurs, the user message is removed from the
+   * history.
    *
-   * @param userMessage the user's input
-   * @param handler     callbacks for streaming tokens
-   * @throws CommunicationException if the request fails
+   * @param userMessage the user's input text
+   * @param handler     callbacks for tokens, completion, and errors
+   * @throws CommunicationException if the request fails before streaming begins
    */
   public void chatStream(String userMessage, StreamHandler handler) {
     history.add(ChatMessage.user(userMessage));
@@ -133,22 +122,21 @@ public final class Context {
   }
 
   /**
-   * Returns an unmodifiable view of the conversation history.
+   * Returns an unmodifiable snapshot of the conversation history.
    *
-   * <p>The returned list includes user and assistant messages in
-   * chronological order. The system message is not included — use
-   * {@link #systemMessage()} to retrieve it separately.
+   * <p>The returned list contains user and assistant messages in the order they
+   * were exchanged. The system message is not included; use {@link #systemMessage()} to retrieve it separately.
    *
-   * @return the conversation history
+   * @return an unmodifiable list of conversation messages
    */
   public List<ChatMessage> history() {
     return List.copyOf(history);
   }
 
   /**
-   * Returns the system message, or {@code null} if none is set.
+   * Returns the system message text, or {@code null} when none has been set.
    *
-   * @return the system message content, or {@code null}
+   * @return the system instruction text, or {@code null}
    */
   @Nullable
   public String systemMessage() {
@@ -156,9 +144,7 @@ public final class Context {
   }
 
   /**
-   * Clears the conversation history while preserving the model binding.
-   *
-   * <p>The system message is not affected.
+   * Discards all conversation messages while preserving the system message and model binding.
    *
    * @return this context, for method chaining
    */
@@ -168,7 +154,9 @@ public final class Context {
   }
 
   /**
-   * Builds a request from the current history, optionally overriding the model.
+   * Assembles a {@link ChatRequest} from the current system message and conversation history.
+   *
+   * @return a request containing the system message (if set) followed by the accumulated conversation messages
    */
   ChatRequest buildRequest() {
     List<ChatMessage> messages = new ArrayList<>();

@@ -27,11 +27,10 @@ package net.nanitu.audio;
 import java.io.Serial;
 
 /**
- * Thrown when an audio operation fails at runtime.
+ * Thrown to indicate an audio operation has failed at runtime.
  *
- * <p>Typical causes include failure to allocate a native audio source or
- * buffer, device loss, or other backend-level errors that prevent a clip
- * from playing correctly.
+ * <p>Typical causes include failure to allocate native audio resources,
+ * device loss, or other backend-level errors.
  *
  * @see Clip
  */
@@ -40,12 +39,21 @@ public class AudioException extends RuntimeException {
   private static final long serialVersionUID = 2026053100L;
 
   /**
-   * Creates a new {@code AudioException} with the given detail message.
+   * Creates an {@code AudioException} with the given detail message.
    *
    * @param message description of the failure, including any relevant context
-   *                (e.g. OpenAL error code, device name)
    */
   public AudioException(String message) {
     super(message);
+  }
+
+  /**
+   * Creates an {@code AudioException} with the given message and cause.
+   *
+   * @param message description of the failure, including any relevant context
+   * @param cause   the underlying cause
+   */
+  public AudioException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

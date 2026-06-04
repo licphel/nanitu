@@ -27,86 +27,63 @@ package net.nanitu.audio;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A short audio clip loaded entirely into memory for low-latency playback.
+ * A short audio clip loaded into memory for low-latency playback.
  *
  * <p>Clips are optimized for sounds that must start instantly and may be
- * triggered many times — footsteps, gunshots, UI beeps, etc. The raw PCM
- * data is uploaded to the audio backend once via {@link #open} and can be
- * replayed any number of times without re-decoding.
+ * triggered many times. The raw PCM data is uploaded once via {@link #open(AudioFormat, byte[])} and can be replayed
+ * any number of times without re-decoding.
  *
- * <p>Multiple simultaneous playbacks of the same clip are supported: each call
- * to {@link #play()} (or {@link #loop(int)}) starts an independent voice.
- *
- * <p>Lifecycle:
- * <ol>
- *   <li>Obtain a {@code Clip} from {@link Mixer#getClip()}.
- *   <li>Call {@link #open} once to supply format and PCM data.
- *   <li>Call {@link #play()} or {@link #loop(int)} as many times as needed.
- *   <li>Call {@link #close()} when the clip is no longer needed, or register
- *       it with a {@link ClipManager} for automatic cleanup.
- * </ol>
+ * <p>Multiple simultaneous playbacks of the same clip are supported: each
+ * call to a playback method starts an independent voice.
  *
  * @see ClipManager
  */
 public interface Clip extends AutoCloseable {
   /**
-   * Passed to {@link #loop(int)} to request infinite looping.
-   *
-   * <p>When used as the {@code count} argument, the clip repeats until
-   * {@link #stop()} is explicitly called.
+   * Value passed to {@link #loop(int)} to request infinite looping.
    */
   int LOOP_CONTINUOUSLY = Integer.MAX_VALUE;
 
   /**
    * Uploads PCM data to the audio backend and prepares the clip for playback.
    *
-   * <p>Must be called exactly once before any playback method.
-   * The contents of {@code data} are copied by the backend, so the array may
-   * be discarded or reused after this call returns.
+   * <p>Must be called once before any playback method.
    *
-   * @param format the PCM format of {@code data}
-   * @param data   raw PCM bytes in the layout described by {@code format}
+   * @param format the PCM format of the data
+   * @param data   raw PCM bytes in the layout described by the format
    * @throws IllegalStateException    if the clip has already been opened
-   * @throws IllegalArgumentException if {@code format} is not supported by the backend
+   * @throws IllegalArgumentException if the format is not supported by the backend
    */
   void open(AudioFormat format, byte[] data);
 
   /**
-   * Returns whether {@link #open} has been called on this clip.
+   * Returns whether this clip has been opened.
    *
-   * <p>A clip that has been {@link #close() closed} may return {@code false}.
-   *
-   * @return {@code true} if the clip is open and ready for playback
+   * @return {@code true} if {@link #open} has been called and the clip is ready for playback
    */
   boolean isOpen();
 
   /**
-   * Pauses all active playback voices of this clip immediately.
+   * Pauses all active playback voices of this clip.
    *
-   * <p>Has no effect if the clip is already paused.
-   * After calling {@code pause()}, {@link #isPlaying()} returns {@code false},
-   * but this clip is not about to close.
-   *
-   * <p>It differs from {@link #stop()} since {@code pause()} does not reset
-   * the playing progress.
+   * <p>Has no effect if the clip is already paused. Does not reset
+   * playback position.
    */
   void pause();
 
   /**
-   * Stops all active playback voices of this clip immediately.
+   * Stops all active playback voices of this clip.
    *
    * <p>Has no effect if the clip is already stopped.
-   * After calling {@code stop()}, {@link #isPlaying()} returns {@code false}.
    */
   void stop();
 
   /**
-   * Starts playback, repeating {@code count} times in total.
+   * Starts playback, repeating the clip a given number of times.
    *
    * <p>Each call starts a new playback from the beginning.
    *
-   * @param count total number of times to play ({@code 1} = once, {@code 2} = twice, etc.),
-   *              or {@link #LOOP_CONTINUOUSLY} to loop until {@link #stop()} is called
+   * @param count total number of times to play, or {@link #LOOP_CONTINUOUSLY} for infinite looping
    * @throws IllegalArgumentException if {@code count} is negative
    */
   void loop(int count);
@@ -114,9 +91,8 @@ public interface Clip extends AutoCloseable {
   /**
    * Starts playback of the clip once.
    *
-   * <p>Equivalent to {@link #loop(int) loop(1)}.
-   * If the clip is already playing, this starts another instance
-   * (the clip can be played multiple times simultaneously).
+   * <p>If the clip is already playing, this starts another independent
+   * instance.
    */
   default void play() {
     loop(1);
@@ -125,43 +101,27 @@ public interface Clip extends AutoCloseable {
   /**
    * Returns whether this clip is currently playing.
    *
-   * <p>Returns {@code false} if the clip has never been started, has been
-   * {@link #stop() stopped}, or has finished all scheduled repetitions.
-   *
    * @return {@code true} if at least one playback voice is active
    */
   boolean isPlaying();
 
   /**
-   * Returns whether this clip should be closed by its {@link ClipManager}.
+   * Returns whether this clip is ready to be closed by a {@link ClipManager}.
    *
-   * <p>The default implementation returns {@code true} when the clip is open
-   * but not playing. Implementations or callers that need to defer cleanup
-   * (e.g. clips that have not yet started) may override this.
-   *
-   * @return {@code true} if the clip manager may safely close this clip
+   * @return {@code true} if the clip may safely be closed
    */
   boolean shouldClose();
 
   /**
    * Returns the current value of the given controller.
    *
-   * <p>Values are read from the local Java-side cache and reflect the last
-   * value passed to {@link #set}; they do not round-trip through the audio
-   * backend. {@link Controller#POSITION} is an exception: it is updated
-   * asynchronously as playback progresses.
-   *
    * @param ctr the controller to read
-   * @return current value of {@code ctr}
+   * @return current value of the controller
    */
   float get(Controller ctr);
 
   /**
    * Updates the value of the given controller.
-   *
-   * <p>The change is applied asynchronously on the audio thread.
-   * Negative values for {@link Controller#VOLUME} and {@link Controller#PITCH}
-   * are clamped to {@code 0.0}.
    *
    * @param ctr   the controller to update
    * @param value the new value
@@ -169,20 +129,12 @@ public interface Clip extends AutoCloseable {
   void set(Controller ctr, float value);
 
   /**
-   * Returns the PCM format this clip was opened with, or {@code null} if
-   * {@link #open} has not yet been called.
+   * Returns the PCM format this clip was opened with.
    *
-   * @return audio format, or {@code null} before {@link #open}
+   * @return the audio format, or {@code null} if not yet opened
    */
   @Nullable AudioFormat format();
 
-  /**
-   * Releases the OpenAL resources held by this clip.
-   *
-   * <p>If this clip is registered with a {@link ClipManager}, it will be
-   * closed automatically after playback ends — manual calls to this method
-   * are generally not needed.
-   */
   @Override
   void close();
 }

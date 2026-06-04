@@ -32,30 +32,14 @@ import java.util.ServiceLoader;
  * A service provider interface for discovering and loading pluggable implementations.
  *
  * <p>This is the central extension mechanism for the nanitu framework. Modules
- * expose implementations by registering them in
- * {@code META-INF/services/<interface-name>}, and consumers obtain them via
- * {@link #get(Class)} or {@link #collect(Class)} without any compile-time
- * dependency on the implementing module.
+ * expose implementations by registering them in {@code META-INF/services/<interface-name>}, and consumers obtain them
+ * via {@link #get(Class)} or {@link #collect(Class)} without any compile-time dependency on the implementing module.
  *
  * <p>Each {@code Service} implementation must provide:
  * <ul>
  *   <li>{@link #isAvailable()} — whether the service can run in the current environment</li>
  *   <li>{@link #create()} — a factory method that returns a new instance of {@code T}</li>
  * </ul>
- *
- * <p>Example usage:
- * <pre>{@code
- * // Get the first available implementation
- * ModelProvider provider = Service.get(ModelProvider.class);
- * if (provider != null) {
- *     Model model = provider.create();
- * }
- *
- * // Enumerate all available implementations
- * for (ModelProvider p : Service.collect(ModelProvider.class)) {
- *     System.out.println(p.create().name());
- * }
- * }</pre>
  *
  * @param <T> the type this service provides
  */
@@ -64,8 +48,8 @@ public interface Service<T> {
    * Collects all available implementations of the given service interface.
    *
    * <p>Uses {@link ServiceLoader} to discover providers registered via
-   * {@code META-INF/services}. Only providers whose {@link #isAvailable()}
-   * returns {@code true} are included in the result.
+   * {@code META-INF/services}. Only providers whose {@link #isAvailable()} returns {@code true} are included in the
+   * result.
    *
    * @param serviceClass the service interface to discover
    * @param <R>          the service type
@@ -95,9 +79,8 @@ public interface Service<T> {
    * Returns whether this service can operate in the current runtime environment.
    *
    * <p>Implementations should check for required native libraries, environment
-   * variables, system properties, or hardware capabilities. A provider that
-   * returns {@code false} is excluded from {@link #collect} results and will
-   * not be returned by {@link #get}.
+   * variables, system properties, or hardware capabilities. A provider that returns {@code false} is excluded from
+   * {@link #collect} results and will not be returned by {@link #get}.
    *
    * @return {@code true} if the service is ready to use
    */

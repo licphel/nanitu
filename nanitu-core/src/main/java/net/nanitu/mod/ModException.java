@@ -27,8 +27,7 @@ package net.nanitu.mod;
 import java.io.Serial;
 
 /**
- * Thrown when a mod-related operation fails — loading, dependency resolution,
- * validation, or lifecycle errors.
+ * Thrown when a mod-related operation fails — loading, dependency resolution, validation, or lifecycle errors.
  *
  * <p>This is an unchecked exception. Callers that need to handle mod failures
  * explicitly should catch it at the appropriate boundary.

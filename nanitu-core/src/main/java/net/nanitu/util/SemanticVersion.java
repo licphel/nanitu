@@ -25,17 +25,11 @@
 package net.nanitu.util;
 
 /**
- * An immutable representation of a <a href="https://semver.org">Semantic Version</a>
- * string ({@code major.minor.patch}).
+ * An immutable representation of a <a href="https://semver.org">Semantic Version</a> string
+ * ({@code major.minor.patch}).
  *
  * <p>Instances are comparable and sort in ascending version order.
  * All version components must be non-negative integers.
- *
- * <p>Obtain an instance by parsing a version string:
- * <pre>{@code
- * SemanticVersion v = SemanticVersion.parse("1.2.3");
- * int major = v.major();
- * }</pre>
  *
  * @param major the major version number, must be &ge; 0
  * @param minor the minor version number, must be &ge; 0
@@ -61,13 +55,11 @@ public record SemanticVersion(int major, int minor, int patch) implements Compar
    * Parses a version string in the form {@code major.minor.patch}.
    *
    * <p>Each component must be a non-negative integer. Leading zeros are
-   * accepted by {@link Integer#parseInt} but should be avoided per the
-   * semver specification.
+   * accepted by {@link Integer#parseInt} but should be avoided per the semver specification.
    *
    * @param version the version string to parse, e.g. {@code "2.1.0"}
    * @return the parsed semantic version
-   * @throws IllegalArgumentException if the string does not contain exactly
-   *                                  three dot-separated integer components
+   * @throws IllegalArgumentException if the string does not contain exactly three dot-separated integer components
    * @throws NumberFormatException    if any component is not a valid integer
    */
   public static SemanticVersion parse(String version) {

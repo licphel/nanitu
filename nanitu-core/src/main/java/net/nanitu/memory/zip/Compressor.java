@@ -34,8 +34,8 @@ import java.util.zip.*;
  * Compression algorithms.
  *
  * <p>Each constant encapsulates a complete compression strategy — both the algorithm
- * and its implementation. Both algorithms are built on the JDK's {@link java.util.zip}
- * package and require no extra dependencies:
+ * and its implementation. Both algorithms are built on the JDK's {@link java.util.zip} package and require no extra
+ * dependencies:
  *
  * <ul>
  *   <li>{@link #GZIP} — Gzip format (RFC 1952), DEFLATE with a header and CRC-32
@@ -53,9 +53,9 @@ public enum Compressor {
    * Gzip compression (RFC 1952).
    *
    * <p>Wraps raw DEFLATE data with a 10-byte header and an 8-byte CRC-32 trailer.
-   * This is the most common compression format for files ({@code .gz}) and HTTP
-   * content encoding ({@code Content-Encoding: Gzip}). Use this when you need
-   * interoperability with external tools or when a checksum is desirable.
+   * This is the most common compression format for files ({@code .gz}) and HTTP content encoding
+   * ({@code Content-Encoding: Gzip}). Use this when you need interoperability with external tools or when a checksum is
+   * desirable.
    */
   GZIP {
     @Override
@@ -87,9 +87,8 @@ public enum Compressor {
    * Raw DEFLATE compression (RFC 1951).
    *
    * <p>Produces bare DEFLATE streams with no header, footer, or checksum. This is
-   * the smallest possible output for a given compression level. Use this when the
-   * data format already provides integrity checks (e.g., NBT with its own length
-   * prefixes) and the extra Gzip envelope would be redundant.
+   * the smallest possible output for a given compression level. Use this when the data format already provides
+   * integrity checks (e.g., NBT with its own length prefixes) and the extra Gzip envelope would be redundant.
    */
   DEFLATE {
     @Override

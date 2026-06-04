@@ -27,7 +27,7 @@ package net.nanitu.graphics.shader;
 /**
  * The kind of shader resource bound at a resource-set slot.
  *
- * @see ResourceSetLayout.Slot
+ * @see Slot
  */
 public enum ResourceType {
   UNIFORM_BUFFER,

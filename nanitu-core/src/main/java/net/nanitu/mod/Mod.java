@@ -30,12 +30,10 @@ import org.jspecify.annotations.Nullable;
 import java.nio.file.Path;
 
 /**
- * Represents a loaded mod, backed by a single JAR file containing
- * {@code mod.json} at its root.
+ * Represents a loaded mod, backed by a single JAR file containing {@code mod.json} at its root.
  *
  * <p>Instances are created by {@link ModLoader} during loading. Each mod has
- * its own private {@link EventBus} and a reference to the class loader that
- * loaded its entrypoint.
+ * its own private {@link EventBus} and a reference to the class loader that loaded its entrypoint.
  *
  * @see ModInfo
  * @see ModLoader

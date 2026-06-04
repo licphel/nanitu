@@ -22,12 +22,23 @@
  * SOFTWARE.
  */
 
-package net.nanitu.graphics;
+package net.nanitu.graphics.spi;
+
+import net.nanitu.graphics.View;
+import net.nanitu.util.Service;
 
 /**
- * Creates a new {@code SurfaceInfo} describing a {@link Surface} implementation.
+ * Service interface for discovering and instantiating windowing backends.
  *
- * @param name a human-readable name for this windowing backend
+ * <p>Implementations are loaded via {@link java.util.ServiceLoader} and represent
+ * concrete windowing systems such as GLFW or SDL. Each implementation should register itself in
+ * {@code META-INF/services/net.nanitu.graphics.spi.ViewProvider}.
+ *
+ * <p>Before calling {@link #create(String)}, check {@link #isAvailable()} to verify
+ * that the windowing system's native libraries are present.
+ *
+ * @see View
+ * @see Service
  */
-public record SurfaceInfo(String name) {
+public interface ViewProvider extends Service<View> {
 }

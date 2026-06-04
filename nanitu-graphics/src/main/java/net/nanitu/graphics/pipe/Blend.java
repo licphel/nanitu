@@ -30,9 +30,8 @@ import net.nanitu.math.Color;
  * Creates a new {@code Blend} describing the blend state for a render pipeline.
  *
  * <p>Blending combines the output of the fragment shader (the <em>source</em>)
- * with the value already in the framebuffer (the <em>destination</em>).
- * A {@code Blend} specifies the factors, functions, and constant color
- * used in that combination.
+ * with the value already in the framebuffer (the <em>destination</em>). A {@code Blend} specifies the factors,
+ * functions, and constant color used in that combination.
  *
  * <p>The RGB and alpha channels can use separate source/destination factors
  * and blend functions, enabling effects like:

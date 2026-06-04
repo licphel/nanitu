@@ -28,22 +28,12 @@ import net.nanitu.ai.Model;
 import net.nanitu.util.Service;
 
 /**
- * Service provider interface for discovering {@link Model} implementations.
+ * Service provider interface through which {@link net.nanitu.ai.Model} implementations are discovered.
  *
- * <p>Implementations are discovered via {@link java.util.ServiceLoader} and
- * registered in {@code META-INF/services/spi.ModelProvider}.
- *
- * <p>Use the inherited {@link Service} methods to obtain available models:
- * <pre>{@code
- * // Get the first available model
- * Model model = Service.get(ModelProvider.class).create();
- *
- * // Or collect all available providers
- * Service<Model>[] providers = Service.collect(ModelProvider.class);
- * for (Service<Model> p : providers) {
- *     System.out.println(p.create().name());
- * }
- * }</pre>
+ * <p>Concrete providers register themselves in
+ * {@code META-INF/services/net.nanitu.ai.spi.ModelProvider} and are located automatically by
+ * {@link java.util.ServiceLoader}. The inherited {@link net.nanitu.util.Service} contract provides access to the
+ * available models.
  */
 public interface ModelProvider extends Service<Model> {
 }

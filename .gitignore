@@ -45,5 +45,5 @@ bin/
 
 ### Misc
 .ref/
-.claude/
+.claude/settings.local.json
 nanitu-test

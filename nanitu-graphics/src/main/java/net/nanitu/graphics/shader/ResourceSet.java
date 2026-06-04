@@ -33,28 +33,15 @@ import net.nanitu.graphics.texture.Texture;
  * A set of texture/sampler and uniform-buffer bindings for a single draw call.
  *
  * <p>A {@code ResourceSet} collects the shader-visible resources that a
- * draw call needs: textures paired with samplers, and uniform buffer ranges.
- * Each binding is placed at a numbered slot that corresponds to a shader
- * resource declaration.
- *
- * <p><b>Typical usage:</b>
- * <pre>{@code
- * ResourceSet set = device.createResourceSet();
- * set.bindTexture(0, albedoMap, linearSampler);
- * set.bindTexture(1, normalMap, linearSampler);
- * set.bindUniform(0, transformUbo, 64);   // 64 bytes at offset 0
- *
- * encoder.setResource(0, set);
- * encoder.drawIndexed(indexCount, 0);
- * }</pre>
+ * draw call needs: textures paired with samplers, and uniform buffer ranges. Each binding is placed at a numbered slot
+ * that corresponds to a shader resource declaration.
  *
  * <p>Bindings are recorded lazily on the calling thread and applied in bulk
- * on the render thread when the command executes. Re-binding a slot
- * overwrites the previous binding.
+ * on the render thread when the command executes. Re-binding a slot overwrites the previous binding.
  *
  * <p><b>Thread safety:</b> recording bindings is single-threaded per instance.
- * The set does not own the resources it references — closing a resource set
- * does not close the textures, samplers, or buffers bound to it.
+ * The set does not own the resources it references — closing a resource set does not close the textures, samplers, or
+ * buffers bound to it.
  *
  * @see Encoder#setResource(int, ResourceSet)
  */
@@ -82,8 +69,7 @@ public interface ResourceSet extends AutoCloseable {
    * Binds a range of a uniform buffer to the given shader slot.
    *
    * <p>Only the specified byte range (from {@code offset} for {@code size}
-   * bytes) is visible to the shader. This allows packing multiple
-   * uniform blocks into a single buffer.
+   * bytes) is visible to the shader. This allows packing multiple uniform blocks into a single buffer.
    *
    * @param slot   the shader binding slot index (0-based)
    * @param buffer the uniform buffer

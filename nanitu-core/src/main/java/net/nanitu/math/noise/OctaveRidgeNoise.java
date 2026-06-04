@@ -62,8 +62,7 @@ public final class OctaveRidgeNoise implements NoiseGenerator {
   }
 
   /**
-   * Creates a ridge noise with default parameters (persistence=0.5, lacunarity=2, scale=1,
-   * ridge=1).
+   * Creates a ridge noise with default parameters (persistence=0.5, lacunarity=2, scale=1, ridge=1).
    *
    * @param base    underlying noise generator
    * @param octaves number of frequency layers

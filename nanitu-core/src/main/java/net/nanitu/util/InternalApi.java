@@ -30,8 +30,8 @@ import java.lang.annotation.*;
  * Marks API elements that are internal and subject to change without notice.
  *
  * <p>These methods, fields, or classes are exposed for technical reasons
- * but are <strong>not</strong> part of the stable public API. They may be
- * changed, moved, or removed in any future version.
+ * but are <strong>not</strong> part of the stable public API. They may be changed, moved, or removed in any future
+ * version.
  *
  * <p>Users should avoid using annotated elements unless absolutely necessary.
  * If you must use them, be prepared to update your code on every release.

@@ -25,17 +25,10 @@
 package net.nanitu.graphics.shader;
 
 /**
- * Shader pipeline stages and their corresponding bitmask constants for
- * resource-set layout declarations.
+ * Shader pipeline stages and their corresponding bitmask constants for resource-set layout declarations.
  *
  * <p>Each enum constant has an associated {@code *_BIT} flag used when
- * declaring which shader stages access a resource:
- * <pre>{@code
- * // A uniform buffer visible to both vertex and fragment stages:
- * new ResourceSetLayout.Slot(1, "uCommon",
- *     ShaderType.VERTEX_BIT | ShaderType.FRAGMENT_BIT,
- *     ResourceType.UNIFORM_BUFFER);
- * }</pre>
+ * declaring which shader stages access a resource.
  */
 public enum ShaderType {
   VERTEX,

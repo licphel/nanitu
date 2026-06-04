@@ -27,13 +27,8 @@ package net.nanitu.event;
 /**
  * Marker interface for types that can be posted to an {@link EventBus}.
  *
- * <p>Events are pure data carriers — typically Java {@code record} types. They
- * carry no mutable state and no cancel logic. All mutable dispatch state
- * (canceled, etc.) lives in {@link EventContext}.
- *
- * <pre>{@code
- * public record DamageEvent(Entity source, float amount) implements Event {}
- * }</pre>
+ * <p>Events are immutable data carriers, typically Java {@code record} types. They carry no
+ * mutable state — all transient dispatch state is managed by {@link EventContext}.
  *
  * @see EventContext
  * @see EventBus

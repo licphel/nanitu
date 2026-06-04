@@ -51,8 +51,8 @@ public interface MemoryAllocator {
    * Allocates memory on the JVM heap, backed by a {@code byte[]} array.
    *
    * <p>Heap memory is reclaimed automatically by the garbage collector.
-   * This allocator is suitable for most use cases and is the safest default.
-   * The maximum size is limited to {@link Integer#MAX_VALUE} bytes.
+   * This allocator is suitable for most use cases and is the safest default. The maximum size is limited to
+   * {@link Integer#MAX_VALUE} bytes.
    */
   MemoryAllocator HEAP = size -> {
     if (size < 0 || size > Integer.MAX_VALUE) {
@@ -66,8 +66,7 @@ public interface MemoryAllocator {
    * Allocates memory off-heap (native) via the Foreign Memory Access API.
    *
    * <p>Native memory is not managed by the garbage collector and must be
-   * explicitly freed by calling {@link Memory#close()}. Each allocated block
-   * owns the global {@link Arena}.
+   * explicitly freed by calling {@link Memory#close()}. Each allocated block owns the global {@link Arena}.
    *
    * <p>Use this allocator for large buffers, memory-mapped file interop,
    * or when you need precise control over memory layout and lifetime.
@@ -91,8 +90,7 @@ public interface MemoryAllocator {
    * Allocates a new memory block of the given size.
    *
    * <p>The returned block is uninitialized — its contents are whatever the
-   * underlying allocation mechanism provides (typically zero for native
-   * memory, zero for fresh heap arrays).
+   * underlying allocation mechanism provides (typically zero for native memory, zero for fresh heap arrays).
    *
    * @param size the number of bytes to allocate
    * @return a new memory block of exactly {@code size} bytes
@@ -103,9 +101,8 @@ public interface MemoryAllocator {
    * Grows or shrinks an existing memory block, preserving as much data as possible.
    *
    * <p>The default implementation allocates a new block of {@code newSize} bytes,
-   * copies {@code min(oldSize, newSize)} bytes from the old block to the new one,
-   * closes the old block, and returns the new block. If {@code oldMemory} is
-   * {@code null}, a fresh allocation is performed.
+   * copies {@code min(oldSize, newSize)} bytes from the old block to the new one, closes the old block, and returns the
+   * new block. If {@code oldMemory} is {@code null}, a fresh allocation is performed.
    *
    * @param oldMemory the existing memory block, or {@code null} for fresh allocation
    * @param newSize   the desired size in bytes

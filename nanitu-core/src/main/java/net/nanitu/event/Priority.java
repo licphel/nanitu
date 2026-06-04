@@ -25,29 +25,23 @@
 package net.nanitu.event;
 
 /**
- * Priority of an event handler, controlling the order in which handlers are called.
+ * Priority of an event handler, controlling the order in which handlers are invoked during dispatch.
  *
- * <p>Handlers with higher priority (lower ordinal) are invoked first. For example,
- * a {@link #HIGHEST} handler runs before a {@link #NORMAL} handler, which runs
- * before a {@link #LOWEST} handler.
- *
- * <p>This mirrors the Minecraft Forge event priority system:
- *
- * <ul>
- *   <li>{@link #HIGHEST} — runs first, for critical interception</li>
- *   <li>{@link #HIGH} — runs early, for overrides</li>
- *   <li>{@link #NORMAL} — the default, suitable for most handlers</li>
- *   <li>{@link #LOW} — runs late, for post-processing</li>
- *   <li>{@link #LOWEST} — runs last, for observation only</li>
- * </ul>
+ * <p>Handlers with a higher priority (lower ordinal value) are called first. For example,
+ * a {@link #HIGHEST} handler runs before a {@link #NORMAL} handler, which runs before a {@link #LOWEST} handler.
  *
  * @see Subscribe
  * @see EventBus
  */
 public enum Priority {
+  /** Invoked first, for critical interception. */
   HIGHEST,
+  /** Invoked early, for overrides. */
   HIGH,
+  /** Invoked normally, for most cases. */
   NORMAL,
+  /** Invoked late, for post-processing. */
   LOW,
+  /** Invoked invoked last, for observation only. */
   LOWEST
 }

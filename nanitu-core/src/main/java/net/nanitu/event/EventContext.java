@@ -27,16 +27,9 @@ package net.nanitu.event;
 /**
  * Mutable context carried alongside an {@link Event} during dispatch.
  *
- * <p>While events are immutable records, the context holds transient dispatch
- * state: whether the event has been {@link #isCanceled() canceled}, the
- * {@link #result() semantic result}, and the current {@link #phase() phase}.
- *
- * <pre>{@code
- * bus.register(DamageEvent.class, (ctx, event) -> {
- *     if (event.amount() > 100) ctx.setCanceled(true);
- *     if (event.amount() < 0) ctx.setResult(Result.DENY);
- * });
- * }</pre>
+ * <p>While events are immutable data carriers, the context holds transient dispatch state:
+ * whether the event has been {@link #isCanceled() canceled}, the {@link #result() semantic result}, and the current
+ * {@link #phase() phase}.
  *
  * @param <T> the event type
  * @see Event
@@ -66,11 +59,9 @@ public final class EventContext<T extends Event> {
   }
 
   /**
-   * Returns the dispatch phase of this event.
+   * Returns the dispatch phase in which this event was posted.
    *
-   * <p>{@link Phase#NONE} means the event is phase-agnostic.
-   *
-   * @return the phase
+   * @return the phase; {@link Phase#NONE} if the event is phase-agnostic
    */
   public Phase phase() {
     return phase;
@@ -86,13 +77,12 @@ public final class EventContext<T extends Event> {
   }
 
   /**
-   * Marks the event as canceled or un-canceled.
+   * Sets or clears the canceled flag on this event.
    *
-   * <p>Canceled events continue to propagate to all remaining handlers
-   * regardless — canceling does not stop dispatch. Handlers that wish to
-   * respect cancellation should check {@link #isCanceled()} and return early.
+   * <p>Canceling an event does not stop dispatch — all remaining handlers still receive the
+   * event. Handlers that wish to respect cancellation should check {@link #isCanceled()} and return early.
    *
-   * @param canceled {@code true} to cancel, {@code false} to un-cancel
+   * @param canceled {@code true} to mark the event as canceled, {@code false} to clear cancellation
    */
   public void setCanceled(boolean canceled) {
     this.canceled = canceled;
@@ -101,9 +91,9 @@ public final class EventContext<T extends Event> {
   /**
    * Returns the semantic result of this event.
    *
-   * <p>Defaults to {@link Result#DEFAULT} (no opinion).
+   * <p>The default value is {@link Result#DEFAULT}, indicating no opinion.
    *
-   * @return the result
+   * @return the current result
    */
   public Result result() {
     return result;
@@ -112,11 +102,10 @@ public final class EventContext<T extends Event> {
   /**
    * Sets the semantic result of this event.
    *
-   * <p>Handlers typically only upgrade the result — from {@link Result#DEFAULT}
-   * to {@link Result#ALLOW} or {@link Result#DENY} — so that the most
-   * restrictive handler wins.
+   * <p>Handlers should only upgrade the result — for example, from {@link Result#DEFAULT}
+   * to {@link Result#ALLOW} or {@link Result#DENY} — so that the most restrictive handler prevails.
    *
-   * @param result the result; must not be {@code null}
+   * @param result the result to set
    */
   public void setResult(Result result) {
     this.result = result;

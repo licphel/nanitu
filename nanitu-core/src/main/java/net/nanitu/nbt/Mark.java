@@ -30,8 +30,8 @@ import org.jspecify.annotations.Nullable;
  * NBT (Named Binary Tag) type identifiers for binary serialization.
  *
  * <p>Each tag value in a serialized NBT stream is prefixed with a single byte
- * identifying its type. This enum maps those byte IDs to the corresponding
- * Java types and provides helpers for type inspection and validation.
+ * identifying its type. This enum maps those byte IDs to the corresponding Java types and provides helpers for type
+ * inspection and validation.
  *
  * @see NbtCompound#serialize
  * @see NbtCompound#deserialize
@@ -62,8 +62,8 @@ public enum Mark {
    * Looks up a {@code Mark} by its raw byte identifier.
    *
    * <p>Returns {@link #UNKNOWN} if the byte does not correspond to any known tag type,
-   * rather than throwing — this allows forward-compatible parsing of streams that
-   * may contain tags from a newer specification.
+   * rather than throwing — this allows forward-compatible parsing of streams that may contain tags from a newer
+   * specification.
    *
    * @param bid the byte identifier from the serialized stream
    * @return the matching mark, or {@link #UNKNOWN} if no match
@@ -81,9 +81,8 @@ public enum Mark {
    * Maps a Java class to its corresponding NBT tag type.
    *
    * <p>Both primitive types ({@code int.class}) and their boxed equivalents
-   * ({@code Integer.class}) are recognized. Arrays of {@code byte} or {@code Byte}
-   * map to {@link #BYTE_ARRAY}. NBT-specific types ({@link NbtCompound}, {@link NbtList})
-   * are recognized directly.
+   * ({@code Integer.class}) are recognized. Arrays of {@code byte} or {@code Byte} map to {@link #BYTE_ARRAY}.
+   * NBT-specific types ({@link NbtCompound}, {@link NbtList}) are recognized directly.
    *
    * @param type the Java class to inspect
    * @return the corresponding mark, or {@link #UNKNOWN} if the class has no NBT mapping

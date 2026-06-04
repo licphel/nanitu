@@ -27,43 +27,32 @@ package net.nanitu.audio;
 /**
  * Immutable descriptor for a PCM audio stream.
  *
- * <p>Captures every property needed to interpret raw PCM bytes: encoding,
- * sample rate, bits depth, channel count, frame size, and byte order.
- * All arithmetic conversion helpers ({@link #bytesToFrames}, {@link #secondsToBytes},
- * etc.) are derived from these fields and carry no state of their own.
- *
- * <p>Use the convenience factory methods for the common cases:
- * <pre>{@code
- * AudioFormat mono   = AudioFormat.mono(44100, 16);   // 44.1 kHz, 16-bit, mono
- * AudioFormat stereo = AudioFormat.stereo(48000, 16); // 48 kHz, 16-bit, stereo
- * }</pre>
+ * <p>Captures all properties needed to interpret raw PCM data: encoding,
+ * sample rate, bit depth, channel count, frame size, and byte order. Provides conversion helpers between bytes, frames,
+ * and seconds.
  *
  * @param encoding         sample encoding (e.g. {@link Encoding#PCM_SIGNED})
- * @param sampleRate       number of samples per second per channel, must be &gt; 0
- * @param sampleSizeInBits bits per sample, must be a positive multiple of 8
- * @param channels         number of interleaved audio channels, must be &gt; 0
- * @param frameSize        bytes per frame ({@code channels × sampleSizeInBits / 8}), must be &gt; 0
+ * @param sampleRate       samples per second per channel
+ * @param sampleSizeInBits bits per sample
+ * @param channels         number of interleaved audio channels
+ * @param frameSize        bytes per frame
  * @param bigEndian        {@code true} for big-endian sample byte order
  * @param signed           {@code true} if samples use a signed representation
  */
 public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBits, int channels, int frameSize,
                           boolean bigEndian, boolean signed) {
   /**
-   * Creates an AudioFormat, validating constructor parameters.
+   * Creates a new {@code AudioFormat} instance.
    *
    * @param encoding         sample encoding (e.g. {@link Encoding#PCM_SIGNED})
-   * @param sampleRate       number of samples per second per channel, must be &gt; 0
+   * @param sampleRate       samples per second per channel, must be positive
    * @param sampleSizeInBits bits per sample, must be a positive multiple of 8
-   * @param channels         number of interleaved audio channels, must be &gt; 0
-   * @param frameSize        bytes per frame ({@code channels × sampleSizeInBits / 8}), must be &gt;
-   *                         0
+   * @param channels         number of interleaved audio channels, must be positive
+   * @param frameSize        bytes per frame, must equal {@code channels * (sampleSizeInBits / 8)}
    * @param bigEndian        {@code true} for big-endian sample byte order
    * @param signed           {@code true} if samples use a signed representation
-   * @throws IllegalArgumentException if {@code sampleRate}, {@code sampleSizeInBits},
-   *                                  {@code channels}, or {@code frameSize} are out of range, or
-   *                                  if
-   *                                  {@code frameSize} does not equal
-   *                                  {@code channels * (sampleSizeInBits / 8)}
+   * @throws IllegalArgumentException if any parameter is outside its valid range, or if {@code frameSize} does not
+   *                                  equal {@code channels * (sampleSizeInBits / 8)}
    */
   public AudioFormat {
     if (sampleRate <= 0) {
@@ -84,16 +73,12 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   }
 
   /**
-   * Creates an AudioFormat with an explicit {@code signed} flag.
-   *
-   * <p>Prefer the shorter constructor that derives {@code signed} from
-   * {@code encoding}, or use the factory methods {@link #mono} / {@link #stereo}
-   * for the most common cases.
+   * Creates an {@code AudioFormat} with an explicit encoding, deriving the signed flag from the encoding.
    *
    * @param encoding         sample encoding
    * @param sampleRate       samples per second per channel
    * @param sampleSizeInBits bits per sample
-   * @param channels         number of interleaved channels
+   * @param channels         number of interleaved audio channels
    * @param frameSize        bytes per frame
    * @param bigEndian        {@code true} for big-endian byte order
    */
@@ -103,15 +88,11 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   }
 
   /**
-   * Creates a PCM format, deriving {@code frameSize} automatically.
-   *
-   * <p>{@code frameSize} is computed as {@code (sampleSizeInBits + 7) / 8 * channels}.
-   * The {@code encoding} is set to {@link Encoding#PCM_SIGNED} or
-   * {@link Encoding#PCM_UNSIGNED} based on {@code signed}.
+   * Creates an {@code AudioFormat}, deriving the encoding and frame size from the other parameters.
    *
    * @param sampleRate       samples per second per channel
    * @param sampleSizeInBits bits per sample
-   * @param channels         number of interleaved channels
+   * @param channels         number of interleaved audio channels
    * @param signed           {@code true} for signed samples
    * @param bigEndian        {@code true} for big-endian byte order
    */
@@ -121,12 +102,10 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   }
 
   /**
-   * Creates a signed, little-endian, mono PCM format.
-   *
-   * <p>Equivalent to {@code new AudioFormat(sampleRate, sampleSizeInBits, 1, true, false)}.
+   * Returns a signed, little-endian, mono PCM format.
    *
    * @param sampleRate       samples per second
-   * @param sampleSizeInBits bits per sample (e.g. 8, 16, 24, 32)
+   * @param sampleSizeInBits bits per sample
    * @return a mono {@link Encoding#PCM_SIGNED} format
    */
   public static AudioFormat mono(int sampleRate, int sampleSizeInBits) {
@@ -134,12 +113,10 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   }
 
   /**
-   * Creates a signed, little-endian, stereo PCM format.
-   *
-   * <p>Equivalent to {@code new AudioFormat(sampleRate, sampleSizeInBits, 2, true, false)}.
+   * Returns a signed, little-endian, stereo PCM format.
    *
    * @param sampleRate       samples per second
-   * @param sampleSizeInBits bits per sample (e.g. 8, 16, 24, 32)
+   * @param sampleSizeInBits bits per sample
    * @return a stereo {@link Encoding#PCM_SIGNED} format
    */
   public static AudioFormat stereo(int sampleRate, int sampleSizeInBits) {
@@ -147,56 +124,49 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   }
 
   /**
-   * Returns the number of bytes transferred per second ({@code sampleRate × frameSize}).
+   * Returns the byte rate of this format.
    *
-   * <p>Useful for pre-allocating read buffers and estimating playback duration.
-   *
-   * @return byte rate
+   * @return byte rate, equal to {@code sampleRate * frameSize}
    */
   public int getByteRate() {
     return sampleRate * frameSize;
   }
 
   /**
-   * Converts a byte count to a frame count.
-   *
-   * <p>Truncates toward zero; any trailing partial frame is ignored.
+   * Converts a byte count to a complete frame count.
    *
    * @param bytes number of PCM bytes
-   * @return number of complete frames contained in {@code bytes}
+   * @return number of complete frames, truncating any partial frame
    */
   public int bytesToFrames(int bytes) {
     return frameSize == 0 ? 0 : bytes / frameSize;
   }
 
   /**
-   * Converts a frame count to a byte count.
+   * Converts a frame count to the corresponding byte count.
    *
    * @param frames number of audio frames
-   * @return number of bytes required to hold {@code frames} frames
+   * @return number of bytes required for the given number of frames
    */
   public int framesToBytes(int frames) {
     return frames * frameSize;
   }
 
   /**
-   * Converts a duration in seconds to a byte offset.
+   * Converts a duration in seconds to the corresponding byte offset.
    *
-   * <p>The result is truncated toward zero. Suitable for seeking or
-   * pre-allocating read buffers.
-   *
-   * @param seconds duration in seconds (maybe fractional)
-   * @return byte offset corresponding to {@code seconds}
+   * @param seconds duration in seconds
+   * @return byte offset corresponding to the given duration, truncated toward zero
    */
   public int secondsToBytes(double seconds) {
     return (int) (seconds * getByteRate());
   }
 
   /**
-   * Converts a byte offset to a duration in seconds.
+   * Converts a byte offset to the corresponding duration in seconds.
    *
    * @param bytes byte offset in the PCM data
-   * @return corresponding duration in seconds
+   * @return duration in seconds corresponding to the given byte offset
    */
   public double bytesToSeconds(int bytes) {
     return bytes / (double) getByteRate();
@@ -205,20 +175,18 @@ public record AudioFormat(Encoding encoding, int sampleRate, int sampleSizeInBit
   /**
    * Converts a duration in seconds to a frame count.
    *
-   * <p>The result is truncated toward zero.
-   *
-   * @param seconds duration in seconds (maybe fractional)
-   * @return number of frames corresponding to {@code seconds}
+   * @param seconds duration in seconds
+   * @return number of frames corresponding to the given duration, truncated toward zero
    */
   public int secondsToFrames(double seconds) {
     return (int) (seconds * sampleRate);
   }
 
   /**
-   * Converts a frame count to a duration in seconds.
+   * Converts a frame count to the corresponding duration in seconds.
    *
    * @param frames number of audio frames
-   * @return corresponding duration in seconds
+   * @return duration in seconds corresponding to the given frame count
    */
   public double framesToSeconds(int frames) {
     return frames / (double) sampleRate;

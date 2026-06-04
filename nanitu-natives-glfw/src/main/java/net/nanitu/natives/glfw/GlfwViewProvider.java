@@ -24,24 +24,24 @@
 
 package net.nanitu.natives.glfw;
 
-import net.nanitu.graphics.Surface;
-import net.nanitu.graphics.spi.SurfaceProvider;
+import net.nanitu.graphics.View;
+import net.nanitu.graphics.spi.ViewProvider;
 import net.nanitu.util.InternalApi;
 
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 /**
- * {@link SurfaceProvider} backed by GLFW (via LWJGL).
+ * {@link ViewProvider} backed by GLFW (via LWJGL).
  *
  * <p>Loaded automatically by {@link java.util.ServiceLoader} from
- * {@code META-INF/services/net.nanitu.graphics.spi.SurfaceProvider}.
+ * {@code META-INF/services/net.nanitu.graphics.spi.ViewProvider}.
  *
  * <p>{@link #isAvailable()} initializes and immediately terminates GLFW to
  * verify that LWJGL natives are present.
  */
 @InternalApi
-public final class GlfwSurfaceProvider implements SurfaceProvider {
+public final class GlfwViewProvider implements ViewProvider {
   /**
    * Returns whether GLFW can be initialized on this system.
    *
@@ -63,21 +63,21 @@ public final class GlfwSurfaceProvider implements SurfaceProvider {
   }
 
   /**
-   * Creates a new {@link GlfwSurface}.
+   * Creates a new {@link GlfwView}.
    *
    * <p>The {@code args} parameter is interpreted as
    * {@code "title,width,height"}.
    *
    * @param args creation arguments
-   * @return a new GLFW window surface
+   * @return a new GLFW window view
    */
   @Override
-  public Surface create(String args) {
-    return new GlfwSurface();
+  public View create(String args) {
+    return new GlfwView();
   }
 
   @Override
   public String name() {
-    return "GLFW-Surface-Provider";
+    return "GLFW-View-Provider";
   }
 }

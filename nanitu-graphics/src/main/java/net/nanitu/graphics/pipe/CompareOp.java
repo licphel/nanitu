@@ -28,8 +28,7 @@ package net.nanitu.graphics.pipe;
  * Comparison operators for depth and stencil testing.
  *
  * <p>Each operator compares an incoming fragment value against the stored
- * buffer value. If the comparison passes, the fragment advances to the next
- * pipeline stage.
+ * buffer value. If the comparison passes, the fragment advances to the next pipeline stage.
  *
  * @see Depth
  * @see StencilFace
