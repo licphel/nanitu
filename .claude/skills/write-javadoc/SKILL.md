@@ -64,7 +64,8 @@ Generate or supplement Javadoc for each Java file in `$ARGUMENTS`.
 
 **package-info.java**:
 
-- Use one line Javadoc to briefly introduce the main functionality
+- No Javadoc
+-
 
 **`@Override` methods**:
 
