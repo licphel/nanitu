@@ -9,14 +9,16 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/nanitu-ai" />
-            <option value="$PROJECT_DIR$/nanitu-audio" />
-            <option value="$PROJECT_DIR$/nanitu-core" />
-            <option value="$PROJECT_DIR$/nanitu-graphics" />
-            <option value="$PROJECT_DIR$/nanitu-natives-glfw" />
-            <option value="$PROJECT_DIR$/nanitu-natives-openal" />
-            <option value="$PROJECT_DIR$/nanitu-natives-opengl" />
-            <option value="$PROJECT_DIR$/nanitu-test" />
+            <option value="$PROJECT_DIR$/modules/ai" />
+            <option value="$PROJECT_DIR$/modules/audio" />
+            <option value="$PROJECT_DIR$/modules/core" />
+            <option value="$PROJECT_DIR$/modules/gfx" />
+            <option value="$PROJECT_DIR$/modules/glfw" />
+            <option value="$PROJECT_DIR$/modules/openal" />
+            <option value="$PROJECT_DIR$/modules/opengl" />
+            <option value="$PROJECT_DIR$/modules/sprite" />
+            <option value="$PROJECT_DIR$/modules/test" />
+            <option value="$PROJECT_DIR$/modules/text" />
           </set>
         </option>
       </GradleProjectSettings>

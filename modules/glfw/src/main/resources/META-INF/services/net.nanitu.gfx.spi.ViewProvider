@@ -22,7 +22,4 @@
 # SOFTWARE.
 #
 
-org.gradle.jvmargs=--enable-native-access=ALL-UNNAMED -Xmx3G
-org.gradle.daemon=false
-nanitu_version=1.0-SNAPSHOT
-lwjgl_version=3.4.1
+net.nanitu.natives.glfw.GlfwViewProvider
