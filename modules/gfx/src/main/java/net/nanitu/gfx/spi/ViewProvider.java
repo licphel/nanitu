@@ -34,11 +34,17 @@ import net.nanitu.util.Service;
  * concrete windowing systems such as GLFW or SDL. Each implementation should register itself in
  * {@code META-INF/services/net.nanitu.graphics.spi.ViewProvider}.
  *
- * <p>Before calling {@link #create(String)}, check {@link #isAvailable()} to verify
+ * <p>Before calling {@link #create()}, check {@link #isAvailable()} to verify
  * that the windowing system's native libraries are present.
  *
  * @see View
  * @see Service
  */
-public interface ViewProvider extends Service<View> {
+public interface ViewProvider extends Service {
+  /**
+   * Creates a graphics backend (i.e. a view) of current provider.
+   *
+   * @return a new graphics backend
+   */
+  View create();
 }

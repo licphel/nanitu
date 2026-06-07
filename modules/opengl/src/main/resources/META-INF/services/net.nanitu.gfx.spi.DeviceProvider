@@ -22,4 +22,4 @@
 # SOFTWARE.
 #
 
-net.nanitu.natives.opengl.OpenGLDeviceProvider
+net.nanitu.gfx.opengl.OpenGLDeviceProvider

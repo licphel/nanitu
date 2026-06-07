@@ -34,11 +34,17 @@ import net.nanitu.util.Service;
  * concrete graphics backends such as OpenGL or Vulkan. Each implementation should register itself in
  * {@code META-INF/services/net.nanitu.graphics.spi.DeviceProvider}.
  *
- * <p>Before calling {@link #create(String)}, check {@link #isAvailable()} to verify
+ * <p>Before calling {@link #create()}, check {@link #isAvailable()} to verify
  * that the backend's native libraries are present and a device can be created on the current system.
  *
  * @see Device
  * @see Service
  */
-public interface DeviceProvider extends Service<Device> {
+public interface DeviceProvider extends Service {
+  /**
+   * Creates a graphics device of current provider.
+   *
+   * @return a new graphics device
+   */
+  Device create();
 }

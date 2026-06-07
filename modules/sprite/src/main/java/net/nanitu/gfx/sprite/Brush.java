@@ -34,10 +34,9 @@ import net.nanitu.gfx.pass.RenderTarget;
 import net.nanitu.gfx.pipe.Pipeline;
 import net.nanitu.gfx.pipe.Topology;
 import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.text.CachedGlyph;
 import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.GlyphCache;
-import net.nanitu.gfx.text.TextBlob;
+import net.nanitu.gfx.text.Glyph;
+import net.nanitu.gfx.text.Text;
 import net.nanitu.gfx.texture.Sampler;
 import net.nanitu.gfx.texture.SamplerDesc;
 import net.nanitu.gfx.texture.Texture;
@@ -74,7 +73,7 @@ public final class Brush implements AutoCloseable {
   private final BufferObject ubo;
   // State
   private final BrushState state = new BrushState();
-  private final GlyphCache glyphCache;
+  private final Device ctx;
   /** Callback invoked after each {@link #flush()}, may be {@code null}. */
   @Nullable
   public Consumer<Brush> onFlushed;
@@ -91,18 +90,18 @@ public final class Brush implements AutoCloseable {
   /** Depth value used for depth testing ({@code 0.0} = near). */
   private float depth;
 
-  Brush(MultiMesh parent, Device device) {
+  Brush(MultiMesh parent, Device ctx) {
     this.parent = parent;
     this.isDirect = parent.isDirect();
 
-    InternalResources.init(device);
+    InternalResources.init(ctx);
 
-    renderTarget = device.getSwapchain();
-    sampler = device.getSampler(SamplerDesc.DEFAULT);
+    renderTarget = ctx.getSwapchain();
+    sampler = ctx.getSampler(SamplerDesc.DEFAULT);
     camera = Camera2D.normal(800, 600);
 
-    ubo = device.getBuffer(BufferObjectDesc.uniform());
-    encoder = device.getEncoder(EncoderDesc.DEFAULT);
+    ubo = ctx.getBuffer(BufferObjectDesc.uniform());
+    encoder = ctx.getEncoder(EncoderDesc.DEFAULT);
 
     assert InternalResources.p4c != null;
     assert InternalResources.p4t != null;
@@ -110,13 +109,13 @@ public final class Brush implements AutoCloseable {
     assert InternalResources.rl4t != null;
     pipes[0] = InternalResources.p4c;
     pipes[1] = InternalResources.p4t;
-    sets[0] = device.getResourceSet(InternalResources.rl4c);
-    sets[1] = device.getResourceSet(InternalResources.rl4t);
+    sets[0] = ctx.getResourceSet(InternalResources.rl4c);
+    sets[1] = ctx.getResourceSet(InternalResources.rl4t);
 
     // Upload identity view-projection
     uploadViewProjection(Matrix4x4.IDENTITY);
 
-    glyphCache = new GlyphCache(device);
+    this.ctx = ctx;
   }
 
   private static void writeColorHalves(MultiMesh.StagingBuffer buf, Color c) {
@@ -817,39 +816,39 @@ public final class Brush implements AutoCloseable {
    * <p>The alignment determines how the text is positioned relative to the anchor point.
    * For example, {@link Alignment#CENTRAL} centers the text both horizontally and vertically.
    *
-   * @param blob      the text blob
+   * @param text      the text blob
    * @param x         the anchor X coordinate in world units
    * @param y         the anchor Y coordinate in world units
    * @param alignment the alignment relative to the anchor point
    */
-  public void drawText(@Nullable TextBlob blob, float x, float y, Alignment alignment) {
-    if (blob == null) {
+  public void drawText(@Nullable Text text, float x, float y, Alignment alignment) {
+    if (text == null) {
       return;
     }
 
     float tx = x, ty = y;
     switch (alignment.horizontal()) {
-      case 0 -> tx -= blob.width() / 2.0F;
-      case 1 -> tx -= blob.width();
+      case 0 -> tx -= text.bounds().width() / 2.0F;
+      case 1 -> tx -= text.bounds().width();
     }
     switch (alignment.vertical()) {
-      case 0 -> ty -= blob.height() / 2.0F;
-      case 1 -> ty -= blob.height();
+      case 0 -> ty -= text.bounds().height() / 2.0F;
+      case 1 -> ty -= text.bounds().height();
     }
 
-    Font font = blob.font();
-    int[] glyphs = blob.glyphs();
-    float[] positions = blob.positions();
-    float scale = blob.fontSize() / glyphCache.resolution();
+    Font font = text.font();
+    int[] glyphs = text.glyphs();
+    float scale = text.scale();
+    float yBearingSign = text.flipY() ? -1.0F : 1.0F;
 
-    for (int i = 0; i < blob.glyphCount(); i++) {
-      CachedGlyph cg = glyphCache.get(font, glyphs[i]);
+    for (int i = 0; i < text.glyphCount(); i++) {
+      Glyph cg = font.rasterizeGlyph(ctx, glyphs[i], text.fontStyle());
       if (cg == null) {
         continue;
       }
 
-      float gx = tx + positions[i * 2] + cg.bearingX() * scale;
-      float gy = ty + positions[i * 2 + 1] - cg.bearingY() * scale;
+      float gx = tx + text.glyphX(i) + cg.bearingX() * scale;
+      float gy = ty + text.glyphY(i) + yBearingSign * cg.bearingY() * scale;
 
       drawTexture(cg.texPart(), gx, gy, cg.texPart().width() * scale, cg.texPart().height() * scale);
     }
@@ -861,12 +860,12 @@ public final class Brush implements AutoCloseable {
    * <p>The alignment determines how the text is positioned relative to the anchor point.
    * For example, {@link Alignment#CENTRAL} centers the text both horizontally and vertically.
    *
-   * @param blob the text blob
+   * @param text the text blob
    * @param x    the anchor X coordinate in world units
    * @param y    the anchor Y coordinate in world units
    */
-  public void drawText(@Nullable TextBlob blob, float x, float y) {
-    drawText(blob, x, y, Alignment.LEFT_UP);
+  public void drawText(@Nullable Text text, float x, float y) {
+    drawText(text, x, y, Alignment.LEFT_UP);
   }
 
   /**
@@ -875,12 +874,12 @@ public final class Brush implements AutoCloseable {
    * <p>The alignment determines how the text is positioned relative to the anchor point.
    * For example, {@link Alignment#CENTRAL} centers the text both horizontally and vertically.
    *
-   * @param blob      the text blob
+   * @param text      the text blob
    * @param pos       the combined position 2D
    * @param alignment the alignment relative to the anchor point
    */
-  public void drawText(@Nullable TextBlob blob, Vector2 pos, Alignment alignment) {
-    drawText(blob, pos.x(), pos.y(), alignment);
+  public void drawText(@Nullable Text text, Vector2 pos, Alignment alignment) {
+    drawText(text, pos.x(), pos.y(), alignment);
   }
 
   /**
@@ -889,11 +888,11 @@ public final class Brush implements AutoCloseable {
    * <p>The alignment determines how the text is positioned relative to the anchor point.
    * For example, {@link Alignment#CENTRAL} centers the text both horizontally and vertically.
    *
-   * @param blob the text blob
+   * @param text the text blob
    * @param pos  the combined position 2D
    */
-  public void drawText(@Nullable TextBlob blob, Vector2 pos) {
-    drawText(blob, pos.x(), pos.y());
+  public void drawText(@Nullable Text text, Vector2 pos) {
+    drawText(text, pos.x(), pos.y());
   }
 
   private void submitNode(MultiMesh.Node node, boolean force) {
@@ -1001,7 +1000,6 @@ public final class Brush implements AutoCloseable {
     sampler.close();
     encoder.close();
     ubo.close();
-    glyphCache.close();
   }
 
   private record Scissor(int x, int y, int width, int height, boolean enable) {

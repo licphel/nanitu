@@ -24,7 +24,6 @@
 
 package net.nanitu.ai.spi;
 
-import net.nanitu.ai.Model;
 import net.nanitu.util.Service;
 
 /**
@@ -35,5 +34,5 @@ import net.nanitu.util.Service;
  * {@link java.util.ServiceLoader}. The inherited {@link net.nanitu.util.Service} contract provides access to the
  * available models.
  */
-public interface ModelProvider extends Service<Model> {
+public interface ModelProvider extends Service {
 }

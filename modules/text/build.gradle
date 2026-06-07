@@ -22,20 +22,8 @@
  * SOFTWARE.
  */
 
-def lwjglVersion = property('lwjgl_version')
-def lwjglNatives = rootProject.ext.lwjglNatives
-
 dependencies {
     api project(':nanitu-core')
     api project(':nanitu-gfx')
-
-    // LWJGL FreeType — font loading and glyph rasterization
-    implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
-    implementation 'org.lwjgl:lwjgl'
-    implementation 'org.lwjgl:lwjgl-freetype'
-    implementation 'org.lwjgl:lwjgl-harfbuzz'
-
-    runtimeOnly "org.lwjgl:lwjgl::${lwjglNatives}"
-    runtimeOnly "org.lwjgl:lwjgl-freetype::${lwjglNatives}"
-    runtimeOnly "org.lwjgl:lwjgl-harfbuzz::${lwjglNatives}"
+    implementation 'com.ibm.icu:icu4j:76.1'
 }

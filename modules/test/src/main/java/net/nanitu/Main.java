@@ -51,7 +51,7 @@ import net.nanitu.gfx.spi.ViewProvider;
 import net.nanitu.gfx.sprite.Brush;
 import net.nanitu.gfx.sprite.MultiMesh;
 import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.TextShaper;
+import net.nanitu.gfx.text.Text;
 import net.nanitu.gfx.texture.*;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
@@ -265,7 +265,7 @@ public class Main {
     Encoder enc = dev.getEncoder(EncoderDesc.DEFAULT);
     RenderPassDesc clearDesc = RenderPassDesc.of(new Color(0.1f, 0.12f, 0.15f, 1.0f));
 
-    Font font = Font.open(".ref/main.ttf");
+    Font font = Font.open(".ref/pix.otf");
 
     // --- Main loop ---
     float angle = 0.0f;
@@ -320,7 +320,8 @@ public class Main {
           (int) theView.controller().size().y()));
       brush.drawTexture(texture, 0, 0, 100, 100);
       brush.drawLine(0, 100, 200, 200);
-      brush.drawText(TextShaper.shape(font, "wwwwwww", 16), 200, 200);
+      Text text = new Text.Builder(font, "Text rendering test").widthLimit(100).fontSize(16).build();
+      brush.drawText(text, 200, 200);
 
       mesh.end();
 

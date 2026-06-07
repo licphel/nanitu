@@ -25,13 +25,16 @@
 package net.nanitu.gfx.text;
 
 /**
- * Font metrics scaled to the current pixel size.
+ * Scaled font metrics used for text layout calculations.
+ *
+ * <p>All values are expressed in pixels at the current font size. Positive
+ * values go upward from the baseline; descender values are typically negative (downward).
  *
  * @param ascender           the maximum distance above the baseline, in pixels
- * @param descender          the maximum distance below the baseline, in pixels (negative)
- * @param lineHeight         the total line height, in pixels
- * @param underlinePos       the underline position relative to the baseline, in pixels
- * @param underlineThickness the underline thickness, in pixels
+ * @param descender          the maximum distance below the baseline, in pixels (typically negative)
+ * @param lineHeight         the recommended distance between consecutive baselines, in pixels
+ * @param underlinePos       the position of the underline relative to the baseline, in pixels
+ * @param underlineThickness the thickness of the underline stroke, in pixels
  */
 public record FontMetrics(float ascender, float descender, float lineHeight, float underlinePos,
                           float underlineThickness) {

@@ -25,39 +25,39 @@
 package net.nanitu.gfx.text;
 
 /**
- * Constants and utility methods for font style flags.
+ * Constants and utility functions for font style bitmask flags.
  *
- * <p>Styles are represented as bitmask integers, allowing combination
- * via bitwise OR. This class cannot be instantiated.
+ * <p>Each style occupies a distinct bit, so multiple styles can be combined
+ * with bitwise OR. This is a utility class and cannot be instantiated.
  */
 public final class FontStyle {
-  /** Normal weight, no italic. */
+  /** Plain weight, no italic — the default style. */
   public static final int REGULAR = 0;
-  /** Bold weight. */
+  /** Bold weight bit. */
   public static final int BOLD = 1;
-  /** Italic (slanted) glyphs. */
+  /** Italic slant bit. */
   public static final int ITALIC = 2;
-  /** Bold and italic combined. */
+  /** Bold and italic bits both set. */
   public static final int BOLD_ITALIC = BOLD | ITALIC;
 
   private FontStyle() {
   }
 
   /**
-   * Returns whether the given style includes bold weight.
+   * Tests whether the bold bit is set in the given style bitmask.
    *
    * @param style the style bitmask
-   * @return {@code true} if the bold bit is set
+   * @return {@code true} if the style includes bold weight
    */
   public static boolean isBold(int style) {
     return (style & BOLD) != 0;
   }
 
   /**
-   * Returns whether the given style includes italic.
+   * Tests whether the italic bit is set in the given style bitmask.
    *
    * @param style the style bitmask
-   * @return {@code true} if the italic bit is set
+   * @return {@code true} if the style includes italic slant
    */
   public static boolean isItalic(int style) {
     return (style & ITALIC) != 0;

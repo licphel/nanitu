@@ -12,8 +12,10 @@
             <option value="$PROJECT_DIR$/modules/ai" />
             <option value="$PROJECT_DIR$/modules/audio" />
             <option value="$PROJECT_DIR$/modules/core" />
+            <option value="$PROJECT_DIR$/modules/freetype" />
             <option value="$PROJECT_DIR$/modules/gfx" />
             <option value="$PROJECT_DIR$/modules/glfw" />
+            <option value="$PROJECT_DIR$/modules/harfbuzz" />
             <option value="$PROJECT_DIR$/modules/openal" />
             <option value="$PROJECT_DIR$/modules/opengl" />
             <option value="$PROJECT_DIR$/modules/sprite" />

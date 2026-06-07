@@ -1,0 +1,212 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2026 Licphel
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package net.nanitu.gfx.text.freetype;
+
+import net.nanitu.gfx.Device;
+import net.nanitu.gfx.sprite.TexturePart;
+import net.nanitu.gfx.text.Font;
+import net.nanitu.gfx.text.FontStyle;
+import net.nanitu.gfx.text.Glyph;
+import net.nanitu.gfx.texture.Texture;
+import net.nanitu.gfx.texture.TextureDesc;
+import net.nanitu.math.Box2;
+import net.nanitu.math.Box3;
+import net.nanitu.util.InternalApi;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.util.freetype.FT_Bitmap;
+import org.lwjgl.util.freetype.FT_Face;
+import org.lwjgl.util.freetype.FT_GlyphSlot;
+
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.lwjgl.util.freetype.FreeType.*;
+
+/**
+ * Caches rasterized glyphs in a dynamically-growing texture atlas.
+ *
+ * <p>Each glyph is rasterized on demand via FreeType and packed into the atlas.
+ * Re-requesting the same glyph returns the cached entry without re-rasterization.
+ *
+ * <p>Must be {@linkplain #close() closed} to release the underlying texture atlas.
+ */
+@InternalApi
+final class FreetypeGlyphCache implements AutoCloseable {
+  private final Device device;
+  private final Map<Long, @Nullable Glyph> cache = new HashMap<>();
+  private @Nullable Texture atlas;
+  private int cursorX, cursorY, rowHeight, size;
+  private int resolution = 0;
+  private boolean disposed;
+
+  /**
+   * Creates a new glyph cache for the given device.
+   *
+   * @param device the graphics device used for texture allocation
+   */
+  public FreetypeGlyphCache(Device device) {
+    this.device = device;
+  }
+
+  /**
+   * Sets the resolution used for glyph rasterization.
+   *
+   * @param r the resolution in pixels
+   */
+  public void setResolution(int r) {
+    this.resolution = r;
+  }
+
+  /**
+   * Returns the current rasterization resolution.
+   *
+   * @return the resolution in pixels
+   */
+  public int resolution() {
+    return resolution;
+  }
+
+  /**
+   * Returns the cached glyph for the given font, glyph index, and style, rasterizing if necessary.
+   *
+   * @param font       the font to rasterize from
+   * @param glyphIndex the glyph index within the font
+   * @param fontStyle  the style bitmask, combining flags from {@link FontStyle}
+   * @return the cached glyph, or {@code null} if the glyph has no visual representation
+   */
+  public @Nullable Glyph get(Font font, int glyphIndex, int fontStyle) {
+    long key = (long) System.identityHashCode(font) << 32 | (glyphIndex & 0xFFFFL) << 8 | (fontStyle & 0xFFL);
+    Glyph c = cache.get(key);
+    if (c != null) {
+      return c;
+    }
+    c = rasterize(((FreetypeFont) font).ftFaceRaw(), glyphIndex, fontStyle);
+    cache.put(key, c);
+    return c;
+  }
+
+  private @Nullable Glyph rasterize(FT_Face ftFace, int glyphIndex, int fontStyle) {
+    FT_Set_Pixel_Sizes(ftFace, 0, resolution);
+    FT_Load_Glyph(ftFace, glyphIndex, FT_LOAD_DEFAULT);
+    FT_GlyphSlot slot = ftFace.glyph();
+
+    assert slot != null;
+    if (FontStyle.isBold(fontStyle)) {
+      FT_GlyphSlot_Embolden(slot);
+    }
+    if (FontStyle.isItalic(fontStyle)) {
+      FT_GlyphSlot_Oblique(slot);
+    }
+
+    FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
+    FT_Bitmap bitmap = slot.bitmap();
+
+    int w = bitmap.width(), h = bitmap.rows();
+    TexturePart tp;
+
+    if (w > 0 && h > 0) {
+      int pitch = Math.abs(bitmap.pitch());
+      ByteBuffer buf = bitmap.buffer(pitch * h);
+      assert buf != null;
+      byte[] rgba = new byte[w * h * 4];
+      if (bitmap.pitch() < 0) {
+        for (int row = 0; row < h; row++) {
+          for (int col = 0; col < w; col++) {
+            int src = (h - 1 - row) * pitch + col;
+            int dst = (row * w + col) * 4;
+            byte grey = buf.get(src);
+            rgba[dst] = (byte) 255;
+            rgba[dst + 1] = (byte) 255;
+            rgba[dst + 2] = (byte) 255;
+            rgba[dst + 3] = grey;
+          }
+        }
+      } else {
+        for (int i = 0; i < w * h; i++) {
+          byte grey = buf.get(i);
+          int off = i * 4;
+          rgba[off] = (byte) 255;
+          rgba[off + 1] = (byte) 255;
+          rgba[off + 2] = (byte) 255;
+          rgba[off + 3] = grey;
+        }
+      }
+
+      ensureAtlas(w, h);
+
+      assert atlas != null;
+      atlas.submit(rgba, Box3.create(cursorX, cursorY, 0, w, h, 1));
+      tp = new TexturePart(atlas, Box2.create(cursorX, cursorY, w, h));
+      cursorX += w;
+      rowHeight = Math.max(rowHeight, h);
+
+      return new Glyph(tp, slot.bitmap_left(), slot.bitmap_top(), slot.advance().x() / 64.0F);
+    }
+
+    return null;
+  }
+
+  /**
+   * Ensures the atlas has space for a glyph of the given size, growing if needed.
+   */
+  private void ensureAtlas(int w, int h) {
+    if (atlas == null) {
+      size = 512;
+      atlas = device.getTexture(new TextureDesc.Builder().width(size).height(size).build());
+    }
+    if (cursorX + w > size) {
+      cursorX = 0;
+      cursorY += rowHeight;
+      rowHeight = 0;
+    }
+    while (cursorY + h > size) {
+      grow();
+    }
+  }
+
+  /** Doubles the atlas size, copying existing content to the new texture. */
+  private void grow() {
+    int newSize = size * 2;
+    Texture newAtlas = device.getTexture(new TextureDesc.Builder().width(newSize).height(newSize).build());
+
+    assert atlas != null;
+    atlas.blit(newAtlas, 0, 0, size, size, 0, 0, size, size);
+    atlas.close();
+    atlas = newAtlas;
+    size = newSize;
+  }
+
+  @Override
+  public void close() {
+    if (disposed) {
+      return;
+    }
+    disposed = true;
+    if (atlas != null) {
+      atlas.close();
+    }
+  }
+}

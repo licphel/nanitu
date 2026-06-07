@@ -36,5 +36,11 @@ import net.nanitu.util.Service;
  *
  * @see Mixer
  */
-public interface MixerProvider extends Service<Mixer> {
+public interface MixerProvider extends Service {
+  /**
+   * Creates an audio mixer of current provider.
+   *
+   * @return a new audio mixer
+   */
+  Mixer create();
 }

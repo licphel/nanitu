@@ -24,8 +24,6 @@
 
 package net.nanitu.util;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.ServiceLoader;
 
 /**
@@ -38,12 +36,9 @@ import java.util.ServiceLoader;
  * <p>Each {@code Service} implementation must provide:
  * <ul>
  *   <li>{@link #isAvailable()} — whether the service can run in the current environment</li>
- *   <li>{@link #create()} — a factory method that returns a new instance of {@code T}</li>
  * </ul>
- *
- * @param <T> the type this service provides
  */
-public interface Service<T> {
+public interface Service {
   /**
    * Collects all available implementations of the given service interface.
    *
@@ -52,12 +47,10 @@ public interface Service<T> {
    * result.
    *
    * @param serviceClass the service interface to discover
-   * @param <R>          the service type
    * @return an array of available service instances, may be empty
    */
-  @SuppressWarnings("unchecked")
-  static <R> Service<R>[] collect(Class<? extends Service<R>> serviceClass) {
-    return (Service<R>[]) ServiceLoader.load(serviceClass).stream().map(ServiceLoader.Provider::get).filter(Service::isAvailable).toArray(Service<?>[]::new);
+  static Service[] collect(Class<? extends Service> serviceClass) {
+    return ServiceLoader.load(serviceClass).stream().map(ServiceLoader.Provider::get).filter(Service::isAvailable).toArray(Service[]::new);
   }
 
   /**
@@ -67,12 +60,17 @@ public interface Service<T> {
    * {@link #collect(Class)}. Returns {@code null} if no provider is available.
    *
    * @param serviceClass the service interface to discover
-   * @param <R>          the service type
    * @return the first available service, or {@code null} if none found
+   * @param <T> the type of the service interface
+   * @throws RuntimeException if no service is available
    */
-  static <R> @Nullable Service<R> get(Class<? extends Service<R>> serviceClass) {
-    Service<R>[] providers = collect(serviceClass);
-    return providers.length == 0 ? null : providers[0];
+  @SuppressWarnings("unchecked")
+  static <T extends Service> T get(Class<T> serviceClass) {
+    Service[] providers = collect(serviceClass);
+    if (providers.length == 0) {
+      throw new RuntimeException("No services available for " + serviceClass.getName());
+    }
+    return (T) providers[0];
   }
 
   /**
@@ -85,29 +83,6 @@ public interface Service<T> {
    * @return {@code true} if the service is ready to use
    */
   boolean isAvailable();
-
-  /**
-   * Creates a new instance of the service.
-   *
-   * <p>The returned object is typically a fresh instance; callers are responsible
-   * for its lifecycle (e.g. calling {@link AutoCloseable#close()} if applicable).
-   *
-   * @param args args passed in to create a service instance
-   * @return a new service instance
-   */
-  T create(String args);
-
-  /**
-   * Creates a new instance of the service with no arguments.
-   *
-   * <p>The returned object is typically a fresh instance; callers are responsible
-   * for its lifecycle (e.g. calling {@link AutoCloseable#close()} if applicable).
-   *
-   * @return a new service instance
-   */
-  default T create() {
-    return create("");
-  }
 
   /**
    * Returns the name of the service.
