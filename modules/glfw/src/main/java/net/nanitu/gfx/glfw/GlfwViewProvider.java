@@ -28,9 +28,6 @@ import net.nanitu.gfx.View;
 import net.nanitu.gfx.spi.ViewProvider;
 import net.nanitu.util.InternalApi;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-
 /**
  * {@link ViewProvider} backed by GLFW (via LWJGL).
  *
@@ -42,34 +39,11 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
  */
 @InternalApi
 public final class GlfwViewProvider implements ViewProvider {
-  /**
-   * Returns whether GLFW can be initialized on this system.
-   *
-   * <p>Initializes and immediately terminates GLFW to probe availability.
-   *
-   * @return {@code true} if GLFW initialized successfully
-   */
   @Override
   public boolean isAvailable() {
-    try {
-      if (!glfwInit()) {
-        return false;
-      }
-      glfwTerminate();
-      return true;
-    } catch (Throwable e) {
-      return false;
-    }
+    return true;
   }
 
-  /**
-   * Creates a new {@link GlfwView}.
-   *
-   * <p>The {@code args} parameter is interpreted as
-   * {@code "title,width,height"}.
-   *
-   * @return a new GLFW window view
-   */
   @Override
   public View create() {
     return new GlfwView();

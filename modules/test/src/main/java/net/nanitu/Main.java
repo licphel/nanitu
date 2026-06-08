@@ -221,8 +221,8 @@ public class Main {
         new TextureDesc.Builder().width(img.info().width()).height(img.info().height()).initialBytes(texData).mipLevels(4).build();
     Texture texture = dev.getTexture(texDesc);
     Texture resized = dev.getTexture(new TextureDesc.Builder().width(500).height(500).build());
-    texture.blit(resized, 0, 0, texture.width(), texture.height(), 0, 0, 500, 500);
-    resized.blit(texture, 0, 0, 500, 500, 0, 0, 500, 500);
+    texture.blit(resized, 0, 0, texture.width(), texture.height(), 0, 0, 5, 5);
+    resized.blit(texture, 0, 0, 5, 5, 0, 0, 5, 5);
 
     Sampler sampler =
         dev.getSampler(new SamplerDesc.Builder().minFilter(TextureFilter.LINEAR_MIPMAP_LINEAR).magFilter(TextureFilter.LINEAR).build());
@@ -244,9 +244,9 @@ public class Main {
 
     // --- Buffers ---
     BufferObject vbo = dev.getBuffer(BufferObjectDesc.vertex(BufferFrequency.STATIC));
-    vbo.submit(floatArrayToBytes(CUBE_DATA), 0);
+    vbo.submit(floatArrayToBytes(CUBE_DATA));
     BufferObject ibo = dev.getBuffer(BufferObjectDesc.index(BufferFrequency.STATIC));
-    ibo.submit(intArrayToBytes(CUBE_INDICES), 0);
+    ibo.submit(intArrayToBytes(CUBE_INDICES));
 
     // --- Uniforms ---
     // UBO 0: Matrices — MVP(64) + Model(64) + NormalMatrix(48) = 176
@@ -318,7 +318,16 @@ public class Main {
       brush.setCamera(new Camera2D(800, 450));
       brush.setViewport(Box2.create(0, 0, (int) theView.controller().size().x(),
           (int) theView.controller().size().y()));
-      brush.drawTexture(texture, 0, 0, 100, 100);
+      for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < 1000; i++) {
+          brush.transform.push();
+          brush.setDepth(1 - (i / 2000.0F + j / 10F));
+          brush.transform.load(Matrix3x2.createRotation(frame / 50.0F,
+              new Vector2(i / 2.0F, j * 100F).add(new Vector2(50, 50))).toMatrix4x4());
+          brush.drawTexture(texture, i / 2.0F, j * 100F, 100, 100);
+          brush.transform.pop();
+        }
+      }
       brush.drawLine(0, 100, 200, 200);
       Text text = new Text.Builder(font, "Text rendering test").widthLimit(100).fontSize(16).build();
       brush.drawText(text, 200, 200);

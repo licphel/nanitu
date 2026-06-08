@@ -25,7 +25,6 @@
 package net.nanitu.gfx.text;
 
 import net.nanitu.gfx.sprite.TexturePart;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A rasterized glyph with its texture region and positioning metrics.
@@ -38,5 +37,5 @@ import org.jspecify.annotations.Nullable;
  * @param bearingY the vertical offset from the baseline to the top edge, in pixels (Y-up)
  * @param advance  the horizontal distance to advance the pen after this glyph, in pixels
  */
-public record Glyph(@Nullable TexturePart texPart, int bearingX, int bearingY, float advance) {
+public record Glyph(TexturePart texPart, int bearingX, int bearingY, float advance) {
 }

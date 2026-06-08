@@ -73,7 +73,7 @@ public final class Buffer implements AutoCloseable {
     this.endianness = endianness;
     writerIndex = 0;
     readerIndex = 0;
-    isExpandable = !memory.isNative();
+    isExpandable = true;
   }
 
   /**

@@ -29,7 +29,9 @@ import net.nanitu.gfx.buffer.BufferFrequency;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.pass.RenderPassDesc;
-import net.nanitu.math.Half;
+import net.nanitu.memory.Buffer;
+import net.nanitu.memory.Endianness;
+import net.nanitu.memory.MemoryAllocator;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -167,65 +169,6 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   }
 
   /**
-   * Growable byte buffer for staging vertex or index data before GPU upload.
-   */
-  static final class StagingBuffer {
-    private static final int INITIAL_CAP = 1024;
-
-    byte[] data;
-    int position;
-
-    StagingBuffer() {
-      this.data = new byte[INITIAL_CAP];
-    }
-
-    void writeFloat(float v) {
-      ensure(4);
-      int bits = Float.floatToRawIntBits(v);
-      data[position] = (byte) (bits);
-      data[position + 1] = (byte) (bits >> 8);
-      data[position + 2] = (byte) (bits >> 16);
-      data[position + 3] = (byte) (bits >> 24);
-      position += 4;
-    }
-
-    void writeHalf(float v) {
-      ensure(2);
-      int bits = Half.quickHalf(v) & 0xFFFF;
-      data[position] = (byte) (bits);
-      data[position + 1] = (byte) (bits >> 8);
-      position += 2;
-    }
-
-    void writeInt(int v) {
-      ensure(4);
-      data[position] = (byte) (v);
-      data[position + 1] = (byte) (v >> 8);
-      data[position + 2] = (byte) (v >> 16);
-      data[position + 3] = (byte) (v >> 24);
-      position += 4;
-    }
-
-    void clear() {
-      position = 0;
-    }
-
-    byte[] toByteArray() {
-      byte[] copy = new byte[position];
-      System.arraycopy(data, 0, copy, 0, position);
-      return copy;
-    }
-
-    private void ensure(int bytes) {
-      while (position + bytes > data.length) {
-        byte[] newData = new byte[data.length * 2];
-        System.arraycopy(data, 0, newData, 0, data.length);
-        data = newData;
-      }
-    }
-  }
-
-  /**
    * A single mesh node holding a vertex buffer, an index buffer, and staging buffers for batched drawing.
    *
    * <p>Each node tracks the {@link BrushState} that was active when data was recorded into it.
@@ -233,8 +176,8 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   public static final class Node {
     static final int INITIAL_CAP = 128;
 
-    final StagingBuffer vertexBuf = new StagingBuffer();
-    final StagingBuffer indexBuf = new StagingBuffer();
+    final Buffer vertexBuf = allocateBuffer();
+    final Buffer indexBuf = allocateBuffer();
     final BufferObject vbo;
     final BufferObject ibo;
     boolean dirty;
@@ -285,6 +228,10 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
     void close() {
       vbo.close();
       ibo.close();
+    }
+
+    private static Buffer allocateBuffer() {
+      return new Buffer(MemoryAllocator.NATIVE.allocate(INITIAL_CAP), Endianness.NATIVE);
     }
   }
 }

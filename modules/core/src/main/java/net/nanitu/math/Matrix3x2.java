@@ -155,9 +155,9 @@ public record Matrix3x2(float m00, float m10, float m01, float m11, float m02, f
     FastTrigonometric.get(radians, sc);
     float cos = sc[1];
     float sin = sc[0];
-    float cosM1 = cos - 1.0F;
-    float tx = center.x() * cosM1 + center.y() * sin;
-    float ty = -center.x() * sin + center.y() * cosM1;
+    float _1mCos = 1.0F - cos;
+    float tx = center.x() * _1mCos + center.y() * sin;
+    float ty = -center.x() * sin + center.y() * _1mCos;
     return new Matrix3x2(cos, sin, -sin, cos, tx, ty);
   }
 

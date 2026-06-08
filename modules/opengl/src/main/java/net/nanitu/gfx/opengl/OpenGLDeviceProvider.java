@@ -25,11 +25,9 @@
 package net.nanitu.gfx.opengl;
 
 import net.nanitu.gfx.Device;
-import net.nanitu.gfx.View;
 import net.nanitu.gfx.spi.DeviceProvider;
 import net.nanitu.util.InternalApi;
 import net.nanitu.util.Service;
-import org.lwjgl.system.Platform;
 
 import java.util.ServiceLoader;
 
@@ -45,24 +43,11 @@ import java.util.ServiceLoader;
  */
 @InternalApi
 public final class OpenGLDeviceProvider implements DeviceProvider {
-  /**
-   * Returns whether the LWJGL OpenGL bindings are loadable.
-   *
-   * @return {@code true} if LWJGL OpenGL classes can be loaded
-   */
   @Override
   public boolean isAvailable() {
-    return Platform.get() == Platform.WINDOWS || Platform.get() == Platform.LINUX;
+    return true;
   }
 
-  /**
-   * Creates a new {@link OpenGLDevice}.
-   *
-   * <p>The device must be loaded onto a surface via
-   * {@link Device#load(View)} before use.
-   *
-   * @return a new OpenGL graphics device
-   */
   @Override
   public Device create() {
     return new OpenGLDevice();

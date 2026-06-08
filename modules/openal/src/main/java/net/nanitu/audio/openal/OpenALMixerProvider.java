@@ -28,11 +28,6 @@ import net.nanitu.audio.Mixer;
 import net.nanitu.audio.spi.MixerProvider;
 import net.nanitu.util.InternalApi;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-
-import static org.lwjgl.openal.ALC10.*;
-
 /**
  * {@link MixerProvider} backed by OpenAL (via LWJGL).
  *
@@ -46,56 +41,18 @@ import static org.lwjgl.openal.ALC10.*;
  */
 @InternalApi
 public final class OpenALMixerProvider implements MixerProvider {
-  /**
-   * Creates an OpenAL mixer provider.
-   */
-  public OpenALMixerProvider() {
-  }
-
-  /**
-   * Returns whether an OpenAL device and context can be created on this system.
-   *
-   * <p>Opens a temporary device and context to probe availability,
-   * then destroys them immediately regardless of outcome.
-   *
-   * @return true if OpenAL is available
-   */
   @Override
   public boolean isAvailable() {
-    long device = 0L;
-    long context = 0L;
-    try {
-      device = alcOpenDevice((ByteBuffer) null);
-      if (device == 0L) {
-        return false;
-      }
-
-      context = alcCreateContext(device, (IntBuffer) null);
-      return context != 0L;
-    } catch (Throwable e) {
-      return false;
-    } finally {
-      if (context != 0L) {
-        alcDestroyContext(context);
-      }
-      if (device != 0L) {
-        alcCloseDevice(device);
-      }
-    }
-  }
-
-  /**
-   * Creates a new {@link OpenALMixer} and initializes the OpenAL context.
-   *
-   * @return a new OpenAL mixer
-   */
-  @Override
-  public Mixer create() {
-    return new OpenALMixer();
+    return true;
   }
 
   @Override
   public String name() {
     return "OpenAL-Mixer-Provider";
+  }
+
+  @Override
+  public Mixer create() {
+    return new OpenALMixer();
   }
 }

@@ -26,6 +26,7 @@ package net.nanitu.gfx.buffer;
 
 import net.nanitu.gfx.Device;
 import net.nanitu.gfx.cmd.Encoder;
+import net.nanitu.memory.Memory;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -39,7 +40,7 @@ import org.jspecify.annotations.Nullable;
  * <ol>
  *   <li>Create with {@link Device#getBuffer device.createBuffer(desc)}.
  *   <li>Allocate storage with {@link #allocate(int, byte[])} or upload immediately
- *       with {@link #submit(byte[], int)} (which auto-allocates if needed).
+ *       with {@link #submit(byte[], int, int)} (which auto-allocates if needed).
  *   <li>Bind the buffer to an {@link Encoder} for drawing.
  *   <li>Update contents each frame with {@link #submit}.
  *   <li>Call {@link #close()} when the buffer is no longer needed.
@@ -110,20 +111,64 @@ public interface BufferObject extends AutoCloseable {
    * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
    * orphans the previous allocation before writing, which avoids pipeline stalls.
    *
-   * @param data   the bytes to upload
+   * @param data   the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param offset byte offset within the buffer to start writing
+   * @param size   bytes that will be uploaded
+   */
+  default void submit(byte[] data, int offset, int size) {
+    submit(new Memory(data).slice(0, size), offset);
+  }
+
+  /**
+   * Uploads bytes into the buffer at the given offset.
+   *
+   * <p>If the upload overflows the current capacity and {@link #canExpand()}
+   * returns {@code true}, the buffer is transparently reallocated.
+   *
+   * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
+   * orphans the previous allocation before writing, which avoids pipeline stalls.
+   *
+   * @param data   the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
    * @param offset byte offset within the buffer to start writing
    */
-  void submit(byte[] data, int offset);
+  default void submit(byte[] data, int offset) {
+    submit(data, offset, data.length);
+  }
 
   /**
    * Uploads bytes starting at offset 0.
    *
-   * <p>Equivalent to {@link #submit(byte[], int) submit(data, 0)}.
+   * <p>Equivalent to {@link #submit(byte[], int, int) submit(data, 0)}.
    *
-   * @param data the bytes to upload
+   * @param data the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
    */
   default void submit(byte[] data) {
-    submit(data, 0);
+    submit(data, 0, data.length);
+  }
+
+  /**
+   * Uploads bytes into the buffer at the given offset.
+   *
+   * <p>If the upload overflows the current capacity and {@link #canExpand()}
+   * returns {@code true}, the buffer is transparently reallocated.
+   *
+   * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
+   * orphans the previous allocation before writing, which avoids pipeline stalls.
+   *
+   * @param memory the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param offset byte offset within the buffer to start writing
+   */
+  void submit(Memory memory, int offset);
+
+  /**
+   * Uploads bytes starting at offset 0.
+   *
+   * <p>Equivalent to {@link #submit(byte[], int, int) submit(data, 0)}.
+   *
+   * @param memory the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   */
+  default void submit(Memory memory) {
+    submit(memory, 0);
   }
 
   @Override

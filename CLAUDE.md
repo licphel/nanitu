@@ -42,7 +42,7 @@
 
 ### Documentation
 
-- You do not to write any Javadocs
+- You need not write Javadocs
 - You can write in-line comments if the logic here is tricky or hard to understand
 
 ### Constants

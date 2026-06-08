@@ -42,6 +42,7 @@ import net.nanitu.gfx.texture.SamplerDesc;
 import net.nanitu.gfx.texture.Texture;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
+import net.nanitu.memory.Buffer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -97,9 +98,8 @@ public final class Brush implements AutoCloseable {
     InternalResources.init(ctx);
 
     renderTarget = ctx.getSwapchain();
-    sampler = ctx.getSampler(SamplerDesc.DEFAULT);
-    camera = Camera2D.normal(800, 600);
-
+    sampler = ctx.getSampler(SamplerDesc.PIXEL);
+    camera = Camera2D.normal(800, 450);
     ubo = ctx.getBuffer(BufferObjectDesc.uniform());
     encoder = ctx.getEncoder(EncoderDesc.DEFAULT);
 
@@ -116,13 +116,6 @@ public final class Brush implements AutoCloseable {
     uploadViewProjection(Matrix4x4.IDENTITY);
 
     this.ctx = ctx;
-  }
-
-  private static void writeColorHalves(MultiMesh.StagingBuffer buf, Color c) {
-    buf.writeHalf(c.red());
-    buf.writeHalf(c.green());
-    buf.writeHalf(c.blue());
-    buf.writeHalf(c.alpha());
   }
 
   /**
@@ -376,7 +369,7 @@ public final class Brush implements AutoCloseable {
       bytes[off + 2] = (byte) (bits >> 16);
       bytes[off + 3] = (byte) (bits >> 24);
     }
-    ubo.submit(bytes, 0);
+    ubo.submit(bytes, 0, bytes.length);
   }
 
   /**
@@ -404,8 +397,8 @@ public final class Brush implements AutoCloseable {
     assertPrimitive(BrushPrimitive.TEXTURE_SPRITE);
     assertTexture(tex);
 
-    MultiMesh.StagingBuffer vBuf = target.vertexBuf;
-    MultiMesh.StagingBuffer iBuf = target.indexBuf;
+    Buffer vBuf = target.vertexBuf;
+    Buffer iBuf = target.indexBuf;
 
     float invW = 1.0F / tex.width();
     float invH = 1.0F / tex.height();
@@ -434,41 +427,41 @@ public final class Brush implements AutoCloseable {
     float dMid = (p0.z() + p2.z()) * 0.5F;
 
     // Vertex 0
-    vBuf.writeFloat(p0.x());
-    vBuf.writeFloat(p0.y());
-    vBuf.writeFloat(p0.z());
-    writeColorHalves(vBuf, color);
-    vBuf.writeFloat(u);
-    vBuf.writeFloat(v);
+    vBuf.putFloat(p0.x());
+    vBuf.putFloat(p0.y());
+    vBuf.putFloat(p0.z());
+    vBuf.putLong(color.packToHalves());
+    vBuf.putFloat(u);
+    vBuf.putFloat(v);
     // Vertex 1
-    vBuf.writeFloat(p1.x());
-    vBuf.writeFloat(p1.y());
-    vBuf.writeFloat(dMid);
-    writeColorHalves(vBuf, color);
-    vBuf.writeFloat(u2);
-    vBuf.writeFloat(v);
+    vBuf.putFloat(p1.x());
+    vBuf.putFloat(p1.y());
+    vBuf.putFloat(dMid);
+    vBuf.putLong(color.packToHalves());
+    vBuf.putFloat(u2);
+    vBuf.putFloat(v);
     // Vertex 2
-    vBuf.writeFloat(p2.x());
-    vBuf.writeFloat(p2.y());
-    vBuf.writeFloat(p2.z());
-    writeColorHalves(vBuf, color);
-    vBuf.writeFloat(u2);
-    vBuf.writeFloat(v2);
+    vBuf.putFloat(p2.x());
+    vBuf.putFloat(p2.y());
+    vBuf.putFloat(p2.z());
+    vBuf.putLong(color.packToHalves());
+    vBuf.putFloat(u2);
+    vBuf.putFloat(v2);
     // Vertex 3
-    vBuf.writeFloat(p3.x());
-    vBuf.writeFloat(p3.y());
-    vBuf.writeFloat(dMid);
-    writeColorHalves(vBuf, color);
-    vBuf.writeFloat(u);
-    vBuf.writeFloat(v2);
+    vBuf.putFloat(p3.x());
+    vBuf.putFloat(p3.y());
+    vBuf.putFloat(dMid);
+    vBuf.putLong(color.packToHalves());
+    vBuf.putFloat(u);
+    vBuf.putFloat(v2);
 
     int baseVertex = target.vertexCount;
-    iBuf.writeInt(baseVertex);
-    iBuf.writeInt(baseVertex + 2);
-    iBuf.writeInt(baseVertex + 1);
-    iBuf.writeInt(baseVertex + 2);
-    iBuf.writeInt(baseVertex);
-    iBuf.writeInt(baseVertex + 3);
+    iBuf.putInt(baseVertex);
+    iBuf.putInt(baseVertex + 2);
+    iBuf.putInt(baseVertex + 1);
+    iBuf.putInt(baseVertex + 2);
+    iBuf.putInt(baseVertex);
+    iBuf.putInt(baseVertex + 3);
 
     target.write(4, 6);
   }
@@ -660,8 +653,8 @@ public final class Brush implements AutoCloseable {
     }
     assertPrimitive(BrushPrimitive.COLOR_SPRITE);
 
-    MultiMesh.StagingBuffer vBuf = target.vertexBuf;
-    MultiMesh.StagingBuffer iBuf = target.indexBuf;
+    Buffer vBuf = target.vertexBuf;
+    Buffer iBuf = target.indexBuf;
 
     Vector3 p0 = transform.top().transform(new Vector3(x, y, depth));
     Vector3 p1 = transform.top().transform(new Vector3(x + w, y, depth));
@@ -671,33 +664,33 @@ public final class Brush implements AutoCloseable {
     float dMid = (p0.z() + p2.z()) * 0.5F;
 
     // Vertex 0
-    vBuf.writeFloat(p0.x());
-    vBuf.writeFloat(p0.y());
-    vBuf.writeFloat(p0.z());
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(p0.x());
+    vBuf.putFloat(p0.y());
+    vBuf.putFloat(p0.z());
+    vBuf.putLong(color.packToHalves());
     // Vertex 1
-    vBuf.writeFloat(p1.x());
-    vBuf.writeFloat(p1.y());
-    vBuf.writeFloat(dMid);
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(p1.x());
+    vBuf.putFloat(p1.y());
+    vBuf.putFloat(dMid);
+    vBuf.putLong(color.packToHalves());
     // Vertex 2
-    vBuf.writeFloat(p2.x());
-    vBuf.writeFloat(p2.y());
-    vBuf.writeFloat(p2.z());
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(p2.x());
+    vBuf.putFloat(p2.y());
+    vBuf.putFloat(p2.z());
+    vBuf.putLong(color.packToHalves());
     // Vertex 3
-    vBuf.writeFloat(p3.x());
-    vBuf.writeFloat(p3.y());
-    vBuf.writeFloat(dMid);
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(p3.x());
+    vBuf.putFloat(p3.y());
+    vBuf.putFloat(dMid);
+    vBuf.putLong(color.packToHalves());
 
     int baseVertex = target.vertexCount;
-    iBuf.writeInt(baseVertex);
-    iBuf.writeInt(baseVertex + 2);
-    iBuf.writeInt(baseVertex + 1);
-    iBuf.writeInt(baseVertex + 2);
-    iBuf.writeInt(baseVertex);
-    iBuf.writeInt(baseVertex + 3);
+    iBuf.putInt(baseVertex);
+    iBuf.putInt(baseVertex + 2);
+    iBuf.putInt(baseVertex + 1);
+    iBuf.putInt(baseVertex + 2);
+    iBuf.putInt(baseVertex);
+    iBuf.putInt(baseVertex + 3);
 
     target.write(4, 6);
   }
@@ -749,20 +742,20 @@ public final class Brush implements AutoCloseable {
     }
     assertPrimitive(BrushPrimitive.COLOR_LINE);
 
-    MultiMesh.StagingBuffer vBuf = target.vertexBuf;
+    Buffer vBuf = target.vertexBuf;
 
     Vector3 t1 = transform.top().transform(new Vector3(x1, y1, depth));
     Vector3 t2 = transform.top().transform(new Vector3(x2, y2, depth));
 
-    vBuf.writeFloat(t1.x());
-    vBuf.writeFloat(t1.y());
-    vBuf.writeFloat(t1.z());
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(t1.x());
+    vBuf.putFloat(t1.y());
+    vBuf.putFloat(t1.z());
+    vBuf.putLong(color.packToHalves());
 
-    vBuf.writeFloat(t2.x());
-    vBuf.writeFloat(t2.y());
-    vBuf.writeFloat(t2.z());
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(t2.x());
+    vBuf.putFloat(t2.y());
+    vBuf.putFloat(t2.z());
+    vBuf.putLong(color.packToHalves());
 
     target.write(2, 0);
   }
@@ -789,14 +782,14 @@ public final class Brush implements AutoCloseable {
     }
     assertPrimitive(BrushPrimitive.COLOR_POINT);
 
-    MultiMesh.StagingBuffer vBuf = target.vertexBuf;
+    Buffer vBuf = target.vertexBuf;
 
     Vector3 t = transform.top().transform(new Vector3(x, y, depth));
 
-    vBuf.writeFloat(t.x());
-    vBuf.writeFloat(t.y());
-    vBuf.writeFloat(t.z());
-    writeColorHalves(vBuf, color);
+    vBuf.putFloat(t.x());
+    vBuf.putFloat(t.y());
+    vBuf.putFloat(t.z());
+    vBuf.putLong(color.packToHalves());
 
     target.write(1, 0);
   }
@@ -919,7 +912,7 @@ public final class Brush implements AutoCloseable {
     encoder.setRenderPipe(state.pipe);
 
     if (node.dirty) {
-      node.vbo.submit(node.vertexBuf.toByteArray());
+      node.vbo.submit(node.vertexBuf.slice());
     }
     encoder.setBuffer(node.vbo);
 
@@ -933,7 +926,7 @@ public final class Brush implements AutoCloseable {
         }
         encoder.setTopology(Topology.TRIANGLE);
         if (node.dirty) {
-          node.ibo.submit(node.indexBuf.toByteArray());
+          node.ibo.submit(node.indexBuf.slice());
         }
         encoder.setBuffer(node.ibo);
         encoder.drawIndexed(node.indexCount, 0);
@@ -941,7 +934,7 @@ public final class Brush implements AutoCloseable {
       case COLOR_SPRITE -> {
         encoder.setTopology(Topology.TRIANGLE);
         if (node.dirty) {
-          node.ibo.submit(node.indexBuf.toByteArray());
+          node.ibo.submit(node.indexBuf.slice());
         }
         encoder.setBuffer(node.ibo);
         encoder.drawIndexed(node.indexCount, 0);

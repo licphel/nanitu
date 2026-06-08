@@ -28,6 +28,7 @@ import net.nanitu.gfx.buffer.BufferFrequency;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.buffer.BufferUsage;
+import net.nanitu.memory.Memory;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
@@ -45,7 +46,8 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * via {@link OpenGLDevice#submit(Runnable)} for execution on the render thread.
  *
  * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
- * a {@link #submit(byte[], int)} call at offset 0 discards the previous allocation (via an extra {@code glBufferData})
+ * a {@link #submit(byte[], int, int)} call at offset 0 discards the previous allocation (via an extra {@code
+ * glBufferData})
  * before writing. This technique avoids GPU pipeline stalls by letting the driver rotate through fresh backing storage
  * each frame. The trade-off is an extra allocation per frame.
  *
@@ -126,10 +128,11 @@ final class OpenGLBufferObject implements BufferObject {
   }
 
   @Override
-  public void submit(byte[] data, int offset) {
+  public void submit(Memory memory, int offset) {
     ctx.submit(() -> {
       OpenGLCache cache = ctx.cache;
-      int needed = offset + data.length;
+      int size = (int) memory.size();
+      int needed = offset + size;
       cache.bindBuffer(target, handle);
 
       if (needed > capacity) {
@@ -143,12 +146,18 @@ final class OpenGLBufferObject implements BufferObject {
         glBufferData(target, capacity, hint);
       }
 
-      ByteBuffer bb = memAlloc(data.length);
-      try {
-        bb.put(data).flip();
-        glBufferSubData(target, offset, bb);
-      } finally {
-        memFree(bb);
+      if (memory.isNative()) {
+        // Direct memories can directly be passed to OpenGL.
+        // Or else, we just need to wrap it in a direct buffer.
+        glBufferSubData(target, offset, memory.segment().asByteBuffer());
+      } else {
+        ByteBuffer bb = memAlloc(size);
+        try {
+          bb.put(memory.segment().asByteBuffer()).flip();
+          glBufferSubData(target, offset, bb);
+        } finally {
+          memFree(bb);
+        }
       }
     });
   }
