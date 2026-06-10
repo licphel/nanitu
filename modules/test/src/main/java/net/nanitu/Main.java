@@ -51,7 +51,9 @@ import net.nanitu.gfx.spi.ViewProvider;
 import net.nanitu.gfx.sprite.Brush;
 import net.nanitu.gfx.sprite.MultiMesh;
 import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.Text;
+import net.nanitu.gfx.text.Style;
+import net.nanitu.gfx.text.TextLiteral;
+import net.nanitu.gfx.text.TextSequence;
 import net.nanitu.gfx.texture.*;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
@@ -138,23 +140,23 @@ public class Main {
 
   private static final float[] CUBE_DATA = {
       // Front  (+z)
-      -0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 1, 0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, 0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 0, -0.5f,
-      0.5f, 0.5f, 0, 0, 1, 0, 0,
+      -0.5F, -0.5F, 0.5F, 0, 0, 1, 0, 1, 0.5F, -0.5F, 0.5F, 0, 0, 1, 1, 1, 0.5F, 0.5F, 0.5F, 0, 0, 1, 1, 0, -0.5F,
+      0.5F, 0.5F, 0, 0, 1, 0, 0,
       // Back   (-z)
-      0.5f, -0.5f, -0.5f, 0, 0, -1, 0, 1, -0.5f, -0.5f, -0.5f, 0, 0, -1, 1, 1, -0.5f, 0.5f, -0.5f, 0, 0, -1, 1, 0,
-      0.5f, 0.5f, -0.5f, 0, 0, -1, 0, 0,
+      0.5F, -0.5F, -0.5F, 0, 0, -1, 0, 1, -0.5F, -0.5F, -0.5F, 0, 0, -1, 1, 1, -0.5F, 0.5F, -0.5F, 0, 0, -1, 1, 0,
+      0.5F, 0.5F, -0.5F, 0, 0, -1, 0, 0,
       // Right  (+x)
-      0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1, 0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 1, 0.5f, 0.5f, -0.5f, 1, 0, 0, 1, 0, 0.5f,
-      0.5f, 0.5f, 1, 0, 0, 0, 0,
+      0.5F, -0.5F, 0.5F, 1, 0, 0, 0, 1, 0.5F, -0.5F, -0.5F, 1, 0, 0, 1, 1, 0.5F, 0.5F, -0.5F, 1, 0, 0, 1, 0, 0.5F,
+      0.5F, 0.5F, 1, 0, 0, 0, 0,
       // Left   (-x)
-      -0.5f, -0.5f, -0.5f, -1, 0, 0, 0, 1, -0.5f, -0.5f, 0.5f, -1, 0, 0, 1, 1, -0.5f, 0.5f, 0.5f, -1, 0, 0, 1, 0,
-      -0.5f, 0.5f, -0.5f, -1, 0, 0, 0, 0,
+      -0.5F, -0.5F, -0.5F, -1, 0, 0, 0, 1, -0.5F, -0.5F, 0.5F, -1, 0, 0, 1, 1, -0.5F, 0.5F, 0.5F, -1, 0, 0, 1, 0,
+      -0.5F, 0.5F, -0.5F, -1, 0, 0, 0, 0,
       // Top    (+y)
-      -0.5f, 0.5f, 0.5f, 0, 1, 0, 0, 1, 0.5f, 0.5f, 0.5f, 0, 1, 0, 1, 1, 0.5f, 0.5f, -0.5f, 0, 1, 0, 1, 0, -0.5f,
-      0.5f, -0.5f, 0, 1, 0, 0, 0,
+      -0.5F, 0.5F, 0.5F, 0, 1, 0, 0, 1, 0.5F, 0.5F, 0.5F, 0, 1, 0, 1, 1, 0.5F, 0.5F, -0.5F, 0, 1, 0, 1, 0, -0.5F,
+      0.5F, -0.5F, 0, 1, 0, 0, 0,
       // Bottom (-y)
-      -0.5f, -0.5f, -0.5f, 0, -1, 0, 0, 1, 0.5f, -0.5f, -0.5f, 0, -1, 0, 1, 1, 0.5f, -0.5f, 0.5f, 0, -1, 0, 1, 0,
-      -0.5f, -0.5f, 0.5f, 0, -1, 0, 0, 0,};
+      -0.5F, -0.5F, -0.5F, 0, -1, 0, 0, 1, 0.5F, -0.5F, -0.5F, 0, -1, 0, 1, 1, 0.5F, -0.5F, 0.5F, 0, -1, 0, 1, 0,
+      -0.5F, -0.5F, 0.5F, 0, -1, 0, 0, 0,};
 
   private static final int[] CUBE_INDICES = {0, 1, 2, 0, 2, 3,    // Front  — CCW from +z
       4, 5, 6, 4, 6, 7,    // Back   — CCW from -z
@@ -171,7 +173,7 @@ public class Main {
   static void main(String[] args) throws IOException {
     // --- Audio ---
     Mixer mixer = Service.get(MixerProvider.class).create();
-    Clip clip = null;
+    Clip clip;
     try {
       Path p = ResourceFinder.getAppRoot().resolve(".ref", "dopd.wav");
       AudioInputStream audio = AudioInputStream.open(new FileInputStream(p.toFile()));
@@ -198,15 +200,15 @@ public class Main {
     // --- Camera ---
     CameraPerspective3D camera = new CameraPerspective3D();
     camera.setAspectRatio(theView.controller().size().x() / theView.controller().size().y());
-    camera.setNearPlane(0.1f);
-    camera.setFarPlane(100.0f);
-    camera.setPosition(new Vector3(2.0f, 1.5f, 3.0f));
+    camera.setNearPlane(0.1F);
+    camera.setFarPlane(100.0F);
+    camera.setPosition(new Vector3(2.0F, 1.5F, 3.0F));
     camera.setTarget(Vector3.ZERO);
 
     // --- Light ---
-    Vector3 lightPos = new Vector3(3.0f, 5.0f, 2.0f);
-    Vector3 lightColor = new Vector3(1.0f, 0.95f, 0.8f);
-    Vector3 ambient = new Vector3(0.25f, 0.25f, 0.28f);
+    Vector3 lightPos = new Vector3(3.0F, 5.0F, 2.0F);
+    Vector3 lightColor = new Vector3(1.0F, 0.95F, 0.8F);
+    Vector3 ambient = new Vector3(0.25F, 0.25F, 0.28F);
 
     // --- Shaders ---
     ShaderModule vert = dev.getShaderModule(new ShaderModuleDesc(ShaderType.VERTEX, VERT_SRC));
@@ -263,12 +265,12 @@ public class Main {
     resourceSet.bindUniform(2, uboLighting, 64, 0);
 
     Encoder enc = dev.getEncoder(EncoderDesc.DEFAULT);
-    RenderPassDesc clearDesc = RenderPassDesc.of(new Color(0.1f, 0.12f, 0.15f, 1.0f));
+    RenderPassDesc clearDesc = RenderPassDesc.of(new Color(0.1F, 0.12F, 0.15F, 1.0F));
 
-    Font font = Font.open(".ref/pix.otf");
+    Font font = Font.open(dev, ".ref/main.ttf");
 
     // --- Main loop ---
-    float angle = 0.0f;
+    float angle = 0.0F;
     double lastTime = System.nanoTime();
     int frame = 0;
     final int MAX_FRAMES = 6000000;
@@ -285,10 +287,10 @@ public class Main {
       mixer.pollEvents();
       dev.pollEvents();
 
-      angle += 45.0f * delta;
-      float rad = (float) Math.toRadians(angle * 0.5f);
-      camera.setPosition(new Vector3((float) Math.sin(rad) * 3.0f, 1.5f + (float) Math.sin(rad * 1.3f) * 0.5f,
-          (float) Math.cos(rad) * 3.0f));
+      angle += 45.0F * delta;
+      float rad = (float) Math.toRadians(angle * 0.5F);
+      camera.setPosition(new Vector3((float) Math.sin(rad) * 3.0F, 1.5F + (float) Math.sin(rad * 1.3F) * 0.5F,
+          (float) Math.cos(rad) * 3.0F));
       camera.setTarget(Vector3.ZERO);
 
       Matrix4x4 model = Matrix4x4.createRotation(Vector3.UNIT_Y, (float) Math.toRadians(angle));
@@ -314,23 +316,58 @@ public class Main {
        */
 
       Brush brush = mesh.begin(RenderPassDesc.DEFAULT);
-      brush.setDepth(0.0F);
       brush.setCamera(new Camera2D(800, 450));
+      TextSequence cns = new TextSequence().justify(true).flipY(true).maxWidth(260);
+      cns.newline();
+      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style.Builder(font).fontSize(8).fontStyle(Font.BOLD | Font.ITALIC).build()));
+      cns.newline();
+      cns.append(new TextLiteral("Success is not final, failure is not fatal: it is the courage to continue that counts. Every morning brings a fresh opportunity to start anew, to shed the weight of yesterday's mistakes, and to move forward with a quiet determination. Life rarely unfolds in straight lines; instead, it twists and turns, presenting challenges that test our resolve and moments of joy that remind us why we persevere. The small, consistent steps we take each day often matter far more than the occasional leaps. In the end, it is not the applause or the accolades that define us, but the strength we find within ourselves during the quiet, uncelebrated moments—the times when no one is watching, yet we choose to keep going. Embrace the journey with all its imperfections, for it is through struggle that we discover who we truly are.", new Style.Builder(font).fontSize(8).build()));
+      cns.append(new TextLiteral("Insert a BIG component!", new Style(font, Color.WHITE, Font.ITALIC | Font.BOLD | Font.UNDERLINE, 16)));
+      cns.append(new TextLiteral("Success is not final, failure is not fatal: it is the courage to continue that counts. Every morning brings a fresh opportunity to start anew, to shed the weight of yesterday's mistakes, and to move forward with a quiet determination. Life rarely unfolds in straight lines; instead, it twists and turns, presenting challenges that test our resolve and moments of joy that remind us why we persevere. The small, consistent steps we take each day often matter far more than the occasional leaps. In the end, it is not the applause or the accolades that define us, but the strength we find within ourselves during the quiet, uncelebrated moments—the times when no one is watching, yet we choose to keep going. Embrace the journey with all its imperfections, for it is through struggle that we discover who we truly are.", new Style.Builder(font).fontSize(8).build()));
+      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style(font, Color.WHITE, Font.ITALIC | Font.STRIKETHROUGH | Font.UNDERLINE, 8)));
+      cns.newline();
+      brush.drawText(cns, 200, 100);
+      brush.drawRectangle(200, 100, 3, 3);
+      brush.setColor(Color.RED);
+      // bounds frame: compensate for originY so it aligns with the rendered text position.
+      float boundsOriginX = 200 - cns.raster().bounds().minX();
+      float boundsOriginY = 100 - cns.raster().bounds().minY();
+      brush.drawRectangleFrame(cns.raster().bounds().translate(new Vector2(boundsOriginX, boundsOriginY)));
+      brush.setColor(Color.WHITE);
+
+      Vector2 cursor = theView.controller().cursorPosition();
+      // drawText places text so that bounds top-left maps to (200, 100).
+      // hitTest operates in pen space, so subtract (200 - bounds.minX(), 100 - bounds.minY()).
+      float hitOriginX = 200 - cns.raster().bounds().minX();
+      float hitOriginY = 100 - cns.raster().bounds().minY();
+      cursor = new Camera2D(800, 450).unproject(cursor, brush.currentViewport());
+      int idx = cns.raster().hitTest(cursor.subtract(new Vector2(200, 100)));
+      if (idx >= 0) {
+        // hitTest returns a char index; find the entry whose charIndex matches.
+        for (var entry : cns.raster().entries()) {
+          if (entry.charIndex() == idx) {
+            brush.drawRectangleFrame(entry.bounds().translate(new Vector2(boundsOriginX, boundsOriginY)));
+            break;
+          }
+        }
+        if (idx < cns.text().length())
+          brush.drawText(new TextLiteral("" + cns.text().charAt(idx), new Style.Builder(font).fontSize(16).build()), 5, 5);
+      }
       brush.setViewport(Box2.create(0, 0, (int) theView.controller().size().x(),
           (int) theView.controller().size().y()));
+      brush.setColor(new Color(1.0F, 1.0F, 1.0F, 0.2F));
       for (int j = 0; j < 4; j++) {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
           brush.transform.push();
-          brush.setDepth(1 - (i / 2000.0F + j / 10F));
           brush.transform.load(Matrix3x2.createRotation(frame / 50.0F,
-              new Vector2(i / 2.0F, j * 100F).add(new Vector2(50, 50))).toMatrix4x4());
+              new Vector2(i * 50.0F, j * 100F).add(new Vector2(50, 50))).toMatrix4x4());
           brush.drawTexture(texture, i / 2.0F, j * 100F, 100, 100);
           brush.transform.pop();
         }
       }
+      brush.setColor(Color.WHITE);
       brush.drawLine(0, 100, 200, 200);
-      Text text = new Text.Builder(font, "Text rendering test").widthLimit(100).fontSize(16).build();
-      brush.drawText(text, 200, 200);
+
 
       mesh.end();
 

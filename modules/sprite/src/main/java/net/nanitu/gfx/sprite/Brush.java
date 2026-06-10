@@ -34,12 +34,10 @@ import net.nanitu.gfx.pass.RenderTarget;
 import net.nanitu.gfx.pipe.Pipeline;
 import net.nanitu.gfx.pipe.Topology;
 import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.Glyph;
 import net.nanitu.gfx.text.Text;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.SamplerDesc;
-import net.nanitu.gfx.texture.Texture;
+import net.nanitu.gfx.text.raster.Glyph;
+import net.nanitu.gfx.text.raster.Raster;
+import net.nanitu.gfx.texture.*;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
 import net.nanitu.memory.Buffer;
@@ -54,7 +52,7 @@ import java.util.function.Consumer;
  * nodes on the parent MultiMesh. Call {@link #flush()} to submit pending draws to the GPU,
  * {@link #begin(RenderPassDesc)} to start a render pass, and {@link #close()} when done.
  *
- * <p>Each Brush carries its own transform stack, camera, color tint, sampler, depth,
+ * <p>Each Brush carries its own transform stack, camera, color tint, sampler, 0.0F,
  * and view-projection matrix. These affect subsequent draw calls until changed.
  *
  * <p>This class is not thread-safe.
@@ -74,7 +72,6 @@ public final class Brush implements AutoCloseable {
   private final BufferObject ubo;
   // State
   private final BrushState state = new BrushState();
-  private final Device ctx;
   /** Callback invoked after each {@link #flush()}, may be {@code null}. */
   @Nullable
   public Consumer<Brush> onFlushed;
@@ -88,8 +85,6 @@ public final class Brush implements AutoCloseable {
   private Scissor currentScissor = Scissor.DISABLED;
   /** Current rendering color tint. */
   private Color color = Color.WHITE;
-  /** Depth value used for depth testing ({@code 0.0} = near). */
-  private float depth;
 
   Brush(MultiMesh parent, Device ctx) {
     this.parent = parent;
@@ -114,8 +109,6 @@ public final class Brush implements AutoCloseable {
 
     // Upload identity view-projection
     uploadViewProjection(Matrix4x4.IDENTITY);
-
-    this.ctx = ctx;
   }
 
   /**
@@ -134,24 +127,6 @@ public final class Brush implements AutoCloseable {
    */
   public void setColor(Color color) {
     this.color = color;
-  }
-
-  /**
-   * Returns the current depth value.
-   *
-   * @return the depth ({@code 0.0} = near)
-   */
-  public float depth() {
-    return depth;
-  }
-
-  /**
-   * Sets the depth value used for depth testing.
-   *
-   * @param depth the depth ({@code 0.0} = near)
-   */
-  public void setDepth(float depth) {
-    this.depth = depth;
   }
 
   /**
@@ -377,7 +352,7 @@ public final class Brush implements AutoCloseable {
    *
    * <p>The source region {@code (u, v, uw, vh)} is specified in texel coordinates.
    * The destination rectangle {@code (x, y, w, h)} is specified in world units and transformed by the current transform
-   * stack. Current draw flags, color, and depth are applied.
+   * stack. Current draw flags, color, and 0.0F are applied.
    *
    * @param tex the texture to draw, does nothing if {@code null}
    * @param x   the X position in world units
@@ -389,19 +364,23 @@ public final class Brush implements AutoCloseable {
    * @param uw  the width of the source region in texels
    * @param vh  the height of the source region in texels
    */
-  public void drawTexture(@Nullable Texture tex, float x, float y, float w, float h, float u, float v, float uw,
+  public void drawTexture(@Nullable FragileTexture tex, float x, float y, float w, float h, float u, float v, float uw,
                           float vh) {
     if (tex == null || target == null) {
       return;
     }
+    Texture pinned = tex.pin();
+    if (pinned == null) {
+      return;
+    }
     assertPrimitive(BrushPrimitive.TEXTURE_SPRITE);
-    assertTexture(tex);
+    assertTexture(pinned);
 
     Buffer vBuf = target.vertexBuf;
     Buffer iBuf = target.indexBuf;
 
-    float invW = 1.0F / tex.width();
-    float invH = 1.0F / tex.height();
+    float invW = 1.0F / pinned.width();
+    float invH = 1.0F / pinned.height();
     u *= invW;
     v *= invH;
     float u2 = u + uw * invW;
@@ -419,10 +398,10 @@ public final class Brush implements AutoCloseable {
     }
 
     // Transform corners
-    Vector3 p0 = transform.top().transform(new Vector3(x, y, depth));
-    Vector3 p1 = transform.top().transform(new Vector3(x + w, y, depth));
-    Vector3 p2 = transform.top().transform(new Vector3(x + w, y + h, depth));
-    Vector3 p3 = transform.top().transform(new Vector3(x, y + h, depth));
+    Vector3 p0 = transform.top().transform(new Vector3(x, y, 0.0F));
+    Vector3 p1 = transform.top().transform(new Vector3(x + w, y, 0.0F));
+    Vector3 p2 = transform.top().transform(new Vector3(x + w, y + h, 0.0F));
+    Vector3 p3 = transform.top().transform(new Vector3(x, y + h, 0.0F));
 
     float dMid = (p0.z() + p2.z()) * 0.5F;
 
@@ -473,7 +452,7 @@ public final class Brush implements AutoCloseable {
    * @param dst the destination rectangle in world units
    * @param src the source region in texel coordinates
    */
-  public void drawTexture(@Nullable Texture tex, Box2 dst, Box2 src) {
+  public void drawTexture(@Nullable FragileTexture tex, Box2 dst, Box2 src) {
     if (tex == null) {
       return;
     }
@@ -487,11 +466,15 @@ public final class Brush implements AutoCloseable {
    * @param tex the texture
    * @param dst the destination rectangle in world units
    */
-  public void drawTexture(@Nullable Texture tex, Box2 dst) {
+  public void drawTexture(@Nullable FragileTexture tex, Box2 dst) {
     if (tex == null) {
       return;
     }
-    drawTexture(tex, dst, Box2.create(0, 0, tex.width(), tex.height()));
+    Texture pinned = tex.pin();
+    if (pinned == null) {
+      return;
+    }
+    drawTexture(tex, dst, Box2.create(0.0F, 0.0F, pinned.width(), pinned.height()));
   }
 
   /**
@@ -503,11 +486,15 @@ public final class Brush implements AutoCloseable {
    * @param w   the width in world units
    * @param h   the height in world units
    */
-  public void drawTexture(@Nullable Texture tex, float x, float y, float w, float h) {
+  public void drawTexture(@Nullable FragileTexture tex, float x, float y, float w, float h) {
     if (tex == null) {
       return;
     }
-    drawTexture(tex, x, y, w, h, 0, 0, tex.width(), tex.height());
+    Texture pinned = tex.pin();
+    if (pinned == null) {
+      return;
+    }
+    drawTexture(tex, x, y, w, h, 0, 0, pinned.width(), pinned.height());
   }
 
   /**
@@ -534,7 +521,7 @@ public final class Brush implements AutoCloseable {
     if (texPart == null) {
       return;
     }
-    drawTexture(new TexturePart(texPart.src(), src), dst);
+    drawTexture(new TexturePart(texPart, src), dst);
   }
 
   /**
@@ -656,10 +643,10 @@ public final class Brush implements AutoCloseable {
     Buffer vBuf = target.vertexBuf;
     Buffer iBuf = target.indexBuf;
 
-    Vector3 p0 = transform.top().transform(new Vector3(x, y, depth));
-    Vector3 p1 = transform.top().transform(new Vector3(x + w, y, depth));
-    Vector3 p2 = transform.top().transform(new Vector3(x + w, y + h, depth));
-    Vector3 p3 = transform.top().transform(new Vector3(x, y + h, depth));
+    Vector3 p0 = transform.top().transform(new Vector3(x, y, 0.0F));
+    Vector3 p1 = transform.top().transform(new Vector3(x + w, y, 0.0F));
+    Vector3 p2 = transform.top().transform(new Vector3(x + w, y + h, 0.0F));
+    Vector3 p3 = transform.top().transform(new Vector3(x, y + h, 0.0F));
 
     float dMid = (p0.z() + p2.z()) * 0.5F;
 
@@ -744,8 +731,8 @@ public final class Brush implements AutoCloseable {
 
     Buffer vBuf = target.vertexBuf;
 
-    Vector3 t1 = transform.top().transform(new Vector3(x1, y1, depth));
-    Vector3 t2 = transform.top().transform(new Vector3(x2, y2, depth));
+    Vector3 t1 = transform.top().transform(new Vector3(x1, y1, 0.0F));
+    Vector3 t2 = transform.top().transform(new Vector3(x2, y2, 0.0F));
 
     vBuf.putFloat(t1.x());
     vBuf.putFloat(t1.y());
@@ -784,7 +771,7 @@ public final class Brush implements AutoCloseable {
 
     Buffer vBuf = target.vertexBuf;
 
-    Vector3 t = transform.top().transform(new Vector3(x, y, depth));
+    Vector3 t = transform.top().transform(new Vector3(x, y, 0.0F));
 
     vBuf.putFloat(t.x());
     vBuf.putFloat(t.y());
@@ -819,32 +806,45 @@ public final class Brush implements AutoCloseable {
       return;
     }
 
-    float tx = x, ty = y;
+    Raster raster = text.raster();
+    Box2 rasterBd = raster.bounds();
+
+    float tx = x;
+    float ty = y;
     switch (alignment.horizontal()) {
-      case 0 -> tx -= text.bounds().width() / 2.0F;
-      case 1 -> tx -= text.bounds().width();
+      case 0 -> tx -= rasterBd.width() / 2.0F;
+      case 1 -> tx -= rasterBd.width();
     }
     switch (alignment.vertical()) {
-      case 0 -> ty -= text.bounds().height() / 2.0F;
-      case 1 -> ty -= text.bounds().height();
+      case 0 -> ty -= rasterBd.height() / 2.0F;
+      case 1 -> ty -= rasterBd.height();
     }
 
-    Font font = text.font();
-    int[] glyphs = text.glyphs();
-    float scale = text.scale();
-    float yBearingSign = text.flipY() ? -1.0F : 1.0F;
+    // Normalize entry coordinates: rasterBd.minY() is the pen-space origin offset.
+    // Subtract it so that the text block's visual top aligns with (tx, ty).
+    float originY = rasterBd.minY();
 
-    for (int i = 0; i < text.glyphCount(); i++) {
-      Glyph cg = font.rasterizeGlyph(ctx, glyphs[i], text.fontStyle());
+    Color originalColor = color();
+
+    for (Raster.Entry entry : raster.entries()) {
+      Glyph cg = entry.glyph();
       if (cg == null) {
         continue;
       }
 
-      float gx = tx + text.glyphX(i) + cg.bearingX() * scale;
-      float gy = ty + text.glyphY(i) + yBearingSign * cg.bearingY() * scale;
-
-      drawTexture(cg.texPart(), gx, gy, cg.texPart().width() * scale, cg.texPart().height() * scale);
+      // Bearings are baked in (gx, gy, pixelW, pixelH)
+      setColor(entry.color());
+      Box2 bounds = entry.bounds();
+      drawTexture(cg.texPart(), tx + bounds.minX(), ty + bounds.minY() - originY, bounds.width(), bounds.height());
     }
+
+    for (Raster.Stroke stroke : raster.strokes()) {
+      setColor(stroke.color());
+      drawRectangle(tx + stroke.bounds().minX(), ty + stroke.bounds().minY() - originY, stroke.bounds().width(),
+          stroke.bounds().height());
+    }
+
+    setColor(originalColor);
   }
 
   /**

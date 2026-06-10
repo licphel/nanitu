@@ -25,12 +25,12 @@
 package net.nanitu.gfx.text.freetype;
 
 import net.nanitu.gfx.Device;
-import net.nanitu.gfx.sprite.TexturePart;
 import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.FontStyle;
-import net.nanitu.gfx.text.Glyph;
+import net.nanitu.gfx.text.raster.Glyph;
+import net.nanitu.gfx.texture.FragileTexture;
 import net.nanitu.gfx.texture.Texture;
 import net.nanitu.gfx.texture.TextureDesc;
+import net.nanitu.gfx.texture.TexturePart;
 import net.nanitu.math.Box2;
 import net.nanitu.math.Box3;
 import net.nanitu.util.InternalApi;
@@ -51,13 +51,16 @@ import static org.lwjgl.util.freetype.FreeType.*;
  * <p>Each glyph is rasterized on demand via FreeType and packed into the atlas.
  * Re-requesting the same glyph returns the cached entry without re-rasterization.
  *
+ * <p>The atlas is backed by a {@link FragileTexture} so that all cached {@link TexturePart}s
+ * remain valid when the atlas grows — no cache invalidation or rebinding required.
+ *
  * <p>Must be {@linkplain #close() closed} to release the underlying texture atlas.
  */
 @InternalApi
 final class FreetypeGlyphCache implements AutoCloseable {
   private final Device device;
-  private final Map<Long, @Nullable Glyph> cache = new HashMap<>();
-  private @Nullable Texture atlas;
+  private final Map<GlyphKey, @Nullable Glyph> cache = new HashMap<>();
+  private @Nullable GrowableAtlas atlas;
   private int cursorX, cursorY, rowHeight, size;
   private int resolution = 0;
   private boolean disposed;
@@ -94,16 +97,18 @@ final class FreetypeGlyphCache implements AutoCloseable {
    *
    * @param font       the font to rasterize from
    * @param glyphIndex the glyph index within the font
-   * @param fontStyle  the style bitmask, combining flags from {@link FontStyle}
+   * @param fontStyle  the style bitmask, combining flags
    * @return the cached glyph, or {@code null} if the glyph has no visual representation
    */
-  public @Nullable Glyph get(Font font, int glyphIndex, int fontStyle) {
-    long key = (long) System.identityHashCode(font) << 32 | (glyphIndex & 0xFFFFL) << 8 | (fontStyle & 0xFFL);
-    Glyph c = cache.get(key);
-    if (c != null) {
-      return c;
+  public @Nullable Glyph get(FreetypeFont font, int glyphIndex, int fontStyle) {
+    if (glyphIndex == 0) {
+      return null; // glyph 0 is the .notdef sentinel — control chars, unmapped codepoints, etc.
     }
-    c = rasterize(((FreetypeFont) font).ftFaceRaw(), glyphIndex, fontStyle);
+    GlyphKey key = new GlyphKey(font.filePath(), resolution, glyphIndex, fontStyle);
+    if (cache.containsKey(key)) {
+      return cache.get(key);
+    }
+    Glyph c = rasterize(font.ftFaceRaw(), glyphIndex, fontStyle);
     cache.put(key, c);
     return c;
   }
@@ -114,10 +119,10 @@ final class FreetypeGlyphCache implements AutoCloseable {
     FT_GlyphSlot slot = ftFace.glyph();
 
     assert slot != null;
-    if (FontStyle.isBold(fontStyle)) {
+    if ((fontStyle & Font.BOLD) != 0) {
       FT_GlyphSlot_Embolden(slot);
     }
-    if (FontStyle.isItalic(fontStyle)) {
+    if ((fontStyle & Font.ITALIC) != 0) {
       FT_GlyphSlot_Oblique(slot);
     }
 
@@ -125,6 +130,16 @@ final class FreetypeGlyphCache implements AutoCloseable {
     FT_Bitmap bitmap = slot.bitmap();
 
     int w = bitmap.width(), h = bitmap.rows();
+
+    // For oblique glyphs FreeType skews the bitmap without updating x_advance, so the rightmost
+    // pixels spill past the advance box. Pad the advance to cover the actual bitmap right edge.
+    float advance = slot.advance().x() / 64.0F;
+    if ((fontStyle & Font.ITALIC) != 0) {
+      float bitmapRight = slot.bitmap_left() + w;
+      if (bitmapRight > advance) {
+        advance = bitmapRight;
+      }
+    }
     TexturePart tp;
 
     if (w > 0 && h > 0) {
@@ -158,12 +173,12 @@ final class FreetypeGlyphCache implements AutoCloseable {
       ensureAtlas(w, h);
 
       assert atlas != null;
-      atlas.submit(rgba, Box3.create(cursorX, cursorY, 0, w, h, 1));
+      atlas.pin().submit(rgba, Box3.create(cursorX, cursorY, 0, w, h, 1));
       tp = new TexturePart(atlas, Box2.create(cursorX, cursorY, w, h));
       cursorX += w;
       rowHeight = Math.max(rowHeight, h);
 
-      return new Glyph(tp, slot.bitmap_left(), slot.bitmap_top(), slot.advance().x() / 64.0F);
+      return new Glyph(tp, slot.bitmap_left(), slot.bitmap_top(), advance);
     }
 
     return null;
@@ -175,7 +190,7 @@ final class FreetypeGlyphCache implements AutoCloseable {
   private void ensureAtlas(int w, int h) {
     if (atlas == null) {
       size = 512;
-      atlas = device.getTexture(new TextureDesc.Builder().width(size).height(size).build());
+      atlas = new GrowableAtlas(device.getTexture(new TextureDesc.Builder().width(size).height(size).build()));
     }
     if (cursorX + w > size) {
       cursorX = 0;
@@ -187,15 +202,14 @@ final class FreetypeGlyphCache implements AutoCloseable {
     }
   }
 
-  /** Doubles the atlas size, copying existing content to the new texture. */
+  /** Doubles the atlas — GrowableAtlas.current is updated in place, all TextureParts see new texture automatically. */
   private void grow() {
     int newSize = size * 2;
-    Texture newAtlas = device.getTexture(new TextureDesc.Builder().width(newSize).height(newSize).build());
-
+    Texture newTex = device.getTexture(new TextureDesc.Builder().width(newSize).height(newSize).build());
     assert atlas != null;
-    atlas.blit(newAtlas, 0, 0, size, size, 0, 0, size, size);
-    atlas.close();
-    atlas = newAtlas;
+    atlas.current.blit(newTex, 0, 0, size, size, 0, 0, size, size);
+    atlas.current.close();
+    atlas.current = newTex;
     size = newSize;
   }
 
@@ -206,7 +220,24 @@ final class FreetypeGlyphCache implements AutoCloseable {
     }
     disposed = true;
     if (atlas != null) {
-      atlas.close();
+      atlas.current.close();
+    }
+  }
+
+  // Stable cache key: filePath + resolution + glyphIndex + fontStyle avoids identityHashCode collisions.
+  private record GlyphKey(String filePath, int resolution, int glyphIndex, int fontStyle) {}
+
+  // FragileTexture impl: holds a mutable Texture pointer. TextureParts pin() this to get current atlas.
+  private static final class GrowableAtlas implements FragileTexture {
+    Texture current;
+
+    GrowableAtlas(Texture initial) {
+      this.current = initial;
+    }
+
+    @Override
+    public Texture pin() {
+      return current;
     }
   }
 }

@@ -26,7 +26,7 @@ package net.nanitu.gfx.text.hb;
 
 import com.ibm.icu.text.Bidi;
 import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.sketch.ShapedText;
+import net.nanitu.gfx.text.raster.ShapeResult;
 import net.nanitu.gfx.text.spi.ShaperProvider;
 import org.lwjgl.util.harfbuzz.hb_glyph_info_t;
 import org.lwjgl.util.harfbuzz.hb_glyph_position_t;
@@ -44,16 +44,24 @@ import static org.lwjgl.util.harfbuzz.HarfBuzz.*;
  * <p>Uses HarfBuzz for glyph shaping and ICU4J for bidirectional text analysis.
  * Font faces are cached to avoid repeated blob creation.
  */
-public final class HarfbuzzShaper implements ShaperProvider {
-  private final Map<Font, Long> faceCache = new HashMap<>();
+public final class HarfbuzzShaper implements ShaperProvider, AutoCloseable {
+  // face handle → blob handle; both must be destroyed together when evicted
+  private final Map<Font, long[]> faceCache = new HashMap<>();
 
   @Override
-  public ShapedText shape(Font font, String text, float fontSize, boolean flipY, int fontStyle) {
+  public ShapeResult shape(Font font, String text, float fontSize, boolean flipY, int fontStyle) {
     Bidi bidi = new Bidi(text, Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT);
     byte[] utf8 = text.getBytes(StandardCharsets.UTF_8);
 
-    long face = faceCache.computeIfAbsent(font, f -> hb_face_create(hb_blob_create(f.fileData(),
-        HB_MEMORY_MODE_READONLY, 0L, null), 0));
+    long face;
+    long[] entry = faceCache.get(font);
+    if (entry != null) {
+      face = entry[0];
+    } else {
+      long blob = hb_blob_create(font.fileData(), HB_MEMORY_MODE_READONLY, 0L, null);
+      face = hb_face_create(blob, 0);
+      faceCache.put(font, new long[]{face, blob});
+    }
 
     long hbFont = hb_font_create(face);
     hb_font_set_scale(hbFont, (int) (fontSize * 64), (int) (fontSize * 64));
@@ -76,16 +84,16 @@ public final class HarfbuzzShaper implements ShaperProvider {
       int[] clusters = new int[gc];
       float[] advances = new float[gc];
       float[] offsets = new float[gc * 2];
-      float ySign = flipY ? -1.0f : 1.0f;
+      float ySign = flipY ? -1.0F : 1.0F;
 
       for (int i = 0; i < gc; i++) {
         hb_glyph_info_t info = infos.get(i);
         hb_glyph_position_t pos = positions.get(i);
         glyphs[i] = info.codepoint();
         clusters[i] = info.cluster();
-        advances[i] = pos.x_advance() / 64.0f;
-        offsets[i * 2] = pos.x_offset() / 64.0f;
-        offsets[i * 2 + 1] = ySign * pos.y_offset() / 64.0f;
+        advances[i] = pos.x_advance() / 64.0F;
+        offsets[i * 2] = pos.x_offset() / 64.0F;
+        offsets[i * 2 + 1] = ySign * pos.y_offset() / 64.0F;
       }
 
       int textLen = text.length();
@@ -105,11 +113,20 @@ public final class HarfbuzzShaper implements ShaperProvider {
         charIndices[i] = bp < byteToChar.length ? byteToChar[bp] : textLen - 1;
       }
 
-      return new ShapedText(font, text, glyphs, charIndices, advances, offsets, fontSize, flipY, fontStyle);
+      return new ShapeResult(glyphs, charIndices, advances, offsets);
     } finally {
       hb_buffer_destroy(buf);
       hb_font_destroy(hbFont);
     }
+  }
+
+  @Override
+  public void close() {
+    for (long[] entry : faceCache.values()) {
+      hb_face_destroy(entry[0]);
+      hb_blob_destroy(entry[1]);
+    }
+    faceCache.clear();
   }
 
   @Override

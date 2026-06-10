@@ -28,40 +28,39 @@ import net.nanitu.gfx.text.raster.Raster;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A node in a text component tree that can be rasterized for rendering.
+ * A single span of uniformly-styled text.
  *
- * <p>Implementations represent either a single styled span ({@link TextLiteral}) or
- * a composite sequence of text components ({@link TextSequence}). Each node provides the concatenated plain text and an
- * on-demand {@link Raster} for drawing.
+ * <p>A {@code TextLiteral} is the leaf node of a text component tree. Layout parameters
+ * are inherited from the parent {@link TextSequence}. The optional {@code meta} carries inline metadata such as
+ * hyperlinks or embedded images.
+ *
+ * @param text  the raw text content of this span
+ * @param style the style applied to this span
+ * @param meta  optional metadata, or {@code null} if none
  */
-public interface Text {
+public record TextLiteral(String text, Style style, Meta @Nullable [] meta) implements Text {
   /**
-   * Returns the concatenated plain text of this component and all its descendants.
+   * Creates a new {@code TextLiteral} instance with no metadata.
    *
-   * @return the full text content
+   * @param text  the raw text content of this span
+   * @param style the style applied to this span
    */
-  String text();
+  public TextLiteral(String text, Style style) {
+    this(text, style, null);
+  }
 
-  /**
-   * Appends a text component, returning a new {@link TextSequence} that starts with this component followed by the
-   * given one.
-   *
-   * @param component the text component to append
-   * @return a new sequence containing this component and {@code component}
-   */
-  TextSequence append(Text component);
+  @Override
+  public TextSequence append(Text component) {
+    return new TextSequence().append(this).append(component);
+  }
 
-  /**
-   * Rasterizes this text component into a {@link Raster} suitable for rendering.
-   *
-   * @return the rasterized text output
-   */
-  Raster raster();
+  @Override
+  public Raster raster() {
+    return new TextSequence().append(this).raster();
+  }
 
-  /**
-   * Returns the last style of the text component, for chaining text style or appending new lines.
-   *
-   * @return the last style
-   */
-  @Nullable Style forwadingStyle();
+  @Override
+  public Style forwadingStyle() {
+    return style;
+  }
 }

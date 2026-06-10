@@ -195,7 +195,7 @@ public class Camera2D {
      * Y-down orthographic: flip Y by swapping top/bottom.
      * (Conform to 2D conventions)
      */
-    vpMatrix = Matrix4x4.createOrthographic(left, right, bottom, top, -1.0F, 1.0F);
+    vpMatrix = Matrix4x4.createOrthographic(left, right, bottom, top, 0.0F, -1.0F);
   }
 
   /**

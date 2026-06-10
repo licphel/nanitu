@@ -24,42 +24,39 @@
 
 package net.nanitu.gfx.text;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
- * Constants and utility functions for font style bitmask flags.
+ * A hyperlink attached to a {@link TextLiteral}.
  *
- * <p>Each style occupies a distinct bit, so multiple styles can be combined
- * with bitwise OR. This is a utility class and cannot be instantiated.
+ * @param url the target URL of the hyperlink
  */
-public final class FontStyle {
-  /** Plain weight, no italic — the default style. */
-  public static final int REGULAR = 0;
-  /** Bold weight bit. */
-  public static final int BOLD = 1;
-  /** Italic slant bit. */
-  public static final int ITALIC = 2;
-  /** Bold and italic bits both set. */
-  public static final int BOLD_ITALIC = BOLD | ITALIC;
-
-  private FontStyle() {
-  }
+public record Href(String url) implements Meta {
+  private static final Logger LOGGER = LogManager.getLogger();
 
   /**
-   * Tests whether the bold bit is set in the given style bitmask.
-   *
-   * @param style the style bitmask
-   * @return {@code true} if the style includes bold weight
+   * Opens the hyperlink in the default browser.
    */
-  public static boolean isBold(int style) {
-    return (style & BOLD) != 0;
-  }
+  public void raiseBrowser() {
+    if (!Desktop.isDesktopSupported()) {
+      LOGGER.warn("Cannot open {}: Desktop is not supported.", url);
+      return;
+    }
 
-  /**
-   * Tests whether the italic bit is set in the given style bitmask.
-   *
-   * @param style the style bitmask
-   * @return {@code true} if the style includes italic slant
-   */
-  public static boolean isItalic(int style) {
-    return (style & ITALIC) != 0;
+    try {
+      URI uri = new URI(url);
+      Desktop.getDesktop().browse(uri);
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException("Invalid URL: " + url, e);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to open browser for: " + url, e);
+    }
   }
 }

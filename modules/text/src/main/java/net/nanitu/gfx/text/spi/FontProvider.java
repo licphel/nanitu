@@ -24,21 +24,23 @@
 
 package net.nanitu.gfx.text.spi;
 
+import net.nanitu.gfx.Device;
 import net.nanitu.gfx.text.Font;
 import net.nanitu.util.Service;
 
 /**
  * Service provider interface for creating {@link Font} instances from font files.
  *
- * <p>Implementations are discovered via {@link java.util.ServiceLoader} and provide
- * backend-specific font loading (e.g., FreeType, platform-native).
+ * <p>Implementations provide backend-specific font loading and are discovered
+ * through the {@link net.nanitu.util.Service} mechanism.
  */
 public interface FontProvider extends Service {
   /**
    * Creates a font from the given file path.
    *
-   * @param path the file system path to the font file
+   * @param device the graphics device
+   * @param path   the file system path to the font file
    * @return the loaded font, or {@code null} if creation failed
    */
-  Font create(String path);
+  Font create(Device device, String path);
 }

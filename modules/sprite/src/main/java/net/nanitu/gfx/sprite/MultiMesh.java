@@ -193,6 +193,10 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
       ibo.allocate(INITIAL_CAP, null);
     }
 
+    private static Buffer allocateBuffer() {
+      return new Buffer(MemoryAllocator.NATIVE.allocate(INITIAL_CAP), Endianness.NATIVE);
+    }
+
     /**
      * Returns whether this node contains no vertex data.
      *
@@ -228,10 +232,6 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
     void close() {
       vbo.close();
       ibo.close();
-    }
-
-    private static Buffer allocateBuffer() {
-      return new Buffer(MemoryAllocator.NATIVE.allocate(INITIAL_CAP), Endianness.NATIVE);
     }
   }
 }

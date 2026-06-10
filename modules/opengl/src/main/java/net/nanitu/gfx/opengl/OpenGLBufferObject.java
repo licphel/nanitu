@@ -129,6 +129,16 @@ final class OpenGLBufferObject implements BufferObject {
 
   @Override
   public void submit(Memory memory, int offset) {
+    /*
+     * Copy first since the memory is volatile.
+     * Users may pollute the memory after submission.
+     *
+     * P.S. This might influence the performance.
+     * However, this is essential, if we want a pure asynchronous submission.
+     */
+    ByteBuffer bb = memAlloc((int) memory.size());
+    bb.put(memory.segment().asByteBuffer()).flip();
+
     ctx.submit(() -> {
       OpenGLCache cache = ctx.cache;
       int size = (int) memory.size();
@@ -146,19 +156,8 @@ final class OpenGLBufferObject implements BufferObject {
         glBufferData(target, capacity, hint);
       }
 
-      if (memory.isNative()) {
-        // Direct memories can directly be passed to OpenGL.
-        // Or else, we just need to wrap it in a direct buffer.
-        glBufferSubData(target, offset, memory.segment().asByteBuffer());
-      } else {
-        ByteBuffer bb = memAlloc(size);
-        try {
-          bb.put(memory.segment().asByteBuffer()).flip();
-          glBufferSubData(target, offset, bb);
-        } finally {
-          memFree(bb);
-        }
-      }
+      glBufferSubData(target, offset, bb);
+      memFree(bb);
     });
   }
 

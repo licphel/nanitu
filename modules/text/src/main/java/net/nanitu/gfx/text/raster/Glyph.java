@@ -22,28 +22,20 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.spi;
+package net.nanitu.gfx.text.raster;
 
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.ShapeResult;
-import net.nanitu.util.Service;
+import net.nanitu.gfx.texture.TexturePart;
 
 /**
- * Service provider interface for text shaping backends.
+ * A rasterized glyph with its texture region and positioning data.
  *
- * <p>Implementations convert text strings into {@link ShapeResult} objects using
- * a shaping engine and are discovered through the {@link net.nanitu.util.Service} mechanism.
+ * <p>All position values are in pixels in a Y-up coordinate system. The texture
+ * region is {@code null} for glyphs with no visual representation, such as spaces.
+ *
+ * @param texPart  the region in the texture atlas, or {@code null} if the glyph has no visual representation
+ * @param bearingX the horizontal offset from the pen position to the left edge of the glyph, in pixels
+ * @param bearingY the vertical offset from the baseline to the top edge of the glyph, in pixels
+ * @param advance  the horizontal distance to advance the pen after rendering this glyph, in pixels
  */
-public interface ShaperProvider extends Service {
-  /**
-   * Shapes the given text string into glyph identifiers, advances, and offsets.
-   *
-   * @param font      the font to shape with
-   * @param text      the text string to shape
-   * @param fontSize  the font size, in pixels
-   * @param flipY     whether the Y-axis is flipped, affecting y-offset sign
-   * @param fontStyle the style bitmask, combining flags from {@link Font}
-   * @return the shaped text result containing glyph indices, advances, offsets, and character mappings
-   */
-  ShapeResult shape(Font font, String text, float fontSize, boolean flipY, int fontStyle);
+public record Glyph(TexturePart texPart, int bearingX, int bearingY, float advance) {
 }

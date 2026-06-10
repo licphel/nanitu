@@ -57,7 +57,17 @@ import net.nanitu.math.Box3;
  * @see TextureFormat
  * @see Sampler
  */
-public interface Texture extends AutoCloseable {
+public interface Texture extends FragileTexture, AutoCloseable {
+  /**
+   * Returns this texture.
+   *
+   * @return {@code this}
+   */
+  @Override
+  default Texture pin() {
+    return this;
+  }
+
   /**
    * Returns the descriptor that defines this texture's dimensions, format, and type.
    *

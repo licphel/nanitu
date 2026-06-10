@@ -27,7 +27,7 @@ package net.nanitu.gfx.text.freetype;
 import net.nanitu.gfx.Device;
 import net.nanitu.gfx.text.Font;
 import net.nanitu.gfx.text.FontMetrics;
-import net.nanitu.gfx.text.Glyph;
+import net.nanitu.gfx.text.raster.Glyph;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
@@ -50,7 +50,8 @@ import static org.lwjgl.util.freetype.FreeType.*;
 @InternalApi
 final class FreetypeFont implements Font {
   /** The default rasterization resolution, in pixels. */
-  public static final int DEFAULT_RESOLUTION = 64;
+  private static final int DEFAULT_RESOLUTION = 64;
+  private static final float BASIC_LINE_HEIGHT = 16.0F;
 
   private final FT_Face ftFace;
   private final long ftLib;
@@ -60,8 +61,10 @@ final class FreetypeFont implements Font {
   private boolean disposed;
   private @Nullable FreetypeGlyphCache glyphCache;
   private float resolution = DEFAULT_RESOLUTION;
+  private final Device device;
 
-  FreetypeFont(String path, int faceIndex) {
+  FreetypeFont(Device device, String path, int faceIndex) {
+    this.device = device;
     this.filePath = path;
 
     try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -81,11 +84,19 @@ final class FreetypeFont implements Font {
       }
 
       FT_Set_Pixel_Sizes(ftFace, 0, (int) BASIC_LINE_HEIGHT);
+      // sz.metrics() values are 26.6 fixed-point pixels at BASIC_LINE_HEIGHT.
+      // Divide by 64 → pixels, then by BASIC_LINE_HEIGHT → normalized ratio.
       float s = 1.0F / (BASIC_LINE_HEIGHT * 64.0F);
       FT_Size sz = ftFace.size();
       assert sz != null;
-      metrics = new FontMetrics(ftFace.ascender() * s, ftFace.descender() * s, sz.metrics().height() * s,
-          ftFace.underline_position() * s, ftFace.underline_thickness() * s);
+      float ascender = sz.metrics().ascender() * s;
+      float descender = sz.metrics().descender() * s;
+      float lineHeight = sz.metrics().height() * s;
+      // underline metrics are in design units; convert via units_per_EM → normalized ratio.
+      float upm = ftFace.units_per_EM();
+      float ulPos = upm > 0 ? (ftFace.underline_position() / upm) : -0.1F;
+      float ulThickness = upm > 0 ? (ftFace.underline_thickness() / upm) : 0.07F;
+      metrics = new FontMetrics(ascender, descender, lineHeight, ulPos, ulThickness);
     }
   }
 
@@ -127,7 +138,7 @@ final class FreetypeFont implements Font {
   }
 
   @Override
-  public @Nullable Glyph rasterizeGlyph(Device device, int glyphIndex, int fontStyle) {
+  public @Nullable Glyph rasterizeGlyph(int glyphIndex, int fontStyle) {
     if (glyphCache == null) {
       glyphCache = new FreetypeGlyphCache(device);
       glyphCache.setResolution((int) resolution);

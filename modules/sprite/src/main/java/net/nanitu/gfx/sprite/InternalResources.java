@@ -161,9 +161,9 @@ final class InternalResources {
 
     // Pipelines
     p4c =
-        device.getRenderPipeline(new PipelineDesc.Builder().blend(Blend.ALPHA_MIX).depth(Depth.LEQ).rasterization(RasterizationDesc.DEFAULT).resourceLayouts(rl4c).shaderProgram(s4c).usage(PipelineUsage.RENDER).vertexLayout(vl4c).build());
+        device.getRenderPipeline(new PipelineDesc.Builder().blend(Blend.ALPHA_MIX).depth(Depth.DISABLED).rasterization(RasterizationDesc.DEFAULT).resourceLayouts(rl4c).shaderProgram(s4c).usage(PipelineUsage.RENDER).vertexLayout(vl4c).build());
 
     p4t =
-        device.getRenderPipeline(new PipelineDesc.Builder().blend(Blend.ALPHA_MIX).depth(Depth.LEQ).rasterization(RasterizationDesc.DEFAULT).resourceLayouts(rl4t).shaderProgram(s4t).usage(PipelineUsage.RENDER).vertexLayout(vl4t).build());
+        device.getRenderPipeline(new PipelineDesc.Builder().blend(Blend.ALPHA_MIX).depth(Depth.DISABLED).rasterization(RasterizationDesc.DEFAULT).resourceLayouts(rl4t).shaderProgram(s4t).usage(PipelineUsage.RENDER).vertexLayout(vl4t).build());
   }
 }

@@ -22,7 +22,19 @@
  * SOFTWARE.
  */
 
-@NullMarked
-package net.nanitu.gfx.text.sketch;
+package net.nanitu.gfx.text.raster;
 
-import org.jspecify.annotations.NullMarked;
+/**
+ * Raw output of a text shaping pass.
+ *
+ * <p>Contains the glyph IDs, per-glyph advances and offsets, and a mapping from
+ * each glyph back to the originating character index in the source string. All position values are in pixels at the
+ * requested font size.
+ *
+ * @param glyphs      the glyph indices for each shaped glyph
+ * @param charIndices the source character index for each glyph
+ * @param advances    the horizontal advance for each glyph, in pixels
+ * @param offsets     the X/Y offset pairs for each glyph, in pixels
+ */
+public record ShapeResult(int[] glyphs, int[] charIndices, float[] advances, float[] offsets) {
+}

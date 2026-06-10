@@ -22,28 +22,21 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.spi;
-
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.ShapeResult;
-import net.nanitu.util.Service;
+package net.nanitu.gfx.text.raster;
 
 /**
- * Service provider interface for text shaping backends.
+ * One visual line of laid-out glyphs produced by line breaking.
  *
- * <p>Implementations convert text strings into {@link ShapeResult} objects using
- * a shaping engine and are discovered through the {@link net.nanitu.util.Service} mechanism.
+ * <p>Glyph {@code start} and {@code end} indices are relative to the line's {@code text}.
+ * Coordinates use pen space: X starts at 0 for each line, Y grows by line height.
+ *
+ * @param text       the slice of the source string covered by this line
+ * @param textStart  the absolute character offset of {@code text[0]} in the merged source string
+ * @param glyphs     the laid-out glyphs on this line
+ * @param lineTop    the Y coordinate of the top of this line, in pen space
+ * @param lineHeight the height of this line, in pixels
+ * @param lineY      the Y coordinate of the baseline, in pen space
  */
-public interface ShaperProvider extends Service {
-  /**
-   * Shapes the given text string into glyph identifiers, advances, and offsets.
-   *
-   * @param font      the font to shape with
-   * @param text      the text string to shape
-   * @param fontSize  the font size, in pixels
-   * @param flipY     whether the Y-axis is flipped, affecting y-offset sign
-   * @param fontStyle the style bitmask, combining flags from {@link Font}
-   * @return the shaped text result containing glyph indices, advances, offsets, and character mappings
-   */
-  ShapeResult shape(Font font, String text, float fontSize, boolean flipY, int fontStyle);
+public record LayoutRun(String text, int textStart,       // absolute char index of text[0] in mergedText
+                        LayoutGlyph[] glyphs, float lineTop, float lineHeight, float lineY) {
 }

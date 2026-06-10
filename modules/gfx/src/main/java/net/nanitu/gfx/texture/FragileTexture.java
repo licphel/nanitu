@@ -22,20 +22,24 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.nanitu.gfx.texture;
 
-import net.nanitu.gfx.sprite.TexturePart;
+import org.jspecify.annotations.Nullable;
 
 /**
- * A rasterized glyph with its texture region and positioning metrics.
+ * A potentially unstable texture reference whose backing {@link Texture} may change at runtime.
  *
- * <p>All position values are in pixels. The texture region may be {@code null}
- * for glyphs that have no visual representation (e.g., space characters).
+ * <p>Call {@link #pin()} immediately before use to obtain the current backing texture. Implementors
+ * that wrap a mutable reference (e.g. a growing glyph atlas) may return a different {@link Texture}
+ * on each call; stable implementors (e.g. {@link Texture} itself) always return {@code this}.
  *
- * @param texPart  the region in the texture atlas, or {@code null} if the glyph has no visual representation
- * @param bearingX the horizontal offset from the pen position to the left edge, in pixels
- * @param bearingY the vertical offset from the baseline to the top edge, in pixels (Y-up)
- * @param advance  the horizontal distance to advance the pen after this glyph, in pixels
+ * <p><b>Thread safety:</b> pin() must be called on the render thread.
  */
-public record Glyph(TexturePart texPart, int bearingX, int bearingY, float advance) {
+public interface FragileTexture {
+  /**
+   * Returns the current backing texture.
+   *
+   * @return the current {@link Texture}
+   */
+  @Nullable Texture pin();
 }

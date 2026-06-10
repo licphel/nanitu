@@ -22,25 +22,29 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.nanitu.gfx.texture;
 
-import net.nanitu.gfx.texture.Texture;
 import net.nanitu.math.Box2;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Identifies a sub-region of a {@link Texture}, defined by a source texture and a bounding rectangle in texel
- * coordinates.
+ * Identifies a sub-region of a texture, defined by a {@link FragileTexture} reference and a
+ * bounding rectangle in texel coordinates.
  *
- * <p>Texture parts are immutable. Create one from a full texture, or offset from a parent
- * part to describe a relative sub-region.
+ * <p>The backing texture is held via {@link FragileTexture} so that atlas-backed parts remain
+ * valid even when the underlying texture is swapped (e.g. when a glyph atlas grows). Call
+ * {@link #src()} to pin and obtain the current backing texture at draw time.
  *
- * @param src    the source texture
- * @param region the region within the texture in texel coordinates
+ * <p>Texture parts are immutable. Create one from a full texture or offset from a parent part to
+ * describe a relative sub-region.
+ *
+ * @param fragile the fragile reference to the source texture
+ * @param region  the region within the texture in texel coordinates
  */
-public record TexturePart(Texture src, Box2 region) {
+public record TexturePart(FragileTexture fragile, Box2 region) {
 
   /**
-   * Creates a TexturePart covering the entire texture.
+   * Creates a {@code TexturePart} covering the entire texture.
    *
    * @param tex the source texture
    */
@@ -49,13 +53,24 @@ public record TexturePart(Texture src, Box2 region) {
   }
 
   /**
-   * Creates a TexturePart offset from a parent part's region origin.
+   * Creates a {@code TexturePart} offset from a parent part's region origin.
    *
    * @param parent         the parent texture part
    * @param relativeRegion the region relative to the parent's origin, in texels
    */
   public TexturePart(TexturePart parent, Box2 relativeRegion) {
-    this(parent.src, relativeRegion.translate(parent.region.minX(), parent.region.minY()));
+    this(parent.fragile, relativeRegion.translate(parent.region.minX(), parent.region.minY()));
+  }
+
+  /**
+   * Pins the fragile reference and returns the current backing texture.
+   *
+   * <p>Call this immediately before use — the backing texture may have changed since last call.
+   *
+   * @return the current backing {@link Texture}
+   */
+  public @Nullable Texture src() {
+    return fragile.pin();
   }
 
   /**
@@ -79,7 +94,7 @@ public record TexturePart(Texture src, Box2 region) {
   /**
    * Returns the width of the region in texels.
    *
-   * @return the width of region
+   * @return the width of the region
    */
   public float width() {
     return region.width();
@@ -88,7 +103,7 @@ public record TexturePart(Texture src, Box2 region) {
   /**
    * Returns the height of the region in texels.
    *
-   * @return the height of region
+   * @return the height of the region
    */
   public float height() {
     return region.height();

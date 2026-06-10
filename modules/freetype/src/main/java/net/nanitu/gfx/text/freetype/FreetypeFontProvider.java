@@ -24,6 +24,7 @@
 
 package net.nanitu.gfx.text.freetype;
 
+import net.nanitu.gfx.Device;
 import net.nanitu.gfx.text.Font;
 import net.nanitu.gfx.text.spi.FontProvider;
 import net.nanitu.util.InternalApi;
@@ -46,7 +47,7 @@ public final class FreetypeFontProvider implements FontProvider {
   }
 
   @Override
-  public Font create(String path) {
-    return new FreetypeFont(path, 0);
+  public Font create(Device device, String path) {
+    return new FreetypeFont(device, path, 0);
   }
 }

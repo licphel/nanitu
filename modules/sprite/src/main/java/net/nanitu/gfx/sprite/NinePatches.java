@@ -45,15 +45,15 @@ public final class NinePatches implements Drawable {
   private static final float P13 = 1.0F / 3.0F;
   private static final float P23 = 2.0F / 3.0F;
 
-  private final TexturePart top;
-  private final TexturePart central;
-  private final TexturePart left;
-  private final TexturePart topLeft;
-  private final TexturePart bottomLeft;
-  private final TexturePart right;
-  private final TexturePart topRight;
-  private final TexturePart bottomRight;
-  private final TexturePart bottom;
+  private final net.nanitu.gfx.texture.TexturePart top;
+  private final net.nanitu.gfx.texture.TexturePart central;
+  private final net.nanitu.gfx.texture.TexturePart left;
+  private final net.nanitu.gfx.texture.TexturePart topLeft;
+  private final net.nanitu.gfx.texture.TexturePart bottomLeft;
+  private final net.nanitu.gfx.texture.TexturePart right;
+  private final net.nanitu.gfx.texture.TexturePart topRight;
+  private final net.nanitu.gfx.texture.TexturePart bottomRight;
+  private final net.nanitu.gfx.texture.TexturePart bottom;
   private final float scale;
   private final float th;
   private final float tw;
@@ -68,7 +68,7 @@ public final class NinePatches implements Drawable {
    * @param scale the tile scale factor
    */
   public NinePatches(Texture tex, float scale) {
-    this(new TexturePart(tex), scale);
+    this(new net.nanitu.gfx.texture.TexturePart(tex), scale);
   }
 
   /**
@@ -86,7 +86,7 @@ public final class NinePatches implements Drawable {
    * @param texPart the source texture part
    * @param scale   the tile scale factor
    */
-  public NinePatches(TexturePart texPart, float scale) {
+  public NinePatches(net.nanitu.gfx.texture.TexturePart texPart, float scale) {
     this.scale = scale;
 
     tw = P13 * texPart.width();
@@ -108,14 +108,14 @@ public final class NinePatches implements Drawable {
    *
    * @param texPart the source texture part
    */
-  public NinePatches(TexturePart texPart) {
+  public NinePatches(net.nanitu.gfx.texture.TexturePart texPart) {
     this(texPart, 1.0F);
   }
 
-  private static TexturePart slice(TexturePart texPart, float u, float v, float w, float h) {
+  private static net.nanitu.gfx.texture.TexturePart slice(net.nanitu.gfx.texture.TexturePart texPart, float u, float v, float w, float h) {
     float w0 = texPart.width();
     float h0 = texPart.height();
-    return new TexturePart(texPart, Box2.create(w0 * u, h0 * v, w0 * w, h0 * h));
+    return new net.nanitu.gfx.texture.TexturePart(texPart, Box2.create(w0 * u, h0 * v, w0 * w, h0 * h));
   }
 
   /**

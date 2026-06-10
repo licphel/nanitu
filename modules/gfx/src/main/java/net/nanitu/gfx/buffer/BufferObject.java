@@ -111,7 +111,7 @@ public interface BufferObject extends AutoCloseable {
    * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
    * orphans the previous allocation before writing, which avoids pipeline stalls.
    *
-   * @param data   the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param data   the bytes to upload.
    * @param offset byte offset within the buffer to start writing
    * @param size   bytes that will be uploaded
    */
@@ -128,7 +128,7 @@ public interface BufferObject extends AutoCloseable {
    * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
    * orphans the previous allocation before writing, which avoids pipeline stalls.
    *
-   * @param data   the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param data   the bytes to upload.
    * @param offset byte offset within the buffer to start writing
    */
   default void submit(byte[] data, int offset) {
@@ -140,7 +140,7 @@ public interface BufferObject extends AutoCloseable {
    *
    * <p>Equivalent to {@link #submit(byte[], int, int) submit(data, 0)}.
    *
-   * @param data the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param data the bytes to upload.
    */
   default void submit(byte[] data) {
     submit(data, 0, data.length);
@@ -155,7 +155,7 @@ public interface BufferObject extends AutoCloseable {
    * <p>For {@link BufferFrequency#STREAM} buffers, an upload at offset 0
    * orphans the previous allocation before writing, which avoids pipeline stalls.
    *
-   * @param memory the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param memory the bytes to upload.
    * @param offset byte offset within the buffer to start writing
    */
   void submit(Memory memory, int offset);
@@ -165,7 +165,7 @@ public interface BufferObject extends AutoCloseable {
    *
    * <p>Equivalent to {@link #submit(byte[], int, int) submit(data, 0)}.
    *
-   * @param memory the bytes to upload. This is volatile, so you need to keep it till {@link Device#execute()}
+   * @param memory the bytes to upload.
    */
   default void submit(Memory memory) {
     submit(memory, 0);

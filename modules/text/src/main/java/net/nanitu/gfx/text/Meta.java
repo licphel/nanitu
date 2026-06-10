@@ -22,28 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.spi;
-
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.ShapeResult;
-import net.nanitu.util.Service;
+package net.nanitu.gfx.text;
 
 /**
- * Service provider interface for text shaping backends.
+ * Marker interface for inline metadata attached to a {@link Text}.
  *
- * <p>Implementations convert text strings into {@link ShapeResult} objects using
- * a shaping engine and are discovered through the {@link net.nanitu.util.Service} mechanism.
+ * <p>Implementations may represent hyperlinks, embedded images, or other
+ * inline content that accompanies a span of text.
  */
-public interface ShaperProvider extends Service {
-  /**
-   * Shapes the given text string into glyph identifiers, advances, and offsets.
-   *
-   * @param font      the font to shape with
-   * @param text      the text string to shape
-   * @param fontSize  the font size, in pixels
-   * @param flipY     whether the Y-axis is flipped, affecting y-offset sign
-   * @param fontStyle the style bitmask, combining flags from {@link Font}
-   * @return the shaped text result containing glyph indices, advances, offsets, and character mappings
-   */
-  ShapeResult shape(Font font, String text, float fontSize, boolean flipY, int fontStyle);
+public interface Meta {
 }
