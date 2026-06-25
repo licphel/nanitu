@@ -38,6 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
@@ -146,7 +147,7 @@ public final class ModLoader {
 
     String json;
     try (JarFile jar = new JarFile(jarPath.toFile())) {
-      var entry = jar.getJarEntry("mod.json");
+      JarEntry entry = jar.getJarEntry("mod.json");
       if (entry == null) {
         throw new ModException("No mod.json in JAR: " + jarPath);
       }
@@ -253,7 +254,7 @@ public final class ModLoader {
     }
 
     Deque<String> queue = new ArrayDeque<>();
-    for (var entry : inDegree.entrySet()) {
+    for (Map.Entry<String, Integer> entry : inDegree.entrySet()) {
       if (entry.getValue() == 0) {
         queue.add(entry.getKey());
       }

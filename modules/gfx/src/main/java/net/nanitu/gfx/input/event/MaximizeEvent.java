@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx;
+package net.nanitu.gfx.input.event;
+
+import net.nanitu.event.Event;
 
 /**
- * Key state reported by {@link ViewHook#keyStatus(int)}.
+ * The view was maximized or restored.
+ *
+ * @param maximized {@code true} if the view was maximized, {@code false} if restored
  */
-public enum KeyStatus {
-  /** The key is not pressed. */
-  RELEASE,
-  /** The key was just pressed this frame or is being held. */
-  PRESS,
-  /** The key is being held and generating repeat events. */
-  REPEAT
+public record MaximizeEvent(boolean maximized) implements Event {
 }

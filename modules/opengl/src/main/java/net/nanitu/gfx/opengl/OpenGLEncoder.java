@@ -28,10 +28,13 @@ import net.nanitu.gfx.GraphicsException;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferType;
 import net.nanitu.gfx.cmd.Encoder;
+import net.nanitu.gfx.pass.RenderPassDesc;
+import net.nanitu.gfx.pass.RenderTarget;
 import net.nanitu.gfx.pipe.Pipeline;
 import net.nanitu.gfx.pipe.Topology;
 import net.nanitu.gfx.shader.ResourceSet;
 import net.nanitu.gfx.shader.ResourceSetLayout;
+import net.nanitu.math.Color;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
@@ -66,6 +69,7 @@ final class OpenGLEncoder implements Encoder {
   private @Nullable OpenGLPipeline currentPipe;
   private @Nullable OpenGLBufferObject currentVbo;
   private @Nullable OpenGLBufferObject currentEbo;
+  private @Nullable RenderTarget currentTarget;
   private int topology = GL_TRIANGLES;
 
   /**
@@ -89,6 +93,7 @@ final class OpenGLEncoder implements Encoder {
     currentPipe = null;
     currentVbo = null;
     currentEbo = null;
+    currentTarget = null;
   }
 
   /**
@@ -104,6 +109,47 @@ final class OpenGLEncoder implements Encoder {
       for (Runnable cmd : snapshot) {
         cmd.run();
       }
+    });
+  }
+
+  @Override
+  public void beginPass(RenderPassDesc desc) {
+    commands.add(() -> {
+      currentTarget = desc.target() == null ? ctx.getSwapchain() : desc.target();
+
+      if (currentTarget instanceof OpenGLSwapchain swapchain) {
+        ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
+      } else if (currentTarget instanceof OpenGLRenderTarget glRenderTarget) {
+        ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, glRenderTarget.fboHandle());
+      }
+
+      int glMask = 0;
+      if ((desc.clearMask() & RenderPassDesc.CLEAR_COLOR) != 0) {
+        Color color = desc.clearColor();
+        glClearColor(color.red(), color.green(), color.blue(), color.alpha());
+        glMask |= GL_COLOR_BUFFER_BIT;
+      }
+      if ((desc.clearMask() & RenderPassDesc.CLEAR_DEPTH) != 0) {
+        glClearDepth(desc.clearDepth());
+        glMask |= GL_DEPTH_BUFFER_BIT;
+      }
+      if ((desc.clearMask() & RenderPassDesc.CLEAR_STENCIL) != 0) {
+        glClearStencil(desc.clearStencil());
+        glMask |= GL_STENCIL_BUFFER_BIT;
+      }
+      if (glMask != 0) {
+        glClear(glMask);
+      }
+    });
+  }
+
+  @Override
+  public void endPass() {
+    commands.add(() -> {
+      if (currentTarget == null) {
+        throw new GraphicsException("endPass called without a prior beginPass");
+      }
+      currentTarget = null;
     });
   }
 
@@ -130,18 +176,34 @@ final class OpenGLEncoder implements Encoder {
     OpenGLPipeline glPipe = (OpenGLPipeline) pipe;
     commands.add(() -> {
       currentPipe = glPipe;
-      glPipe.apply(ctx.cache, ctx.framebufferHeight());
+      glPipe.apply(ctx.cache);
     });
   }
 
   @Override
   public void setViewport(int x, int y, int width, int height) {
-    commands.add(() -> ctx.cache.setViewport(x, y, width, height, ctx.framebufferHeight()));
+    commands.add(() -> {
+      if (currentTarget == null) {
+        throw new GraphicsException("setViewport called without an active render pass");
+      }
+
+      int fbHeight = currentTarget.height();
+      int glY = fbHeight - y - height;
+      ctx.cache.setViewport(x, glY, width, height);
+    });
   }
 
   @Override
   public void setScissor(int x, int y, int width, int height, boolean enable) {
-    commands.add(() -> ctx.cache.setScissor(x, y, width, height, enable, ctx.framebufferHeight()));
+    commands.add(() -> {
+      if (currentTarget == null) {
+        throw new GraphicsException("setScissor called without an active render pass");
+      }
+
+      int fbHeight = currentTarget.height();
+      int glY = fbHeight - y - height;
+      ctx.cache.setScissor(x, glY, width, height, enable);
+    });
   }
 
   @Override

@@ -24,11 +24,9 @@
 
 package net.nanitu.gfx.opengl;
 
-import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.gfx.pass.RenderTarget;
 import net.nanitu.gfx.texture.TextureFilter;
 import net.nanitu.util.InternalApi;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,8 +37,6 @@ import static org.lwjgl.opengl.GL33.*;
  * Swapchain render target wrapping the default framebuffer ({@code FBO 0}).
  *
  * <p>Obtain the singleton via {@link OpenGLDevice#getSwapchain()}.
- * Before presenting, listeners registered via {@link #onPresent(Runnable)} are invoked on the render thread — this is
- * where the windowing system hooks {@code swapBuffers}.
  *
  * <p><b>Thread safety:</b> all GL work is submitted via
  * {@link OpenGLDevice#submit(Runnable)}. The listener list is a {@link CopyOnWriteArrayList}.
@@ -48,46 +44,10 @@ import static org.lwjgl.opengl.GL33.*;
 @InternalApi
 public final class OpenGLSwapchain implements RenderTarget {
   private final OpenGLDevice ctx;
-  private final List<Runnable> presentHooks = new CopyOnWriteArrayList<>();
+  final List<Runnable> presentHooks = new CopyOnWriteArrayList<>();
 
   OpenGLSwapchain(OpenGLDevice ctx) {
     this.ctx = ctx;
-  }
-
-  @Override
-  public void acquire(@Nullable RenderPassDesc desc) {
-    ctx.submit(() -> {
-      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
-      if (desc == null) {
-        return;
-      }
-      int glMask = 0;
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_COLOR) != 0) {
-        glClearColor(desc.clearColor().red(), desc.clearColor().green(), desc.clearColor().blue(),
-            desc.clearColor().alpha());
-        glMask |= GL_COLOR_BUFFER_BIT;
-      }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_DEPTH) != 0) {
-        glClearDepth(desc.clearDepth());
-        glMask |= GL_DEPTH_BUFFER_BIT;
-      }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_STENCIL) != 0) {
-        glClearStencil(desc.clearStencil());
-        glMask |= GL_STENCIL_BUFFER_BIT;
-      }
-      if (glMask != 0) {
-        glClear(glMask);
-      }
-    });
-  }
-
-  @Override
-  public void present() {
-    ctx.submit(() -> {
-      for (Runnable hook : presentHooks) {
-        hook.run();
-      }
-    });
   }
 
   @Override
@@ -105,14 +65,20 @@ public final class OpenGLSwapchain implements RenderTarget {
     });
   }
 
-  /**
-   * Registers a hook invoked (on the render thread) just before {@code swapBuffers} during {@link #present()}.
-   *
-   * @param hook the hook to add
-   */
   @Override
-  public void onPresent(Runnable hook) {
-    presentHooks.add(hook);
+  public int width() {
+    if(ctx.view == null) {
+      return 0;
+    }
+    return ctx.view.width();
+  }
+
+  @Override
+  public int height() {
+    if(ctx.view == null) {
+      return 0;
+    }
+    return ctx.view.height();
   }
 
   @Override

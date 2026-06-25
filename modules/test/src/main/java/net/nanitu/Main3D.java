@@ -25,11 +25,12 @@
 package net.nanitu;
 
 import net.nanitu.gfx.Device;
-import net.nanitu.gfx.View;
-import net.nanitu.gfx.ViewController;
+import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.buffer.BufferFrequency;
+import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.buffer.BufferType;
+import net.nanitu.gfx.cmd.Encoder;
 import net.nanitu.gfx.cmd.EncoderDesc;
 import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.gfx.pipe.*;
@@ -41,6 +42,7 @@ import net.nanitu.gfx.text.Style;
 import net.nanitu.gfx.text.TextLiteral;
 import net.nanitu.gfx.text.TextSequence;
 import net.nanitu.gfx.text.raster.Raster;
+import net.nanitu.gfx.texture.Sampler;
 import net.nanitu.gfx.texture.SamplerDesc;
 import net.nanitu.gfx.texture.TextureFilter;
 import net.nanitu.gfx.texture.TexturePart;
@@ -49,6 +51,8 @@ import net.nanitu.math.Matrix4x4;
 import net.nanitu.math.Vector3;
 import net.nanitu.math.dim3.CameraPerspective3D;
 import net.nanitu.util.Service;
+
+import java.nio.ByteBuffer;
 
 /** 3D text test — renders text as texture-mapped quads in 3D space. */
 public class Main3D {
@@ -70,35 +74,34 @@ public class Main3D {
 
   static void main(String[] args) {
     View view = Service.get(ViewProvider.class).create();
-    ViewController ct = view.controller();
-    ct.setTitle("3D Text");
-    ct.setMaximized(true);
+    view.setTitle("3D Text");
+    view.setMaximized(true);
     view.initialize();
     Device dev = Service.get(DeviceProvider.class).create();
     dev.load(view);
 
     // Camera
     CameraPerspective3D cam = new CameraPerspective3D();
-    cam.setAspectRatio(ct.size().x() / ct.size().y());
+    cam.setAspectRatio((float) view.width() / view.height());
 
     // Shader
-    var vert = dev.getShaderModule(new ShaderModuleDesc(ShaderType.VERTEX, VERT));
-    var frag = dev.getShaderModule(new ShaderModuleDesc(ShaderType.FRAGMENT, FRAG));
-    var prog = dev.getShaderProgram(vert, frag);
-    var layout = VertexLayout.bake(
+    ShaderModule vert = dev.getShaderModule(new ShaderModuleDesc(ShaderType.VERTEX, VERT));
+    ShaderModule frag = dev.getShaderModule(new ShaderModuleDesc(ShaderType.FRAGMENT, FRAG));
+    ShaderProgram prog = dev.getShaderProgram(vert, frag);
+    VertexLayout layout = VertexLayout.bake(
         new VertexLayout.Attr(3, VertexAttributeType.FLOAT32, false),
         new VertexLayout.Attr(2, VertexAttributeType.FLOAT32, false));
-    var rsLayout = ResourceSetLayout.bake(
+    ResourceSetLayout rsLayout = ResourceSetLayout.bake(
         new Slot(1, "uTexture", ShaderType.FRAGMENT_BIT, ResourceType.TEXTURE),
         new Slot(1, "Matrices", ShaderType.VERTEX_BIT, ResourceType.UNIFORM_BUFFER));
-    var pipe = dev.getRenderPipeline(new PipelineDesc.Builder()
+    Pipeline pipe = dev.getRenderPipeline(new PipelineDesc.Builder()
         .blend(Blend.ALPHA_MIX).depth(Depth.DISABLED).rasterization(RasterizationDesc.NOT_CULL).vertexLayout(layout)
         .shaderProgram(prog).resourceLayouts(rsLayout).build());
 
-    var ubo = dev.getBuffer(new BufferObjectDesc(BufferFrequency.DYNAMIC, BufferType.UNIFORM));
-    var rs = dev.getResourceSet(rsLayout);
-    var enc = dev.getEncoder(EncoderDesc.DEFAULT);
-    var sampler = dev.getSampler(new SamplerDesc.Builder()
+    BufferObject ubo = dev.getBuffer(new BufferObjectDesc(BufferFrequency.DYNAMIC, BufferType.UNIFORM));
+    ResourceSet rs = dev.getResourceSet(rsLayout);
+    Encoder enc = dev.getEncoder(EncoderDesc.DEFAULT);
+    Sampler sampler = dev.getSampler(new SamplerDesc.Builder()
         .minFilter(TextureFilter.NEAREST).magFilter(TextureFilter.NEAREST).build());
 
     // Text
@@ -114,8 +117,8 @@ public class Main3D {
     // Quad geometry: pos(3f) + uv(2f), 4 verts, 6 indices
     float[] qVerts = new float[4 * 5];
     int[] qIdx = {0, 1, 2, 0, 2, 3};
-    var vbo = dev.getBuffer(BufferObjectDesc.vertex(BufferFrequency.STREAM));
-    var ibo = dev.getBuffer(BufferObjectDesc.index(BufferFrequency.STATIC));
+    BufferObject vbo = dev.getBuffer(BufferObjectDesc.vertex(BufferFrequency.STREAM));
+    BufferObject ibo = dev.getBuffer(BufferObjectDesc.index(BufferFrequency.STATIC));
     ibo.submit(intsToBytes(qIdx));
 
     int frames = 0;
@@ -125,17 +128,20 @@ public class Main3D {
       cam.setTarget(Vector3.ZERO);
 
       view.pollEvents(); dev.pollEvents();
-      dev.getSwapchain().acquire(RenderPassDesc.DEFAULT);
+
+      enc.reset();
+      enc.beginPass(RenderPassDesc.DEFAULT);
 
       Matrix4x4 vp = cam.getProjectionMatrix().multiply(cam.getViewMatrix());
 
-      enc.reset();
       enc.setRenderPipe(pipe);
       enc.setTopology(Topology.TRIANGLE);
-      enc.setViewport(0, 0, (int) ct.size().x(), (int) ct.size().y());
+      enc.setViewport(0, 0, view.width(), view.height());
+      enc.endPass();
+      enc.queuedExecute();
 
       // Draw each glyph as a textured quad (one at a time to avoid VBO overwrite)
-      for (var b : raster.entries()) {
+      for (Raster.Entry b : raster.entries()) {
         if (b.glyph() == null) continue;
         TexturePart tp = b.glyph().texPart();
         float atlW = tp.src().width(), atlH = tp.src().height();
@@ -168,9 +174,10 @@ public class Main3D {
         qVerts[15]= bx;      qVerts[16]= by + sy; qVerts[17]= 0; qVerts[18]= u0; qVerts[19]= v1;
 
         enc.reset();
+        enc.beginPass(RenderPassDesc.NOT_CLEAR);
         enc.setRenderPipe(pipe);
         enc.setTopology(Topology.TRIANGLE);
-        enc.setViewport(0, 0, (int) ct.size().x(), (int) ct.size().y());
+        enc.setViewport(0, 0, view.width(), view.height());
 
         Matrix4x4 mvp = vp.multiply(Matrix4x4.IDENTITY);
         ubo.submit(mat4ToBytes(mvp));
@@ -182,27 +189,29 @@ public class Main3D {
         enc.setBuffer(vbo);
         enc.setBuffer(ibo);
         enc.drawIndexed(6, 0);
+
+        enc.endPass();
         enc.queuedExecute();
       }
 
-      dev.getSwapchain().present();
+      dev.submit(view::present);
       dev.execute();
     }
     view.close();
   }
 
   static byte[] floatsToBytes(float[] a) {
-    var bb = java.nio.ByteBuffer.allocate(a.length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer bb = java.nio.ByteBuffer.allocate(a.length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
     for (float f : a) bb.putFloat(f);
     return bb.array();
   }
   static byte[] intsToBytes(int[] a) {
-    var bb = java.nio.ByteBuffer.allocate(a.length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer bb = java.nio.ByteBuffer.allocate(a.length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
     for (int i : a) bb.putInt(i);
     return bb.array();
   }
   static byte[] mat4ToBytes(Matrix4x4 m) {
-    var bb = java.nio.ByteBuffer.allocate(64).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+    ByteBuffer bb = java.nio.ByteBuffer.allocate(64).order(java.nio.ByteOrder.LITTLE_ENDIAN);
     for (float f : m.toFloatArray()) bb.putFloat(f);
     return bb.array();
   }

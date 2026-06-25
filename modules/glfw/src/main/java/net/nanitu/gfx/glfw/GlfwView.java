@@ -24,92 +24,216 @@
 
 package net.nanitu.gfx.glfw;
 
-import net.nanitu.gfx.*;
+import net.nanitu.gfx.GraphicsException;
+import net.nanitu.gfx.ViewInfo;
+import net.nanitu.gfx.back.View;
+import net.nanitu.gfx.input.KeyAction;
+import net.nanitu.gfx.input.KeyCode;
+import net.nanitu.gfx.input.MouseButton;
+import net.nanitu.gfx.input.event.*;
 import net.nanitu.gfx.io.ImageInfo;
-import net.nanitu.gfx.io.ImageInputStream;
-import net.nanitu.math.Vector2;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryUtil;
 
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * GLFW window implementing {@link View} with an OpenGL 3.3 Core Profile context.
+ * GLFW window implementing the {@link View} abstract class with an OpenGL 3.3 Core Profile context.
  *
- * <p>This class manages the lifecycle of a GLFW window and its associated
- * OpenGL context. Window state is exposed through {@link #controller()} and input events through {@link #hook()}. All
- * GLFW callback objects are stored in {@link #callbacks} as strong references to prevent GC from reclaiming them while
- * native code holds function pointers.
+ * <p>Input arrives via GLFW callbacks that translate native events into {@link net.nanitu.event.Event}
+ * records and dispatch them through {@link #dispatchInputEvent(net.nanitu.event.Event)}.
  */
 @InternalApi
-public final class GlfwView implements View, ViewController, ViewHook {
-  private static final int[] DEFAULT_WINDOW_SIZE = {800, 450};
-  private static final int CALLBACK_FRAMEBUFFER_SIZE = 0;
-  private static final int CALLBACK_KEY = 1;
-  private static final int CALLBACK_CURSOR_POS = 2;
-  private static final int CALLBACK_MOUSE_BUTTON = 3;
-  private static final int CALLBACK_SCROLL = 4;
-  private static final int CALLBACK_DROP = 5;
-  private static final int CALLBACK_CHAR = 6;
-  private static final int CALLBACK_CURSOR_ENTER = 7;
-  private static final int CALLBACK_WINDOW_FOCUS = 8;
-  private static final int CALLBACK_WINDOW_ICONIFY = 9;
-  private static final int CALLBACK_WINDOW_MAXIMIZE = 10;
-  private static final int CALLBACK_WINDOW_MOVE = 11;
-  private static final int CALLBACK_WINDOW_CLOSE = 12;
+public final class GlfwView extends View {
+  private static final int CB_FRAMEBUFFER_SIZE = 0;
+  private static final int CB_KEY = 1;
+  private static final int CB_CURSOR_POS = 2;
+  private static final int CB_MOUSE_BUTTON = 3;
+  private static final int CB_SCROLL = 4;
+  private static final int CB_DROP = 5;
+  private static final int CB_CHAR = 6;
+  private static final int CB_CURSOR_ENTER = 7;
+  private static final int CB_WINDOW_FOCUS = 8;
+  private static final int CB_WINDOW_ICONIFY = 9;
+  private static final int CB_WINDOW_MAXIMIZE = 10;
+  private static final int CB_WINDOW_MOVE = 11;
+  private static final int CB_WINDOW_CLOSE = 12;
+  private static final int CB_COUNT = 16;
 
-  private final ThreadLocal<int[][]> BUFFERS = ThreadLocal.withInitial(() -> new int[1][2]);
+  private static final KeyCode[] GLFW_KEY_MAP = new KeyCode[GLFW_KEY_LAST + 1];
 
-  /** Holds strong references to all GLFW callback objects to prevent GC. */
-  private final Object[] callbacks = new Object[16];
-  // Key state tracking
-  private final ConcurrentHashMap<Integer, Byte> keyStatusMap = new ConcurrentHashMap<>();
-  private final ConcurrentHashMap<Integer, Integer> keyModMap = new ConcurrentHashMap<>();
+  static {
+    // Letters
+    map(GLFW_KEY_A, KeyCode.A);
+    map(GLFW_KEY_B, KeyCode.B);
+    map(GLFW_KEY_C, KeyCode.C);
+    map(GLFW_KEY_D, KeyCode.D);
+    map(GLFW_KEY_E, KeyCode.E);
+    map(GLFW_KEY_F, KeyCode.F);
+    map(GLFW_KEY_G, KeyCode.G);
+    map(GLFW_KEY_H, KeyCode.H);
+    map(GLFW_KEY_I, KeyCode.I);
+    map(GLFW_KEY_J, KeyCode.J);
+    map(GLFW_KEY_K, KeyCode.K);
+    map(GLFW_KEY_L, KeyCode.L);
+    map(GLFW_KEY_M, KeyCode.M);
+    map(GLFW_KEY_N, KeyCode.N);
+    map(GLFW_KEY_O, KeyCode.O);
+    map(GLFW_KEY_P, KeyCode.P);
+    map(GLFW_KEY_Q, KeyCode.Q);
+    map(GLFW_KEY_R, KeyCode.R);
+    map(GLFW_KEY_S, KeyCode.S);
+    map(GLFW_KEY_T, KeyCode.T);
+    map(GLFW_KEY_U, KeyCode.U);
+    map(GLFW_KEY_V, KeyCode.V);
+    map(GLFW_KEY_W, KeyCode.W);
+    map(GLFW_KEY_X, KeyCode.X);
+    map(GLFW_KEY_Y, KeyCode.Y);
+    map(GLFW_KEY_Z, KeyCode.Z);
+
+    // Digits
+    map(GLFW_KEY_0, KeyCode.DIGIT_0);
+    map(GLFW_KEY_1, KeyCode.DIGIT_1);
+    map(GLFW_KEY_2, KeyCode.DIGIT_2);
+    map(GLFW_KEY_3, KeyCode.DIGIT_3);
+    map(GLFW_KEY_4, KeyCode.DIGIT_4);
+    map(GLFW_KEY_5, KeyCode.DIGIT_5);
+    map(GLFW_KEY_6, KeyCode.DIGIT_6);
+    map(GLFW_KEY_7, KeyCode.DIGIT_7);
+    map(GLFW_KEY_8, KeyCode.DIGIT_8);
+    map(GLFW_KEY_9, KeyCode.DIGIT_9);
+
+    // Editing / navigation
+    map(GLFW_KEY_SPACE, KeyCode.SPACE);
+    map(GLFW_KEY_ENTER, KeyCode.ENTER);
+    map(GLFW_KEY_ESCAPE, KeyCode.ESCAPE);
+    map(GLFW_KEY_BACKSPACE, KeyCode.BACKSPACE);
+    map(GLFW_KEY_TAB, KeyCode.TAB);
+    map(GLFW_KEY_MINUS, KeyCode.MINUS);
+    map(GLFW_KEY_EQUAL, KeyCode.EQUALS);
+    map(GLFW_KEY_LEFT_BRACKET, KeyCode.LEFT_BRACKET);
+    map(GLFW_KEY_RIGHT_BRACKET, KeyCode.RIGHT_BRACKET);
+    map(GLFW_KEY_BACKSLASH, KeyCode.BACKSLASH);
+    map(GLFW_KEY_SEMICOLON, KeyCode.SEMICOLON);
+    map(GLFW_KEY_APOSTROPHE, KeyCode.APOSTROPHE);
+    map(GLFW_KEY_GRAVE_ACCENT, KeyCode.GRAVE_ACCENT);
+    map(GLFW_KEY_COMMA, KeyCode.COMMA);
+    map(GLFW_KEY_PERIOD, KeyCode.PERIOD);
+    map(GLFW_KEY_SLASH, KeyCode.SLASH);
+    map(GLFW_KEY_CAPS_LOCK, KeyCode.CAPS_LOCK);
+
+    // Function keys
+    map(GLFW_KEY_F1, KeyCode.F1);
+    map(GLFW_KEY_F2, KeyCode.F2);
+    map(GLFW_KEY_F3, KeyCode.F3);
+    map(GLFW_KEY_F4, KeyCode.F4);
+    map(GLFW_KEY_F5, KeyCode.F5);
+    map(GLFW_KEY_F6, KeyCode.F6);
+    map(GLFW_KEY_F7, KeyCode.F7);
+    map(GLFW_KEY_F8, KeyCode.F8);
+    map(GLFW_KEY_F9, KeyCode.F9);
+    map(GLFW_KEY_F10, KeyCode.F10);
+    map(GLFW_KEY_F11, KeyCode.F11);
+    map(GLFW_KEY_F12, KeyCode.F12);
+    map(GLFW_KEY_F13, KeyCode.F13);
+    map(GLFW_KEY_F14, KeyCode.F14);
+    map(GLFW_KEY_F15, KeyCode.F15);
+    map(GLFW_KEY_F16, KeyCode.F16);
+    map(GLFW_KEY_F17, KeyCode.F17);
+    map(GLFW_KEY_F18, KeyCode.F18);
+    map(GLFW_KEY_F19, KeyCode.F19);
+    map(GLFW_KEY_F20, KeyCode.F20);
+    map(GLFW_KEY_F21, KeyCode.F21);
+    map(GLFW_KEY_F22, KeyCode.F22);
+    map(GLFW_KEY_F23, KeyCode.F23);
+    map(GLFW_KEY_F24, KeyCode.F24);
+    map(GLFW_KEY_F25, KeyCode.F25);
+
+    // System keys
+    map(GLFW_KEY_PRINT_SCREEN, KeyCode.PRINT_SCREEN);
+    map(GLFW_KEY_SCROLL_LOCK, KeyCode.SCROLL_LOCK);
+    map(GLFW_KEY_PAUSE, KeyCode.PAUSE);
+    map(GLFW_KEY_INSERT, KeyCode.INSERT);
+    map(GLFW_KEY_HOME, KeyCode.HOME);
+    map(GLFW_KEY_PAGE_UP, KeyCode.PAGE_UP);
+    map(GLFW_KEY_DELETE, KeyCode.DELETE);
+    map(GLFW_KEY_END, KeyCode.END);
+    map(GLFW_KEY_PAGE_DOWN, KeyCode.PAGE_DOWN);
+
+    // Arrow keys
+    map(GLFW_KEY_RIGHT, KeyCode.RIGHT);
+    map(GLFW_KEY_LEFT, KeyCode.LEFT);
+    map(GLFW_KEY_DOWN, KeyCode.DOWN);
+    map(GLFW_KEY_UP, KeyCode.UP);
+
+    // Num lock and keypad
+    map(GLFW_KEY_NUM_LOCK, KeyCode.NUM_LOCK);
+    map(GLFW_KEY_KP_DIVIDE, KeyCode.KP_DIVIDE);
+    map(GLFW_KEY_KP_MULTIPLY, KeyCode.KP_MULTIPLY);
+    map(GLFW_KEY_KP_SUBTRACT, KeyCode.KP_SUBTRACT);
+    map(GLFW_KEY_KP_ADD, KeyCode.KP_ADD);
+    map(GLFW_KEY_KP_ENTER, KeyCode.KP_ENTER);
+    map(GLFW_KEY_KP_0, KeyCode.KP_0);
+    map(GLFW_KEY_KP_1, KeyCode.KP_1);
+    map(GLFW_KEY_KP_2, KeyCode.KP_2);
+    map(GLFW_KEY_KP_3, KeyCode.KP_3);
+    map(GLFW_KEY_KP_4, KeyCode.KP_4);
+    map(GLFW_KEY_KP_5, KeyCode.KP_5);
+    map(GLFW_KEY_KP_6, KeyCode.KP_6);
+    map(GLFW_KEY_KP_7, KeyCode.KP_7);
+    map(GLFW_KEY_KP_8, KeyCode.KP_8);
+    map(GLFW_KEY_KP_9, KeyCode.KP_9);
+    map(GLFW_KEY_KP_DECIMAL, KeyCode.KP_DECIMAL);
+    map(GLFW_KEY_KP_EQUAL, KeyCode.KP_EQUALS);
+
+    // Modifiers
+    map(GLFW_KEY_LEFT_SHIFT, KeyCode.LEFT_SHIFT);
+    map(GLFW_KEY_RIGHT_SHIFT, KeyCode.RIGHT_SHIFT);
+    map(GLFW_KEY_LEFT_CONTROL, KeyCode.LEFT_CONTROL);
+    map(GLFW_KEY_RIGHT_CONTROL, KeyCode.RIGHT_CONTROL);
+    map(GLFW_KEY_LEFT_ALT, KeyCode.LEFT_ALT);
+    map(GLFW_KEY_RIGHT_ALT, KeyCode.RIGHT_ALT);
+    map(GLFW_KEY_LEFT_SUPER, KeyCode.LEFT_SUPER);
+    map(GLFW_KEY_RIGHT_SUPER, KeyCode.RIGHT_SUPER);
+
+    // Menu
+    map(GLFW_KEY_MENU, KeyCode.MENU);
+  }
+
+  private static void map(int glfwKey, KeyCode code) {
+    if (glfwKey >= 0 && glfwKey < GLFW_KEY_MAP.length) {
+      GLFW_KEY_MAP[glfwKey] = code;
+    }
+  }
+
+  /** Converts a GLFW key code to a platform-agnostic {@link KeyCode}. Returns {@code null} if unmapped. */
+  static @Nullable KeyCode glfwToKeyCode(int glfwKey) {
+    return (glfwKey >= 0 && glfwKey < GLFW_KEY_MAP.length) ? GLFW_KEY_MAP[glfwKey] : null;
+  }
+
+  /** Converts a GLFW action to a {@link KeyAction}. */
+  static KeyAction glfwToKeyAction(int action) {
+    return switch (action) {
+      case GLFW_PRESS -> KeyAction.PRESS;
+      case GLFW_REPEAT -> KeyAction.REPEAT;
+      default -> KeyAction.RELEASE;
+    };
+  }
+
+  /** Holds strong references to GLFW callback objects to prevent GC. */
+  private final Object[] callbacks = new Object[CB_COUNT];
   private long handle;
-  private int width = DEFAULT_WINDOW_SIZE[0];
-  private int height = DEFAULT_WINDOW_SIZE[1];
-  private int x;
-  private int y;
-  private String title = "Nanitu - GLFW (LWJGL 3)";
-  // User callbacks — stored as fields for GC safety (these are passed to GLFW lambdas)
-  private @Nullable Consumer<Integer> onKeyPress;
-  private @Nullable Consumer<Integer> onKeyRelease;
-  private @Nullable Consumer<Character> onCharInput;
-  private @Nullable BiConsumer<Double, Double> onMouseMove;
-  private @Nullable BiConsumer<Integer, Boolean> onMouseButton;
-  private @Nullable BiConsumer<Double, Double> onScroll;
-  private @Nullable Consumer<Boolean> onCursorEnter;
-  private @Nullable BiConsumer<Integer, Integer> onResize;
-  private @Nullable Consumer<Boolean> onWindowFocus;
-  private @Nullable Consumer<Boolean> onWindowIconify;
-  private @Nullable Consumer<Boolean> onWindowMaximize;
-  private @Nullable BiConsumer<Integer, Integer> onWindowMove;
-  private @Nullable Consumer<String[]> onFileDrop;
-  // Cursor state
-  private double cursorX;
-  private double cursorY;
-  private @Nullable ImageInputStream cursorImage;
-  private Vector2 cursorHotspot = Vector2.ZERO;
   private long cursorHandle;
-  // Scroll accumulator
-  private double scrollAccumX;
-  private double scrollAccumY;
-  private boolean vsync = true;
+  private boolean closeRequested;
 
   /**
-   * Terminates GLFW globally.
-   *
-   * <p>This should be called once when the application exits, after all
-   * windows have been closed.
+   * Terminates GLFW globally. Should be called once when the application exits.
    */
   public static void terminate() {
     glfwTerminate();
@@ -127,28 +251,41 @@ public final class GlfwView implements View, ViewController, ViewHook {
   @Override
   public Object procAddress() {
     long h = handle;
-    return (Runnable) () -> glfwMakeContextCurrent(h);
+    return (Runnable) () -> {
+      glfwMakeContextCurrent(h);
+      applyPlatformVsync(vsync);
+      glfwShowWindow(h);
+    };
   }
 
   @Override
-  public ViewController controller() {
-    return this;
+  public boolean shouldClose() {
+    return closeRequested || (handle != NULL && glfwWindowShouldClose(handle));
   }
 
   @Override
-  public ViewHook hook() {
-    return this;
+  public void present() {
+    if (handle != NULL) {
+      glfwSwapBuffers(handle);
+    }
   }
 
   @Override
-  public synchronized void initialize() {
+  protected void onInitialize() {
     GLFWErrorCallback.createPrint(System.err).set();
 
     if (!glfwInit()) {
       throw new IllegalStateException("Failed to initialize GLFW");
     }
 
-    configureWindowHints();
+    glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
     handle = glfwCreateWindow(width, height, title, NULL, NULL);
 
     if (handle == NULL) {
@@ -156,30 +293,40 @@ public final class GlfwView implements View, ViewController, ViewHook {
       throw new RuntimeException("Failed to create GLFW window");
     }
 
-    centreWindowOnPrimaryMonitor();
+    // Center on primary monitor
+    GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    if (vidMode != null) {
+      x = (vidMode.width() - width) / 2;
+      y = (vidMode.height() - height) / 2;
+      glfwSetWindowPos(handle, x, y);
+    }
+
     setupCallbacks();
+
+    // Apply any state configured before init
+    if (!title.isEmpty()) {
+      glfwSetWindowTitle(handle, title);
+    }
+
+    applyPlatformSize(width, height);
+    applyPlatformDecorated(decorated);
+    applyPlatformResizable(resizable);
+    applyPlatformAutoIconify(autoIconify);
+    applyPlatformFloating(floating);
+    applyPlatformVisible(visible);
+    applyPlatformDebug(debug);
+    applyPlatformMaximized(maximized);
+
+    if (iconImage != null) {
+      applyPlatformIcon(iconImage);
+    }
+    if (cursorImage != null) {
+      applyPlatformCursor(cursorImage, (int) cursorHotspot.x(), (int) cursorHotspot.y());
+    }
   }
 
   @Override
-  public void initializeHooks(Device device) {
-    device.getSwapchain().onPresent(this::swapBuffers);
-
-    glfwSwapInterval(vsync ? 1 : 0);
-    glfwShowWindow(handle);
-  }
-
-  @Override
-  public boolean shouldClose() {
-    return handle != NULL && glfwWindowShouldClose(handle);
-  }
-
-  @Override
-  public void pollEvents() {
-    glfwPollEvents();
-  }
-
-  @Override
-  public void close() {
+  protected void onClose() {
     if (cursorHandle != NULL) {
       glfwDestroyCursor(cursorHandle);
       cursorHandle = NULL;
@@ -192,176 +339,119 @@ public final class GlfwView implements View, ViewController, ViewHook {
   }
 
   @Override
-  public Vector2 size() {
-    return new Vector2(width, height);
+  protected void onPollEvents() {
+    glfwPollEvents();
   }
 
   @Override
-  public void setSize(Vector2 size) {
-    if (handle == NULL) {
-      width = (int) size.x();
-      height = (int) size.y();
-    } else {
-      glfwSetWindowSize(handle, (int) size.x(), (int) size.y());
-    }
-  }
-
-  @Override
-  public Vector2 position() {
+  protected void applyPlatformSize(int w, int h) {
     if (handle != NULL) {
-      int[][] buf = BUFFERS.get();
-      glfwGetWindowPos(handle, buf[0], buf[1]);
-      x = buf[0][0];
-      y = buf[1][0];
+      glfwSetWindowSize(handle, w, h);
     }
-    return new Vector2(x, y);
   }
 
   @Override
-  public void setPosition(Vector2 position) {
-    x = (int) position.x();
-    y = (int) position.y();
+  protected void applyPlatformPosition(int x, int y) {
     if (handle != NULL) {
       glfwSetWindowPos(handle, x, y);
     }
   }
 
   @Override
-  public String title() {
-    return title;
-  }
-
-  @Override
-  public void setTitle(String title) {
-    this.title = title;
+  protected void applyPlatformTitle(String title) {
     if (handle != NULL) {
       glfwSetWindowTitle(handle, title);
     }
   }
 
   @Override
-  public void setIcon(ImageInputStream image) {
-    ImageInfo info = image.info();
-    try (image) {
-      byte[] pixels = image.readAllBytes();
-      var buf = MemoryUtil.memAlloc(pixels.length);
-      try {
-        buf.put(pixels).flip();
-        try (var gBuf = GLFWImage.malloc(1)) {
-          gBuf.width(info.width()).height(info.height()).pixels(buf);
-          if (handle != NULL) {
-            glfwSetWindowIcon(handle, gBuf);
-          }
-        }
-      } finally {
-        MemoryUtil.memFree(buf);
-      }
-    } catch (IOException e) {
-      throw new GraphicsException("Failed to read icon image", e);
-    }
-  }
-
-  @Override
-  public Vector2 cursorPosition() {
-    return new Vector2((float) cursorX, (float) cursorY);
-  }
-
-  @Override
-  public void setCursorPosition(Vector2 position) {
-    cursorX = position.x();
-    cursorY = position.y();
+  protected void applyPlatformIcon(@Nullable ImageInfo image) {
     if (handle != NULL) {
-      glfwSetCursorPos(handle, cursorX, cursorY);
-    }
-  }
-
-  @Override
-  public void setCursor(ImageInputStream image, Vector2 hotspot) {
-    ImageInfo info = image.info();
-    try (image) {
-      byte[] pixels = image.readAllBytes();
-      var buf = MemoryUtil.memAlloc(pixels.length);
+      if(image == null) {
+        glfwSetWindowIcon(handle, null);
+        return;
+      }
+      ByteBuffer buf = MemoryUtil.memAlloc(image.pixels().length);
       try {
-        buf.put(pixels).flip();
-        GLFWImage gImg = GLFWImage.create().set(info.width(), info.height(), buf);
-        long newCursor = glfwCreateCursor(gImg, (int) hotspot.x(), (int) hotspot.y());
-        if (newCursor == NULL) {
-          throw new GraphicsException("Failed to create GLFW cursor");
+        buf.put(image.pixels()).flip();
+        try (GLFWImage.Buffer gBuf = GLFWImage.malloc(1)) {
+          gBuf.width(image.width()).height(image.height()).pixels(buf);
+          glfwSetWindowIcon(handle, gBuf);
         }
-        if (handle != NULL) {
-          glfwSetCursor(handle, newCursor);
-        }
-        if (cursorHandle != NULL) {
-          glfwDestroyCursor(cursorHandle);
-        }
-        cursorHandle = newCursor;
-        this.cursorImage = image;
-        this.cursorHotspot = hotspot;
       } finally {
         MemoryUtil.memFree(buf);
       }
-    } catch (IOException e) {
-      throw new GraphicsException("Failed to read cursor image", e);
     }
   }
 
   @Override
-  public @Nullable ImageInputStream cursorImage() {
-    return cursorImage;
+  protected void applyPlatformCursorPosition(double x, double y) {
+    if (handle != NULL) {
+      glfwSetCursorPos(handle, x, y);
+    }
   }
 
   @Override
-  public Vector2 cursorHotspot() {
-    return cursorHotspot;
+  protected void applyPlatformCursor(@Nullable ImageInfo image, int hotX, int hotY) {
+    if (handle == NULL) {
+      return;
+    }
+
+    if (image == null) {
+      glfwSetCursor(handle, NULL);
+      return;
+    }
+
+    ByteBuffer buf = MemoryUtil.memAlloc(image.pixels().length);
+    try {
+      buf.put(image.pixels()).flip();
+      GLFWImage gImg = GLFWImage.create().set(image.width(), image.height(), buf);
+      long newCursor = glfwCreateCursor(gImg, hotX, hotY);
+      if (newCursor == NULL) {
+        throw new GraphicsException("Failed to create GLFW cursor");
+      }
+      glfwSetCursor(handle, newCursor);
+      if (cursorHandle != NULL) {
+        glfwDestroyCursor(cursorHandle);
+      }
+      cursorHandle = newCursor;
+    } finally {
+      MemoryUtil.memFree(buf);
+    }
   }
 
   @Override
-  public boolean isCursorRelativeMode() {
-    return handle != NULL && glfwGetInputMode(handle, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
-  }
-
-  @Override
-  public void setCursorRelativeMode(boolean enabled) {
+  protected void applyPlatformCursorRelativeMode(boolean enabled) {
     if (handle != NULL) {
       glfwSetInputMode(handle, GLFW_CURSOR, enabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
   }
 
   @Override
-  public String clipboardText() {
-    if (handle != NULL) {
-      String text = glfwGetClipboardString(handle);
-      return text != null ? text : "";
-    }
-    return "";
-  }
-
-  @Override
-  public void setClipboardText(String text) {
+  protected void applyPlatformClipboard(String text) {
     if (handle != NULL) {
       glfwSetClipboardString(handle, text);
     }
   }
 
   @Override
-  public boolean isDecorated() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_DECORATED) == GLFW_TRUE;
+  protected String readPlatformClipboard() {
+    if (handle != NULL) {
+      String t = glfwGetClipboardString(handle);
+      return t != null ? t : "";
+    }
+    return "";
   }
 
   @Override
-  public void setDecorated(boolean decorated) {
+  protected void applyPlatformDecorated(boolean decorated) {
     if (handle != NULL) {
       glfwSetWindowAttrib(handle, GLFW_DECORATED, decorated ? GLFW_TRUE : GLFW_FALSE);
     }
   }
 
   @Override
-  public boolean isMaximized() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_MAXIMIZED) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setMaximized(boolean maximized) {
+  protected void applyPlatformMaximized(boolean maximized) {
     if (handle != NULL) {
       if (maximized) {
         glfwMaximizeWindow(handle);
@@ -372,48 +462,28 @@ public final class GlfwView implements View, ViewController, ViewHook {
   }
 
   @Override
-  public boolean isAutoIconify() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_AUTO_ICONIFY) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setAutoIconify(boolean autoIconify) {
+  protected void applyPlatformAutoIconify(boolean autoIconify) {
     if (handle != NULL) {
       glfwSetWindowAttrib(handle, GLFW_AUTO_ICONIFY, autoIconify ? GLFW_TRUE : GLFW_FALSE);
     }
   }
 
   @Override
-  public boolean isFloating() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_FLOATING) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setFloating(boolean floating) {
+  protected void applyPlatformFloating(boolean floating) {
     if (handle != NULL) {
       glfwSetWindowAttrib(handle, GLFW_FLOATING, floating ? GLFW_TRUE : GLFW_FALSE);
     }
   }
 
   @Override
-  public boolean isFocused() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_FOCUSED) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setFocused(boolean focused) {
+  protected void applyPlatformFocused(boolean focused) {
     if (handle != NULL) {
       glfwSetWindowAttrib(handle, GLFW_FOCUSED, focused ? GLFW_TRUE : GLFW_FALSE);
     }
   }
 
   @Override
-  public boolean isVisible() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_VISIBLE) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setVisible(boolean visible) {
+  protected void applyPlatformVisible(boolean visible) {
     if (handle != NULL) {
       if (visible) {
         glfwShowWindow(handle);
@@ -424,283 +494,115 @@ public final class GlfwView implements View, ViewController, ViewHook {
   }
 
   @Override
-  public boolean isResizable() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_RESIZABLE) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setResizable(boolean resizable) {
+  protected void applyPlatformResizable(boolean resizable) {
     if (handle != NULL) {
       glfwSetWindowAttrib(handle, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
     }
   }
 
   @Override
-  public boolean isVsync() {
-    return vsync;
-  }
-
-  @Override
-  public void setVsync(boolean vsync) {
-    this.vsync = vsync;
+  protected void applyPlatformVsync(boolean vsync) {
     if (handle != NULL) {
       glfwSwapInterval(vsync ? 1 : 0);
     }
   }
 
   @Override
-  public boolean isDebug() {
-    return handle != NULL && glfwGetWindowAttrib(handle, GLFW_CONTEXT_DEBUG) == GLFW_TRUE;
-  }
-
-  @Override
-  public void setDebug(boolean debug) {
-    if (handle != NULL) {
-      throw new GraphicsException("Cannot set debug after view initialization");
+  protected void applyPlatformDebug(boolean debug) {
+    if (handle != NULL && debug) {
+      glfwSetWindowAttrib(handle, GLFW_CONTEXT_DEBUG, GLFW_TRUE);
     }
   }
 
-  @Override
-  public KeyStatus keyStatus(int keycode) {
-    byte status = keyStatusMap.getOrDefault(keycode, (byte) 0);
-    return switch (status) {
-      case 1 -> KeyStatus.PRESS;
-      case 2 -> KeyStatus.REPEAT;
-      default -> KeyStatus.RELEASE;
-    };
-  }
-
-  @Override
-  public int keyModifiers(int keycode) {
-    return keyModMap.getOrDefault(keycode, 0);
-  }
-
-  @Override
-  public Vector2 scrollDelta() {
-    double sx = scrollAccumX;
-    double sy = scrollAccumY;
-    scrollAccumX = 0;
-    scrollAccumY = 0;
-    return new Vector2((float) sx, (float) sy);
-  }
-
-  @Override
-  public void onKeyPress(@Nullable Consumer<Integer> cb) {
-    onKeyPress = cb;
-  }
-
-  @Override
-  public void onKeyRelease(@Nullable Consumer<Integer> cb) {
-    onKeyRelease = cb;
-  }
-
-  @Override
-  public void onCharInput(@Nullable Consumer<Character> cb) {
-    onCharInput = cb;
-  }
-
-  @Override
-  public void onMouseMove(@Nullable BiConsumer<Double, Double> cb) {
-    onMouseMove = cb;
-  }
-
-  @Override
-  public void onMouseButton(@Nullable BiConsumer<Integer, Boolean> cb) {
-    onMouseButton = cb;
-  }
-
-  @Override
-  public void onScroll(@Nullable BiConsumer<Double, Double> cb) {
-    onScroll = cb;
-  }
-
-  @Override
-  public void onCursorEnter(@Nullable Consumer<Boolean> cb) {
-    onCursorEnter = cb;
-  }
-
-  @Override
-  public void onResize(@Nullable BiConsumer<Integer, Integer> cb) {
-    onResize = cb;
-  }
-
-  @Override
-  public void onWindowFocus(@Nullable Consumer<Boolean> cb) {
-    onWindowFocus = cb;
-  }
-
-  @Override
-  public void onWindowIconify(@Nullable Consumer<Boolean> cb) {
-    onWindowIconify = cb;
-  }
-
-  @Override
-  public void onWindowMaximize(@Nullable Consumer<Boolean> cb) {
-    onWindowMaximize = cb;
-  }
-
-  @Override
-  public void onWindowMove(@Nullable BiConsumer<Integer, Integer> cb) {
-    onWindowMove = cb;
-  }
-
-  @Override
-  public void onFileDrop(@Nullable Consumer<String[]> cb) {
-    onFileDrop = cb;
-  }
-
-  /**
-   * Returns the native GLFW window handle.
-   *
-   * @return the GLFW window pointer
-   */
-  public long handle() {
+  /** Returns the native GLFW window handle. */
+  long handle() {
     return handle;
   }
 
   /** Swaps the front and back buffers. Called by the swapchain hook. */
-  public void swapBuffers() {
+  void swapBuffers() {
     if (handle != NULL) {
       glfwSwapBuffers(handle);
     }
   }
 
-  /**
-   * Configures OpenGL window hints for a 3.3 Core Profile context.
-   */
-  private void configureWindowHints() {
-    glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // required on macOS
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-  }
-
-  /**
-   * Centers the window on the primary monitor.
-   */
-  private void centreWindowOnPrimaryMonitor() {
-    GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    if (vidMode != null) {
-      x = (vidMode.width() - width) / 2;
-      y = (vidMode.height() - height) / 2;
-      glfwSetWindowPos(handle, x, y);
-    }
-  }
-
-  /**
-   * Registers all GLFW callbacks and stores them as strong references in {@link #callbacks} to prevent GC from
-   * reclaiming objects whose function pointers are held by native code.
-   */
   private void setupCallbacks() {
-    callbacks[CALLBACK_FRAMEBUFFER_SIZE] = (GLFWFramebufferSizeCallbackI) (win, w, h) -> {
-      this.width = w;
-      this.height = h;
-      if (onResize != null) {
-        onResize.accept(w, h);
+    // Framebuffer size
+    callbacks[CB_FRAMEBUFFER_SIZE] = (GLFWFramebufferSizeCallbackI) (win, w, h) ->
+        dispatchInputEvent(new ResizeEvent(w, h));
+    glfwSetFramebufferSizeCallback(handle, (GLFWFramebufferSizeCallbackI) callbacks[CB_FRAMEBUFFER_SIZE]);
+
+    // Key
+    callbacks[CB_KEY] = (GLFWKeyCallbackI) (win, key, scancode, action, mods) -> {
+      KeyCode code = glfwToKeyCode(key);
+      if (code != null) {
+        dispatchInputEvent(new KeyEvent(code, glfwToKeyAction(action), mods));
       }
     };
-    glfwSetFramebufferSizeCallback(handle, (GLFWFramebufferSizeCallbackI) callbacks[CALLBACK_FRAMEBUFFER_SIZE]);
+    glfwSetKeyCallback(handle, (GLFWKeyCallbackI) callbacks[CB_KEY]);
 
-    callbacks[CALLBACK_KEY] = (GLFWKeyCallbackI) (win, key, scancode, action, mods) -> {
-      keyStatusMap.put(key, (byte) action);
-      keyModMap.put(key, mods);
-      if (action == GLFW_PRESS && onKeyPress != null) {
-        onKeyPress.accept(key);
-      } else if (action == GLFW_RELEASE && onKeyRelease != null) {
-        onKeyRelease.accept(key);
+    // Char
+    callbacks[CB_CHAR] = (GLFWCharCallbackI) (win, codepoint) ->
+        dispatchInputEvent(new CharEvent(codepoint));
+    glfwSetCharCallback(handle, (GLFWCharCallbackI) callbacks[CB_CHAR]);
+
+    // Cursor position
+    callbacks[CB_CURSOR_POS] = (GLFWCursorPosCallbackI) (win, cx, cy) ->
+        dispatchInputEvent(new MouseMoveEvent(cx, cy));
+    glfwSetCursorPosCallback(handle, (GLFWCursorPosCallbackI) callbacks[CB_CURSOR_POS]);
+
+    // Mouse button
+    callbacks[CB_MOUSE_BUTTON] = (GLFWMouseButtonCallbackI) (win, button, action, mods) -> {
+      MouseButton mb = MouseButton.fromId(button);
+      if (mb != null) {
+        dispatchInputEvent(new MouseButtonEvent(mb, glfwToKeyAction(action), cursorX, cursorY, mods));
       }
     };
-    glfwSetKeyCallback(handle, (GLFWKeyCallbackI) callbacks[CALLBACK_KEY]);
+    glfwSetMouseButtonCallback(handle, (GLFWMouseButtonCallbackI) callbacks[CB_MOUSE_BUTTON]);
 
-    callbacks[CALLBACK_CHAR] = (GLFWCharCallbackI) (win, codepoint) -> {
-      if (onCharInput != null) {
-        onCharInput.accept((char) codepoint);
+    // Scroll
+    callbacks[CB_SCROLL] = (GLFWScrollCallbackI) (win, xOffset, yOffset) ->
+        dispatchInputEvent(new ScrollEvent(xOffset, yOffset, cursorX, cursorY));
+    glfwSetScrollCallback(handle, (GLFWScrollCallbackI) callbacks[CB_SCROLL]);
+
+    // Cursor enter
+    callbacks[CB_CURSOR_ENTER] = (GLFWCursorEnterCallbackI) (win, entered) ->
+        dispatchInputEvent(new CursorEnterEvent(entered));
+    glfwSetCursorEnterCallback(handle, (GLFWCursorEnterCallbackI) callbacks[CB_CURSOR_ENTER]);
+
+    // Window close
+    callbacks[CB_WINDOW_CLOSE] = (GLFWWindowCloseCallbackI) win -> closeRequested = true;
+    glfwSetWindowCloseCallback(handle, (GLFWWindowCloseCallbackI) callbacks[CB_WINDOW_CLOSE]);
+
+    // Window focus
+    callbacks[CB_WINDOW_FOCUS] = (GLFWWindowFocusCallbackI) (win, focused) ->
+        dispatchInputEvent(new FocusEvent(focused));
+    glfwSetWindowFocusCallback(handle, (GLFWWindowFocusCallbackI) callbacks[CB_WINDOW_FOCUS]);
+
+    // Window iconify
+    callbacks[CB_WINDOW_ICONIFY] = (GLFWWindowIconifyCallbackI) (win, iconified) ->
+        dispatchInputEvent(new IconifyEvent(iconified));
+    glfwSetWindowIconifyCallback(handle, (GLFWWindowIconifyCallbackI) callbacks[CB_WINDOW_ICONIFY]);
+
+    // Window maximize
+    callbacks[CB_WINDOW_MAXIMIZE] = (GLFWWindowMaximizeCallbackI) (win, maximized) ->
+        dispatchInputEvent(new MaximizeEvent(maximized));
+    glfwSetWindowMaximizeCallback(handle, (GLFWWindowMaximizeCallbackI) callbacks[CB_WINDOW_MAXIMIZE]);
+
+    // Window move
+    callbacks[CB_WINDOW_MOVE] = (GLFWWindowPosCallbackI) (win, xpos, ypos) ->
+        dispatchInputEvent(new MoveEvent(xpos, ypos));
+    glfwSetWindowPosCallback(handle, (GLFWWindowPosCallbackI) callbacks[CB_WINDOW_MOVE]);
+
+    // File drop
+    callbacks[CB_DROP] = (GLFWDropCallbackI) (win, count, names) -> {
+      String[] paths = new String[count];
+      for (int i = 0; i < count; i++) {
+        long pointer = MemoryUtil.memGetAddress(names + (long) i * Long.BYTES);
+        paths[i] = MemoryUtil.memUTF8(pointer);
       }
+      dispatchInputEvent(new FileDropEvent(paths));
     };
-    glfwSetCharCallback(handle, (GLFWCharCallbackI) callbacks[CALLBACK_CHAR]);
-
-    callbacks[CALLBACK_CURSOR_POS] = (GLFWCursorPosCallbackI) (win, cx, cy) -> {
-      cursorX = cx;
-      cursorY = cy;
-      if (onMouseMove != null) {
-        onMouseMove.accept(cx, cy);
-      }
-    };
-    glfwSetCursorPosCallback(handle, (GLFWCursorPosCallbackI) callbacks[CALLBACK_CURSOR_POS]);
-
-    callbacks[CALLBACK_MOUSE_BUTTON] = (GLFWMouseButtonCallbackI) (win, button, action, mods) -> {
-      keyStatusMap.put(button, (byte) action);
-      keyModMap.put(button, mods);
-      if (onMouseButton != null) {
-        onMouseButton.accept(button, action == GLFW_PRESS);
-      }
-    };
-    glfwSetMouseButtonCallback(handle, (GLFWMouseButtonCallbackI) callbacks[CALLBACK_MOUSE_BUTTON]);
-
-    callbacks[CALLBACK_SCROLL] = (GLFWScrollCallbackI) (win, xOffset, yOffset) -> {
-      scrollAccumX += xOffset;
-      scrollAccumY += yOffset;
-      if (onScroll != null) {
-        onScroll.accept(xOffset, yOffset);
-      }
-    };
-    glfwSetScrollCallback(handle, (GLFWScrollCallbackI) callbacks[CALLBACK_SCROLL]);
-
-    callbacks[CALLBACK_CURSOR_ENTER] = (GLFWCursorEnterCallbackI) (win, entered) -> {
-      if (onCursorEnter != null) {
-        onCursorEnter.accept(entered);
-      }
-    };
-    glfwSetCursorEnterCallback(handle, (GLFWCursorEnterCallbackI) callbacks[CALLBACK_CURSOR_ENTER]);
-
-    callbacks[CALLBACK_WINDOW_CLOSE] = (GLFWWindowCloseCallbackI) (win) -> {
-      glfwSetWindowShouldClose(handle, true);
-    };
-    glfwSetWindowCloseCallback(handle, (GLFWWindowCloseCallbackI) callbacks[CALLBACK_WINDOW_CLOSE]);
-
-    callbacks[CALLBACK_WINDOW_FOCUS] = (GLFWWindowFocusCallbackI) (win, focused) -> {
-      if (onWindowFocus != null) {
-        onWindowFocus.accept(focused);
-      }
-    };
-    glfwSetWindowFocusCallback(handle, (GLFWWindowFocusCallbackI) callbacks[CALLBACK_WINDOW_FOCUS]);
-
-    callbacks[CALLBACK_WINDOW_ICONIFY] = (GLFWWindowIconifyCallbackI) (win, iconified) -> {
-      if (onWindowIconify != null) {
-        onWindowIconify.accept(iconified);
-      }
-    };
-    glfwSetWindowIconifyCallback(handle, (GLFWWindowIconifyCallbackI) callbacks[CALLBACK_WINDOW_ICONIFY]);
-
-    callbacks[CALLBACK_WINDOW_MAXIMIZE] = (GLFWWindowMaximizeCallbackI) (win, maximized) -> {
-      if (onWindowMaximize != null) {
-        onWindowMaximize.accept(maximized);
-      }
-    };
-    glfwSetWindowMaximizeCallback(handle, (GLFWWindowMaximizeCallbackI) callbacks[CALLBACK_WINDOW_MAXIMIZE]);
-
-    callbacks[CALLBACK_WINDOW_MOVE] = (GLFWWindowPosCallbackI) (win, xpos, ypos) -> {
-      x = xpos;
-      y = ypos;
-      if (onWindowMove != null) {
-        onWindowMove.accept(xpos, ypos);
-      }
-    };
-    glfwSetWindowPosCallback(handle, (GLFWWindowPosCallbackI) callbacks[CALLBACK_WINDOW_MOVE]);
-
-    callbacks[CALLBACK_DROP] = (GLFWDropCallbackI) (win, count, names) -> {
-      if (onFileDrop != null) {
-        String[] paths = new String[count];
-        for (int i = 0; i < count; i++) {
-          long pointer = MemoryUtil.memGetAddress(names + (long) i * Long.BYTES);
-          paths[i] = MemoryUtil.memUTF8(pointer);
-        }
-        onFileDrop.accept(paths);
-      }
-    };
-    glfwSetDropCallback(handle, (GLFWDropCallbackI) callbacks[CALLBACK_DROP]);
+    glfwSetDropCallback(handle, (GLFWDropCallbackI) callbacks[CB_DROP]);
   }
 }

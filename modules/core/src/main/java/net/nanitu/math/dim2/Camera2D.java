@@ -58,17 +58,6 @@ public class Camera2D {
   }
 
   /**
-   * Creates a camera sized to the given window dimensions.
-   *
-   * @param windowW window width in pixels
-   * @param windowH window height in pixels
-   * @return a new camera instance
-   */
-  public static Camera2D normal(float windowW, float windowH) {
-    return new Camera2D(windowW, windowH);
-  }
-
-  /**
    * Returns the camera position in world coordinates.
    *
    * @return current position

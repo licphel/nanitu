@@ -26,7 +26,7 @@ package net.nanitu.gfx.opengl;
 
 import net.nanitu.gfx.Device;
 import net.nanitu.gfx.DeviceInfo;
-import net.nanitu.gfx.View;
+import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.cmd.Encoder;
@@ -43,6 +43,7 @@ import net.nanitu.gfx.texture.TextureDesc;
 import net.nanitu.util.InternalApi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
@@ -74,8 +75,7 @@ final class OpenGLDevice implements Device {
 
   private final Queue<Runnable> queue = new ConcurrentLinkedQueue<>();
   private final OpenGLSwapchain swapchain = new OpenGLSwapchain(this);
-
-  private volatile int fbHeight = 1;
+  @Nullable View view;
 
   /**
    * Creates a new device.
@@ -100,9 +100,7 @@ final class OpenGLDevice implements Device {
   public void load(View view) {
     ((Runnable) view.procAddress()).run();
     GL.createCapabilities();
-    fbHeight = view.height();
-    view.hook().onResize((w, h) -> submit(() -> onResize(w, h)));
-    view.initializeHooks(this);
+    this.view = view;
   }
 
   @Override
@@ -202,19 +200,5 @@ final class OpenGLDevice implements Device {
   @Override
   public void close() {
     execute();
-  }
-
-  /**
-   * Called when the framebuffer is resized.
-   */
-  public void onResize(int w, int h) {
-    fbHeight = Math.max(1, h);
-  }
-
-  /**
-   * Returns the current framebuffer height, guaranteed to be ≥ 1.
-   */
-  public int framebufferHeight() {
-    return fbHeight;
   }
 }

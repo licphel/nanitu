@@ -31,14 +31,14 @@ import net.nanitu.audio.io.AudioFormatException;
 import net.nanitu.audio.io.AudioInputStream;
 import net.nanitu.audio.spi.MixerProvider;
 import net.nanitu.gfx.Device;
-import net.nanitu.gfx.View;
-import net.nanitu.gfx.ViewController;
+import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.buffer.BufferFrequency;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.buffer.BufferType;
 import net.nanitu.gfx.cmd.Encoder;
 import net.nanitu.gfx.cmd.EncoderDesc;
+import net.nanitu.gfx.io.ImageInfo;
 import net.nanitu.gfx.io.ImageInputStream;
 import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.gfx.pipe.CompareOp;
@@ -54,11 +54,17 @@ import net.nanitu.gfx.text.Font;
 import net.nanitu.gfx.text.Style;
 import net.nanitu.gfx.text.TextLiteral;
 import net.nanitu.gfx.text.TextSequence;
+import net.nanitu.gfx.text.raster.Raster;
 import net.nanitu.gfx.texture.*;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
 import net.nanitu.math.dim3.CameraPerspective3D;
 import net.nanitu.resource.ResourceFinder;
+import net.nanitu.ui.AnchorLayout;
+import net.nanitu.ui.UiContext;
+import net.nanitu.ui.look.ModernFlat;
+import net.nanitu.ui.widget.Button;
+import net.nanitu.ui.widget.Window;
 import net.nanitu.util.Service;
 
 import java.io.FileInputStream;
@@ -189,17 +195,19 @@ public class Main {
 
     // --- Window ---
     View theView = Service.get(ViewProvider.class).create();
-    ViewController ct = theView.controller();
-    ct.setTitle("Nanitu Test");
-    ct.setDecorated(false);
-    ct.setMaximized(true);
+    theView.setTitle("Nanitu Test");
+    theView.setDecorated(true);
+    theView.setMaximized(false);
     theView.initialize();
     Device dev = Service.get(DeviceProvider.class).create();
     dev.load(theView);
 
-    // --- Camera ---
+    // --- UI ---
+    UiContext ui = new UiContext(dev, theView, new ModernFlat(), new Box2(0, 0, 800, 450));
+
+    // Camera ---
     CameraPerspective3D camera = new CameraPerspective3D();
-    camera.setAspectRatio(theView.controller().size().x() / theView.controller().size().y());
+    camera.setAspectRatio((float) theView.width() / theView.height());
     camera.setNearPlane(0.1F);
     camera.setFarPlane(100.0F);
     camera.setPosition(new Vector3(2.0F, 1.5F, 3.0F));
@@ -218,9 +226,9 @@ public class Main {
     // --- Texture ---
     ImageInputStream img = ImageInputStream.open(new FileInputStream(ResourceFinder.getAppRoot().resolve(".ref",
         "a" + ".png").toFile()));
-    byte[] texData = img.readAllBytes();
+    ImageInfo texInfo = img.info();
     TextureDesc texDesc =
-        new TextureDesc.Builder().width(img.info().width()).height(img.info().height()).initialBytes(texData).mipLevels(4).build();
+        new TextureDesc.Builder().width(texInfo.width()).height(texInfo.height()).initialBytes(texInfo.pixels()).mipLevels(4).build();
     Texture texture = dev.getTexture(texDesc);
     Texture resized = dev.getTexture(new TextureDesc.Builder().width(500).height(500).build());
     texture.blit(resized, 0, 0, texture.width(), texture.height(), 0, 0, 5, 5);
@@ -267,7 +275,33 @@ public class Main {
     Encoder enc = dev.getEncoder(EncoderDesc.DEFAULT);
     RenderPassDesc clearDesc = RenderPassDesc.of(new Color(0.1F, 0.12F, 0.15F, 1.0F));
 
-    Font font = Font.open(dev, ".ref/main.ttf");
+    Font font = Font.open(dev, ".ref/kst.ttf");
+    Font font2 = Font.open(dev, ".ref/main.ttf");
+
+    // --- UI widgets ---
+    Style uiStyle = new Style.Builder(font2).fontSize(10).build();
+
+    Window uiWin = Window.create(40, 40, 260, 180);
+    uiWin.setTitle(new TextLiteral("Demo Window", uiStyle));
+    ui.addWindow(uiWin);
+    uiWin.open();
+
+    Window uiWin2 = Window.create(320, 60, 200, 150);
+    uiWin2.setTitle(new TextLiteral("Another Window", uiStyle));
+    ui.addWindow(uiWin2);
+    uiWin2.open();
+
+    Window uiWin3 = Window.create(10, 10, 100, 100);
+    uiWin3.setTitle(new TextLiteral("Another Window", uiStyle));
+    uiWin.addChild(uiWin3);
+    uiWin3.open();
+
+    Button btn = Button.create(10, 10, 100, 24);
+    btn.setLabel(new TextLiteral("Click me!", uiStyle));
+    btn.onClick(() -> System.out.println("[UI] Button clicked!"));
+    // Stretch full width, pin to top with 8px margin and 24px height
+    btn.setAnchorLayout(AnchorLayout.topStretch(8, 8, 24));
+    uiWin.addChild(btn);
 
     // --- Main loop ---
     float angle = 0.0F;
@@ -309,22 +343,22 @@ public class Main {
       enc.setTopology(Topology.TRIANGLE);
       enc.setBuffer(vbo);
       enc.setBuffer(ibo);
-      enc.setViewport(0, 0, (int) theView.controller().size().x(), (int) theView.controller().size().y());
+      enc.setViewport(0, 0, theView.width(), theView.height());
       enc.setResource(0, resourceSet);
       enc.drawIndexed(CUBE_INDICES.length, 0);
       enc.queuedExecute();
        */
 
-      Brush brush = mesh.begin(RenderPassDesc.DEFAULT);
+      Brush brush = mesh.begin();
       brush.setCamera(new Camera2D(800, 450));
       TextSequence cns = new TextSequence().justify(true).flipY(true).maxWidth(260);
       cns.newline();
-      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style.Builder(font).fontSize(8).fontStyle(Font.BOLD | Font.ITALIC).build()));
+      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style.Builder(font2).fontSize(8).fontStyle(Font.BOLD | Font.ITALIC).build()));
       cns.newline();
       cns.append(new TextLiteral("Success is not final, failure is not fatal: it is the courage to continue that counts. Every morning brings a fresh opportunity to start anew, to shed the weight of yesterday's mistakes, and to move forward with a quiet determination. Life rarely unfolds in straight lines; instead, it twists and turns, presenting challenges that test our resolve and moments of joy that remind us why we persevere. The small, consistent steps we take each day often matter far more than the occasional leaps. In the end, it is not the applause or the accolades that define us, but the strength we find within ourselves during the quiet, uncelebrated moments—the times when no one is watching, yet we choose to keep going. Embrace the journey with all its imperfections, for it is through struggle that we discover who we truly are.", new Style.Builder(font).fontSize(8).build()));
       cns.append(new TextLiteral("Insert a BIG component!", new Style(font, Color.WHITE, Font.ITALIC | Font.BOLD | Font.UNDERLINE, 16)));
-      cns.append(new TextLiteral("Success is not final, failure is not fatal: it is the courage to continue that counts. Every morning brings a fresh opportunity to start anew, to shed the weight of yesterday's mistakes, and to move forward with a quiet determination. Life rarely unfolds in straight lines; instead, it twists and turns, presenting challenges that test our resolve and moments of joy that remind us why we persevere. The small, consistent steps we take each day often matter far more than the occasional leaps. In the end, it is not the applause or the accolades that define us, but the strength we find within ourselves during the quiet, uncelebrated moments—the times when no one is watching, yet we choose to keep going. Embrace the journey with all its imperfections, for it is through struggle that we discover who we truly are.", new Style.Builder(font).fontSize(8).build()));
-      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style(font, Color.WHITE, Font.ITALIC | Font.STRIKETHROUGH | Font.UNDERLINE, 8)));
+      cns.append(new TextLiteral("Success is not final, failure is not fatal: it is the courage to continue that counts. Every morning brings a fresh opportunity to start anew, to shed the weight of yesterday's mistakes, and to move forward with a quiet determination. Life rarely unfolds in straight lines; instead, it twists and turns, presenting challenges that test our resolve and moments of joy that remind us why we persevere. The small, consistent steps we take each day often matter far more than the occasional leaps. In the end, it is not the applause or the accolades that define us, but the strength we find within ourselves during the quiet, uncelebrated moments—the times when no one is watching, yet we choose to keep going. Embrace the journey with all its imperfections, for it is through struggle that we discover who we truly are.", new Style.Builder(font2).fontSize(8).build()));
+      cns.append(new TextLiteral("多语言测试多语言测试多语言测试多语言测试多语言测试", new Style(font2, Color.WHITE, Font.ITALIC | Font.STRIKETHROUGH | Font.UNDERLINE, 8)));
       cns.newline();
       brush.drawText(cns, 200, 100);
       brush.drawRectangle(200, 100, 3, 3);
@@ -335,16 +369,16 @@ public class Main {
       brush.drawRectangleFrame(cns.raster().bounds().translate(new Vector2(boundsOriginX, boundsOriginY)));
       brush.setColor(Color.WHITE);
 
-      Vector2 cursor = theView.controller().cursorPosition();
+      Vector2 cursor = theView.cursorPosition();
       // drawText places text so that bounds top-left maps to (200, 100).
       // hitTest operates in pen space, so subtract (200 - bounds.minX(), 100 - bounds.minY()).
       float hitOriginX = 200 - cns.raster().bounds().minX();
       float hitOriginY = 100 - cns.raster().bounds().minY();
       cursor = new Camera2D(800, 450).unproject(cursor, brush.currentViewport());
-      int idx = cns.raster().hitTest(cursor.subtract(new Vector2(200, 100)));
+      int idx = cns.raster().hitTest(cursor.subtract(new Vector2(hitOriginX, hitOriginY)));
       if (idx >= 0) {
         // hitTest returns a char index; find the entry whose charIndex matches.
-        for (var entry : cns.raster().entries()) {
+        for (Raster.Entry entry : cns.raster().entries()) {
           if (entry.charIndex() == idx) {
             brush.drawRectangleFrame(entry.bounds().translate(new Vector2(boundsOriginX, boundsOriginY)));
             break;
@@ -353,8 +387,8 @@ public class Main {
         if (idx < cns.text().length())
           brush.drawText(new TextLiteral("" + cns.text().charAt(idx), new Style.Builder(font).fontSize(16).build()), 5, 5);
       }
-      brush.setViewport(Box2.create(0, 0, (int) theView.controller().size().x(),
-          (int) theView.controller().size().y()));
+      brush.setViewport(Box2.create(0, 0, theView.width(),
+          theView.height()));
       brush.setColor(new Color(1.0F, 1.0F, 1.0F, 0.2F));
       for (int j = 0; j < 4; j++) {
         for (int i = 0; i < 10; i++) {
@@ -368,16 +402,17 @@ public class Main {
       brush.setColor(Color.WHITE);
       brush.drawLine(0, 100, 200, 200);
 
-
+      ui.render(brush, delta);
       mesh.end();
 
-      // dev.getSwapchain().present();
+      dev.submit(theView::present);
       dev.execute();
 
       frame++;
     }
 
     // --- Cleanup ---
+    ui.close();
     enc.close();
     resourceSet.close();
     texture.close();

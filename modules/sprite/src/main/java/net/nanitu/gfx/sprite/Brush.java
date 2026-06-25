@@ -50,7 +50,7 @@ import java.util.function.Consumer;
  *
  * <p>The Brush records draw commands — textures, rectangles, lines, points, and text — into mesh
  * nodes on the parent MultiMesh. Call {@link #flush()} to submit pending draws to the GPU,
- * {@link #begin(RenderPassDesc)} to start a render pass, and {@link #close()} when done.
+ * {@link #begin()} to start a render cycle, and {@link #close()} when done.
  *
  * <p>Each Brush carries its own transform stack, camera, color tint, sampler, 0.0F,
  * and view-projection matrix. These affect subsequent draw calls until changed.
@@ -94,7 +94,7 @@ public final class Brush implements AutoCloseable {
 
     renderTarget = ctx.getSwapchain();
     sampler = ctx.getSampler(SamplerDesc.PIXEL);
-    camera = Camera2D.normal(800, 450);
+    camera = new Camera2D(800, 450);
     ubo = ctx.getBuffer(BufferObjectDesc.uniform());
     encoder = ctx.getEncoder(EncoderDesc.DEFAULT);
 
@@ -215,11 +215,9 @@ public final class Brush implements AutoCloseable {
 
   /**
    * Acquires the render target, beginning a render pass.
-   *
-   * @param desc the render pass configuration, may be {@code null}
    */
-  public void begin(@Nullable RenderPassDesc desc) {
-    renderTarget.acquire(desc);
+  public void begin() {
+    encoder.beginPass(RenderPassDesc.of(renderTarget, Color.BLACK));
   }
 
   /**
@@ -227,7 +225,6 @@ public final class Brush implements AutoCloseable {
    */
   void end0() {
     flush(true);
-    renderTarget.present();
   }
 
   void moveToNextNode() {
@@ -840,8 +837,8 @@ public final class Brush implements AutoCloseable {
 
     for (Raster.Stroke stroke : raster.strokes()) {
       setColor(stroke.color());
-      drawRectangle(tx + stroke.bounds().minX(), ty + stroke.bounds().minY() - originY, stroke.bounds().width(),
-          stroke.bounds().height());
+      Box2 bounds = stroke.bounds();
+      drawRectangle(tx + bounds.minX(), ty + bounds.minY() - originY, bounds.width(), bounds.height());
     }
 
     setColor(originalColor);
@@ -949,6 +946,7 @@ public final class Brush implements AutoCloseable {
       }
     }
 
+    encoder.endPass();
     encoder.queuedExecute();
     encoder.reset();
 
@@ -957,6 +955,9 @@ public final class Brush implements AutoCloseable {
     if (onFlushed != null) {
       onFlushed.accept(this);
     }
+
+    // Begin a new render pass for future rendering.
+    encoder.beginPass(new RenderPassDesc.Builder().target(renderTarget).clearMask(0).build());
   }
 
   private void submitNode(MultiMesh.Node node) {

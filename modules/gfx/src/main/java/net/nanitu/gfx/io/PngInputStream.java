@@ -59,7 +59,6 @@ public final class PngInputStream extends ImageInputStream {
     BufferedImage rgba = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     rgba.getGraphics().drawImage(img, 0, 0, null);
 
-    info = new ImageInfo(w, h, 4);
     data = new byte[w * h * 4];
     int[] pixels = rgba.getRGB(0, 0, w, h, null, 0, w);
     for (int i = 0; i < pixels.length; i++) {
@@ -69,6 +68,7 @@ public final class PngInputStream extends ImageInputStream {
       data[i * 4 + 2] = (byte) (argb & 0xFF);
       data[i * 4 + 3] = (byte) ((argb >> 24) & 0xFF);
     }
+    info = new ImageInfo(w, h, 4, data);
   }
 
   @Override

@@ -28,7 +28,6 @@ import net.nanitu.gfx.Device;
 import net.nanitu.gfx.buffer.BufferFrequency;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.memory.Buffer;
 import net.nanitu.memory.Endianness;
 import net.nanitu.memory.MemoryAllocator;
@@ -112,28 +111,18 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   }
 
   /**
-   * Begins a recording session and starts a render pass.
+   * Begins a recording session and starts a render cycle.
    *
-   * @param desc the render pass configuration, may be {@code null}
    * @return the Brush for issuing draw commands
    */
-  public Brush begin(@Nullable RenderPassDesc desc) {
+  public Brush begin() {
     curNode = 0;
     if (brush == null) {
       brush = new Brush(this, device);
     }
     brush.moveToNextNode();
-    brush.begin(desc);
+    brush.begin();
     return brush;
-  }
-
-  /**
-   * Begins a recording session without a render pass.
-   *
-   * @return the Brush for issuing draw commands
-   */
-  public Brush begin() {
-    return begin(null);
   }
 
   /**
@@ -145,7 +134,6 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
     if (brush == null) {
       throw new IllegalStateException("Brush is not initialized");
     }
-    // TODO: Merge nodes
     brush.end0();
   }
 

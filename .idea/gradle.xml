@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/modules/sprite" />
             <option value="$PROJECT_DIR$/modules/test" />
             <option value="$PROJECT_DIR$/modules/text" />
+            <option value="$PROJECT_DIR$/modules/ui" />
           </set>
         </option>
       </GradleProjectSettings>

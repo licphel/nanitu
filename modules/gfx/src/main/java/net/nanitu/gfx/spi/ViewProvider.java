@@ -24,7 +24,7 @@
 
 package net.nanitu.gfx.spi;
 
-import net.nanitu.gfx.View;
+import net.nanitu.gfx.back.View;
 import net.nanitu.util.Service;
 
 /**

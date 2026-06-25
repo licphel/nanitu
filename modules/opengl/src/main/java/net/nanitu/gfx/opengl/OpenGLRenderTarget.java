@@ -24,11 +24,9 @@
 
 package net.nanitu.gfx.opengl;
 
-import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.gfx.pass.RenderTarget;
 import net.nanitu.gfx.texture.TextureFilter;
 import net.nanitu.util.InternalApi;
-import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 
@@ -49,6 +47,8 @@ final class OpenGLRenderTarget implements RenderTarget {
   private int handle;
   private int colorTex;
   private int depthRbo;
+  private final int fboWidth;
+  private final int fboHeight;
 
   /**
    * Creates an off-screen FBO.
@@ -59,7 +59,9 @@ final class OpenGLRenderTarget implements RenderTarget {
    * @throws RuntimeException if the FBO is incomplete after assembly
    */
   OpenGLRenderTarget(OpenGLDevice ctx, int width, int height) {
-    this.ctx = ctx;
+    this.ctx       = ctx;
+    this.fboWidth  = width;
+    this.fboHeight = height;
 
     ctx.submit(() -> {
       colorTex = glGenTextures();
@@ -96,35 +98,13 @@ final class OpenGLRenderTarget implements RenderTarget {
   }
 
   @Override
-  public void acquire(@Nullable RenderPassDesc desc) {
-    ctx.submit(() -> {
-      ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, handle);
-      if (desc == null) {
-        return;
-      }
-      int glMask = 0;
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_COLOR) != 0) {
-        glClearColor(desc.clearColor().red(), desc.clearColor().green(), desc.clearColor().blue(),
-            desc.clearColor().alpha());
-        glMask |= GL_COLOR_BUFFER_BIT;
-      }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_DEPTH) != 0) {
-        glClearDepth(desc.clearDepth());
-        glMask |= GL_DEPTH_BUFFER_BIT;
-      }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_STENCIL) != 0) {
-        glClearStencil(desc.clearStencil());
-        glMask |= GL_STENCIL_BUFFER_BIT;
-      }
-      if (glMask != 0) {
-        glClear(glMask);
-      }
-    });
+  public int width() {
+    return fboWidth;
   }
 
   @Override
-  public void present() {
-    // off-screen — no swap
+  public int height() {
+    return fboHeight;
   }
 
   @Override

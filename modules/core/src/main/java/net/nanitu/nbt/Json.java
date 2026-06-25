@@ -32,6 +32,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * JSON serializer and deserializer for NBT structures.
@@ -114,7 +116,7 @@ public final class Json {
 
   private static ObjectNode toJsonNode(NbtCompound compound) {
     ObjectNode node = MAPPER.createObjectNode();
-    for (var entry : compound.entrySet()) {
+    for (Map.Entry<String, @Nullable Object> entry : compound.entrySet()) {
       node.set(entry.getKey(), valueToJsonNode(entry.getValue()));
     }
     return node;
@@ -164,7 +166,7 @@ public final class Json {
       throw new IllegalArgumentException("Expected JSON object, got: " + node.getNodeType());
     }
     NbtCompound compound = new NbtCompound();
-    var names = node.fieldNames();
+    Iterator<String> names = node.fieldNames();
     while (names.hasNext()) {
       String key = names.next();
       compound.put(key, jsonNodeToValue(node.get(key)));

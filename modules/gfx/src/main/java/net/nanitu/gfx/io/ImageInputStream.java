@@ -32,11 +32,12 @@ import java.io.InputStream;
  * Abstract base for decoded image streams.
  *
  * <p>Subclasses wrap a specific image format (e.g. PNG) and expose decoded
- * pixel data as a plain {@link InputStream} of raw RGBA bytes. Image dimensions and channel count are described by
- * {@link #info()}.
+ * pixel data via {@link #info()} which returns an {@link ImageInfo} carrying
+ * both metadata and the full pixel array.
  *
  * <p>Use {@link #open(InputStream)} to obtain an instance without knowing
- * the underlying format.
+ * the underlying format. After opening, call {@link #info()} to get
+ * dimensions and pixels directly — there is no need to stream bytes.
  *
  * @see PngInputStream
  * @see ImageInfo
@@ -48,7 +49,7 @@ public abstract class ImageInputStream extends InputStream {
    * <p>Currently supported: PNG ({@link PngInputStream}).
    *
    * @param in source stream; must support mark/reset or be wrapped
-   * @return a decoder whose {@link #info()} reflects the image dimensions
+   * @return a decoder whose {@link #info()} reflects the image metadata and pixels
    * @throws IOException if the format is not recognized
    */
   public static ImageInputStream open(InputStream in) throws IOException {
@@ -66,9 +67,23 @@ public abstract class ImageInputStream extends InputStream {
   }
 
   /**
-   * Returns the image format describing dimensions and channels.
+   * Returns image metadata and pixel data.
    *
-   * @return image format
+   * <p>The returned {@link ImageInfo} contains the full pixel array in
+   * {@link ImageInfo#pixels()}. Prefer this over streaming reads.
+   *
+   * @return image info with pixel data
    */
   public abstract ImageInfo info();
+
+  /**
+   * Returns the entire pixel data as a byte array.
+   *
+   * <p>Equivalent to {@code info().pixels()}.
+   *
+   * @return pixel data
+   */
+  public byte[] readAllBytes() {
+    return info().pixels();
+  }
 }

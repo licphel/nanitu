@@ -54,7 +54,10 @@ public record TextureDesc(int width, int height, int depth, TextureFormat format
     return new Builder().width(width).height(height).build();
   }
 
-  @SuppressWarnings("all")
+  /**
+   * Builder for {@link TextureDesc} with sensible defaults — 1×1 RGBA8 2D texture,
+   * 1 mip level, sampled usage, no initial data.
+   */
   public static final class Builder {
     public int width = 1;
     public int height = 1;
@@ -65,46 +68,99 @@ public record TextureDesc(int width, int height, int depth, TextureFormat format
     public int usage = TextureUsage.SAMPLED;
     public byte @Nullable [] initialBytes = null;
 
+    /**
+     * Sets the width in texels.
+     *
+     * @param w width in texels
+     * @return this builder
+     */
     public Builder width(int w) {
       width = w;
       return this;
     }
 
+    /**
+     * Sets the height in texels.
+     *
+     * @param h height in texels
+     * @return this builder
+     */
     public Builder height(int h) {
       height = h;
       return this;
     }
 
+    /**
+     * Sets the depth in texels.
+     *
+     * @param d depth in texels (1 for 1D/2D)
+     * @return this builder
+     */
     public Builder depth(int d) {
       depth = d;
       return this;
     }
 
+    /**
+     * Sets the pixel format.
+     *
+     * @param f the pixel format
+     * @return this builder
+     */
     public Builder format(TextureFormat f) {
       format = f;
       return this;
     }
 
+    /**
+     * Sets the texture dimensionality.
+     *
+     * @param t the texture type
+     * @return this builder
+     */
     public Builder type(TextureType t) {
       type = t;
       return this;
     }
 
+    /**
+     * Sets the mipmap level count.
+     *
+     * @param m mipmap level count (1 = no mip chain)
+     * @return this builder
+     */
     public Builder mipLevels(int m) {
       mipLevels = m;
       return this;
     }
 
+    /**
+     * Sets the texture usage flags.
+     *
+     * @param u bitmask of usage flags
+     * @return this builder
+     */
     public Builder usage(int u) {
       usage = u;
       return this;
     }
 
+    /**
+     * Sets the initial pixel data.
+     *
+     * @param b the initial pixel data, or {@code null}
+     * @return this builder
+     */
     public Builder initialBytes(byte[] b) {
       initialBytes = b;
       return this;
     }
 
+    /**
+     * Builds the texture descriptor.
+     *
+     * @return a new {@link TextureDesc} with the current builder values
+     */
     public TextureDesc build() {
       return new TextureDesc(width, height, depth, format, type, mipLevels, usage, initialBytes);
     }

@@ -31,6 +31,7 @@ import net.nanitu.mod.ModLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
@@ -71,7 +72,7 @@ public final class ResourceFinder {
   public static InputStream openFromJar(Path jarPath, String resourcePath) {
     try {
       JarFile jar = new JarFile(jarPath.toFile());
-      var entry = jar.getJarEntry(resourcePath);
+      JarEntry entry = jar.getJarEntry(resourcePath);
       if (entry == null) {
         throw new ResourceException("Resource '" + resourcePath + "' not found in " + jarPath.getFileName());
       }

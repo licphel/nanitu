@@ -24,6 +24,7 @@
 
 package net.nanitu.gfx;
 
+import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
 import net.nanitu.gfx.cmd.Encoder;
@@ -189,8 +190,7 @@ public interface Device extends AutoCloseable {
   /**
    * Returns the swapchain render target representing the screen.
    *
-   * <p>The swapchain is a per-device singleton. Call
-   * {@link RenderTarget#present()} to present the rendered frame.
+   * <p>The swapchain is a per-device singleton.
    *
    * @return the screen render target
    */

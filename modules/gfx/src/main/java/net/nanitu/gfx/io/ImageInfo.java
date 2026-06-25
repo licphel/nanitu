@@ -25,11 +25,31 @@
 package net.nanitu.gfx.io;
 
 /**
- * Creates a new {@code ImageInfo} describing decoded pixel data.
+ * Describes decoded image data including pixel bytes.
  *
  * @param width    image width in pixels
  * @param height   image height in pixels
  * @param channels number of color channels (3 = RGB, 4 = RGBA)
+ * @param pixels   raw pixel data in row-major order, length = {@code width * height * channels}
  */
-public record ImageInfo(int width, int height, int channels) {
+public record ImageInfo(int width, int height, int channels, byte[] pixels) {
+  /**
+   * Creates an ImageInfo, validating all arguments.
+   *
+   * @param width    image width in pixels
+   * @param height   image height in pixels
+   * @param channels number of color channels (3 = RGB, 4 = RGBA)
+   * @param pixels   raw pixel data in row-major order, length = {@code width * height * channels}
+   */
+  public ImageInfo {
+    if (width < 0 || height < 0 || channels < 1) {
+      throw new IllegalArgumentException(
+          "Invalid image dimensions: " + width + "x" + height + " channels=" + channels);
+    }
+    if (pixels.length != width * height * channels) {
+      throw new IllegalArgumentException(
+          "Pixel array length " + pixels.length
+              + " does not match " + width + "x" + height + "x" + channels);
+    }
+  }
 }

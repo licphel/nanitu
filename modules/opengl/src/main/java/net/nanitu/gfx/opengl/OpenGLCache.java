@@ -83,7 +83,6 @@ final class OpenGLCache {
   int stencilBWriteMask = 0xFF;
   // Color write mask
   boolean colorMaskR = true, colorMaskG = true, colorMaskB = true, colorMaskA = true;
-  int viewportHeight = 0; // cached for Y-flip
 
   OpenGLCache() {
     Arrays.fill(textures, 0);
@@ -454,40 +453,37 @@ final class OpenGLCache {
   }
 
   /**
-   * Sets the viewport rectangle, applying the Y-flip required by OpenGL.
+   * Sets the viewport rectangle. The caller is responsible for computing the correct {@code glY}
+   * (i.e. {@code fbHeight - y - h}) before calling this method.
    *
-   * @param x        the lower-left X in top-left–origin coordinates
-   * @param y        the lower-left Y in top-left–origin coordinates
-   * @param w        the viewport width
-   * @param h        the viewport height
-   * @param fbHeight the current framebuffer height for Y-flip calculation
+   * @param x   the left edge in pixels
+   * @param glY the bottom edge in OpenGL coordinates (already Y-flipped)
+   * @param w   the viewport width
+   * @param h   the viewport height
    */
-  public void setViewport(int x, int y, int w, int h, int fbHeight) {
-    int glY = fbHeight - y - h;
+  public void setViewport(int x, int glY, int w, int h) {
     if (viewportRect[0] != x || viewportRect[1] != glY || viewportRect[2] != w || viewportRect[3] != h) {
       glViewport(x, glY, w, h);
       viewportRect[0] = x;
       viewportRect[1] = glY;
       viewportRect[2] = w;
       viewportRect[3] = h;
-      viewportHeight = fbHeight;
     }
   }
 
   /**
-   * Sets the scissor rectangle, applying the Y-flip required by OpenGL.
+   * Sets the scissor rectangle. The caller is responsible for computing the correct {@code glY}
+   * (i.e. {@code fbHeight - y - h}) before calling this method.
    *
-   * @param x        the lower-left X in top-left–origin coordinates
-   * @param y        the lower-left Y in top-left–origin coordinates
-   * @param w        the scissor width
-   * @param h        the scissor height
-   * @param enable   {@code true} to enable scissor testing, {@code false} to disable
-   * @param fbHeight the current framebuffer height for Y-flip calculation
+   * @param x      the left edge in pixels
+   * @param glY    the bottom edge in OpenGL coordinates (already Y-flipped)
+   * @param w      the scissor width
+   * @param h      the scissor height
+   * @param enable {@code true} to enable scissor testing, {@code false} to disable
    */
-  public void setScissor(int x, int y, int w, int h, boolean enable, int fbHeight) {
+  public void setScissor(int x, int glY, int w, int h, boolean enable) {
     setScissorEnabled(enable);
     if (enable) {
-      int glY = fbHeight - y - h;
       if (scissorRect[0] != x || scissorRect[1] != glY || scissorRect[2] != w || scissorRect[3] != h) {
         glScissor(x, glY, w, h);
         scissorRect[0] = x;

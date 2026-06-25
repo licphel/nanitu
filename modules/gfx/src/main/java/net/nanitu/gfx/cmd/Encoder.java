@@ -26,6 +26,7 @@ package net.nanitu.gfx.cmd;
 
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferType;
+import net.nanitu.gfx.pass.RenderPassDesc;
 import net.nanitu.gfx.pipe.Pipeline;
 import net.nanitu.gfx.pipe.Topology;
 import net.nanitu.gfx.shader.ResourceSet;
@@ -64,6 +65,32 @@ public interface Encoder extends AutoCloseable {
    * {@link #reset()} may be called immediately without affecting the batch that is about to execute.
    */
   void queuedExecute();
+
+  /**
+   * Begins a render pass targeting the render target in {@code desc}.
+   *
+   * <p>Binds the target framebuffer, performs any requested clears, and stores
+   * the target so that {@link #setViewport} and {@link #setScissor} can apply
+   * the correct Y-flip. If {@code desc.target()} is {@code null}, the swapchain
+   * (default framebuffer) is used.
+   *
+   * <p>Must be followed by a matching {@link #endPass()} call.
+   *
+   * @param desc the render pass configuration
+   */
+  void beginPass(RenderPassDesc desc);
+
+  /**
+   * Ends the current render pass, presenting the bound render target.
+   *
+   * <p>For the swapchain this triggers {@code swapBuffers}; for off-screen
+   * targets this is a no-op (the result stays in GPU memory).
+   *
+   * <p>Clears the internal current-target reference; calling {@link #setViewport}
+   * after {@code endPass} without a subsequent {@link #beginPass} throws
+   * {@link net.nanitu.gfx.GraphicsException}.
+   */
+  void endPass();
 
   /**
    * Sets the primitive topology for subsequent draw calls.

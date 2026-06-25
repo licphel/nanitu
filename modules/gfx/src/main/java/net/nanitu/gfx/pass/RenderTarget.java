@@ -25,8 +25,6 @@
 package net.nanitu.gfx.pass;
 
 import net.nanitu.gfx.texture.TextureFilter;
-import net.nanitu.math.Color;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A framebuffer target that receives rendered output.
@@ -38,45 +36,9 @@ import org.jspecify.annotations.Nullable;
  *       attachments.
  * </ul>
  *
- * <p>For off-screen targets, {@link #present()} is typically a no-op;
- * the rendered result is consumed via {@link #blit} or by reading the
- * color attachment texture.
- *
- * <p><b>Thread safety:</b> {@link #acquire}, {@link #present}, and
- * {@link #blit} submit work to the render thread. They are safe to call
- * from any thread.
- *
  * @see RenderPassDesc
  */
 public interface RenderTarget extends AutoCloseable {
-  /**
-   * Binds this render target for subsequent draw calls and optionally performs clear operations.
-   *
-   * <p>If {@code desc} is non-null, the attachments specified by its
-   * {@link RenderPassDesc#of(Color)} are cleared to the corresponding clear values.
-   *
-   * @param desc clear configuration, or {@code null} to skip clearing
-   */
-  void acquire(@Nullable RenderPassDesc desc);
-
-  /**
-   * Binds this render target without clearing.
-   *
-   * <p>Equivalent to {@link #acquire(RenderPassDesc) acquire(null)}.
-   */
-  default void acquire() {
-    acquire(null);
-  }
-
-  /**
-   * Presents (swaps) the rendered frame to the display.
-   *
-   * <p>For the default swapchain view, this flips the back buffer to
-   * the front. For off-screen targets, this is a no-op — the results stay in GPU memory for later use via
-   * {@link #blit}.
-   */
-  void present();
-
   /**
    * Blits (copies) a rectangular region of this render target into another.
    *
@@ -99,12 +61,27 @@ public interface RenderTarget extends AutoCloseable {
             TextureFilter filter);
 
   /**
-   * Registers a hook invoked (on the render thread) just before buffer swap during {@link #present()}. Default no-op;
-   * swapchain targets override.
+   * Returns the width of this render target in physical pixels, or {@code 0} if unknown.
    *
-   * @param hook the hook to add
+   * <p>The swapchain target returns the current framebuffer width; off-screen targets return the
+   * width passed at creation time.
+   *
+   * @return the width of this render target
    */
-  default void onPresent(Runnable hook) {
+  default int width() {
+    return 0;
+  }
+
+  /**
+   * Returns the height of this render target in physical pixels, or {@code 0} if unknown.
+   *
+   * <p>The swapchain target returns the current framebuffer height; off-screen targets return the
+   * height passed at creation time.
+   *
+   * @return the height of this render target
+   */
+  default int height() {
+    return 0;
   }
 
   @Override

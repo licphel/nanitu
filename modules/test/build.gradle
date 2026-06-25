@@ -29,6 +29,7 @@ dependencies {
     implementation project(':nanitu-ai')
     implementation project(':nanitu-audio')
     implementation project(':nanitu-text')
+    implementation project(':nanitu-ui')
     runtimeOnly project(':nanitu-freetype')
     runtimeOnly project(':nanitu-harfbuzz')
     runtimeOnly project(':nanitu-opengl')

@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL33.*;
  * Immutable OpenGL render pipeline that applies all fixed-function and programmable state via the {@link OpenGLCache}
  * diff mechanism.
  *
- * <p>On {@link #apply(OpenGLCache, int)}, each pipeline state block (blend, depth,
+ * <p>On {@link #apply(OpenGLCache)}, each pipeline state block (blend, depth,
  * stencil, rasterization) is diffed against the cache so that only changed GL calls are issued. The shader program is
  * bound via {@code glUseProgram}.
  *
@@ -133,9 +133,8 @@ final class OpenGLPipeline implements Pipeline {
    * against the cache so only changed values trigger GL calls.
    *
    * @param cache    the GL state cache (render-thread only)
-   * @param fbHeight current framebuffer height for Y-flip calculations
    */
-  public void apply(OpenGLCache cache, int fbHeight) {
+  public void apply(OpenGLCache cache) {
     applyBlend(cache, desc.blend());
     applyDepth(cache, desc.depth());
     applyStencil(cache, desc.stencil());

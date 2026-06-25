@@ -448,9 +448,6 @@ public final class Rasterizer {
         lastLineWidth, flipY, runArr, mergedText);
   }
 
-  // -------------------------------------------------------------------------
-  // Layout pass: assigns pen-space x/y to each glyph, groups into LayoutRun[].
-  // Pen space: x starts at 0 for each line, y starts at 0 and grows by lineHeight.
   private List<LayoutRun> buildLayoutRuns(String mergedText, ShapeGlyph[] glyphs, float[] charAdvances,
                                           List<TextLiteral> literals) {
     int textLen = mergedText.length();

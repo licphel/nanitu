@@ -60,7 +60,7 @@ public enum Compressor {
   GZIP {
     @Override
     byte[] compress(final byte[] input, final CompressionLevel level) {
-      var stream = new ByteArrayOutputStream();
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
       try {
         var Gzip = new GZIPOutputStream(stream) {{
           def.setLevel(convertLevel(level));
@@ -75,7 +75,7 @@ public enum Compressor {
 
     @Override
     byte[] decompress(final byte[] input) {
-      try (var Gzip = new GZIPInputStream(new ByteArrayInputStream(input))) {
+      try (GZIPInputStream Gzip = new GZIPInputStream(new ByteArrayInputStream(input))) {
         return Gzip.readAllBytes();
       } catch (IOException e) {
         throw new UncheckedIOException(e);
@@ -93,10 +93,10 @@ public enum Compressor {
   DEFLATE {
     @Override
     byte[] compress(final byte[] input, final CompressionLevel level) {
-      var deflater = new Deflater(convertLevel(level));
+      Deflater deflater = new Deflater(convertLevel(level));
       deflater.setInput(input);
       deflater.finish();
-      var stream = new ByteArrayOutputStream(input.length / 2);
+      ByteArrayOutputStream stream = new ByteArrayOutputStream(input.length / 2);
       byte[] buf = new byte[8192];
       while (!deflater.finished()) {
         int n = deflater.deflate(buf);
@@ -108,9 +108,9 @@ public enum Compressor {
 
     @Override
     byte[] decompress(final byte[] input) {
-      var inflater = new Inflater();
+      Inflater inflater = new Inflater();
       inflater.setInput(input);
-      var stream = new ByteArrayOutputStream(input.length * 2);
+      ByteArrayOutputStream stream = new ByteArrayOutputStream(input.length * 2);
       byte[] buf = new byte[8192];
       try {
         while (!inflater.finished()) {

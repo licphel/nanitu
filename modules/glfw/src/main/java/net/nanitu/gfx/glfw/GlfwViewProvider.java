@@ -24,7 +24,7 @@
 
 package net.nanitu.gfx.glfw;
 
-import net.nanitu.gfx.View;
+import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.spi.ViewProvider;
 import net.nanitu.util.InternalApi;
 

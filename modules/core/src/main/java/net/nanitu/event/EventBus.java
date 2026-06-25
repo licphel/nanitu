@@ -162,7 +162,7 @@ public final class EventBus {
    * @param <T>       the event type
    */
   public <T extends Event> void register(Class<T> eventType, EventListener<T> listener) {
-    register(eventType, listener, Priority.NORMAL, Phase.NONE);
+    register(eventType, listener, Priority.NORMAL, Phase.NONE, null);
   }
 
   /**
@@ -174,10 +174,38 @@ public final class EventBus {
    * @param phase     the phase filter; {@link Phase#NONE} to match all phases
    * @param <T>       the event type
    */
-  @SuppressWarnings("unchecked")
   public <T extends Event> void register(Class<T> eventType, EventListener<T> listener, Priority priority,
                                          Phase phase) {
-    HandlerWrapper wrapper = new HandlerWrapper((EventListener<Event>) listener, priority, phase);
+    register(eventType, listener, priority, phase, null);
+  }
+
+  /**
+   * Registers a listener with an owner object that can later deregister all its handlers
+   * at once via {@link #deregister(Object)}.
+   *
+   * @param eventType the event type to listen for
+   * @param listener  the handler callback
+   * @param owner     an object that identifies this registration group; use with {@link #deregister(Object)}
+   * @param <T>       the event type
+   */
+  public <T extends Event> void register(Class<T> eventType, EventListener<T> listener, Object owner) {
+    register(eventType, listener, Priority.NORMAL, Phase.NONE, owner);
+  }
+
+  /**
+   * Registers a listener with explicit priority, phase, and owner.
+   *
+   * @param eventType the event type to listen for
+   * @param listener  the handler callback
+   * @param priority  the handler priority; determines dispatch order
+   * @param phase     the phase filter; {@link Phase#NONE} to match all phases
+   * @param owner     an object that identifies this registration group; use with {@link #deregister(Object)}
+   * @param <T>       the event type
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends Event> void register(Class<T> eventType, EventListener<T> listener, Priority priority,
+                                         Phase phase, @Nullable Object owner) {
+    HandlerWrapper wrapper = new HandlerWrapper((EventListener<Event>) listener, priority, phase, owner);
     addHandler(eventType, wrapper);
   }
 
@@ -194,6 +222,31 @@ public final class EventBus {
       for (TreeMap<Integer, List<HandlerWrapper>> priorityMap : handlers.values()) {
         for (List<HandlerWrapper> list : priorityMap.values()) {
           list.removeIf(w -> w.owner == instance);
+        }
+      }
+      cache.clear();
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+
+  /**
+   * Removes all handlers whose listener or owner matches the given reference.
+   *
+   * <p>When a listener was registered with an owner via
+   * {@link #register(Class, EventListener, Object)}, passing that same owner removes all
+   * handlers in the group. When a listener was registered without an owner, passing the
+   * listener itself removes it. For handlers registered via {@link #register(Object)}
+   * (reflective discovery), use {@link #unregister(Object)} instead.
+   *
+   * @param token the listener or owner object to deregister
+   */
+  public void deregister(Object token) {
+    lock.writeLock().lock();
+    try {
+      for (TreeMap<Integer, List<HandlerWrapper>> priorityMap : handlers.values()) {
+        for (List<HandlerWrapper> list : priorityMap.values()) {
+          list.removeIf(w -> w.listener == token || w.owner == token);
         }
       }
       cache.clear();
@@ -422,12 +475,12 @@ public final class EventBus {
       method.setAccessible(true);
     }
 
-    HandlerWrapper(EventListener<Event> listener, Priority priority, Phase phase) {
+    HandlerWrapper(EventListener<Event> listener, Priority priority, Phase phase, @Nullable Object owner) {
       this.listener = listener;
       this.priority = priority;
       this.phase = phase;
       this.method = null;
-      this.owner = null;
+      this.owner = owner;
     }
 
     void invoke(EventContext<Event> ctx, Event event) {
