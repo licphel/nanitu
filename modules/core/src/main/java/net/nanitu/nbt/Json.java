@@ -174,8 +174,7 @@ public final class Json {
     return compound;
   }
 
-  @Nullable
-  private static Object jsonNodeToValue(JsonNode node) {
+  private static @Nullable Object jsonNodeToValue(JsonNode node) {
     return switch (node.getNodeType()) {
       case NULL -> null;
       case STRING -> node.asText();

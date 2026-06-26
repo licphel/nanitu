@@ -31,18 +31,6 @@ import org.jspecify.annotations.Nullable;
 /**
  * Creates a new {@code PipelineDesc} describing an immutable render pipeline.
  *
- * <p>Use {@link Builder} when you need non-default values:
- * <pre>{@code
- * PipelineDesc desc = new PipelineDesc.Builder()
- *     .blend(Blend.ALPHA_MIX)
- *     .depth(Depth.LEQ)
- *     .shaderProgram(myProgram)
- *     .vertexLayout(VertexLayout.bake(
- *         new VertexLayout.Attr(3, VertexAttributeType.FLOAT32, false),
- *         new VertexLayout.Attr(2, VertexAttributeType.FLOAT32, false)))
- *     .build();
- * }</pre>
- *
  * @param blend           blend state
  * @param depth           depth-test state
  * @param stencil         stencil-test state

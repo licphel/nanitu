@@ -25,7 +25,7 @@
 package net.nanitu.ui;
 
 import net.nanitu.gfx.sprite.Alignment;
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.gfx.text.Text;
 import net.nanitu.math.Box2;
 import net.nanitu.ui.look.ModernFlat;
@@ -36,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>Implement this interface to fully control the visual appearance of every widget type. Each
  * {@code draw*} method receives the widget's current state and absolute bounds, and must render
- * using only the given {@link Brush}. Every draw method must restore the brush color to
+ * using only the given {@link Graphics}. Every draw method must restore the brush color to
  * {@code Color.WHITE} before returning so the caller's color state is not corrupted.
  *
  * <p>Metric methods such as {@link #titleBarHeight()}, {@link #resizeHandleSize()}, and
@@ -76,7 +76,7 @@ public interface Look {
    * @param bounds the button's absolute bounds in logical units
    * @param label  the label text centered on the button, or {@code null} for no text
    */
-  void drawButton(Brush brush, ButtonState state, Box2 bounds, @Nullable Text label);
+  void drawButton(Graphics brush, ButtonState state, Box2 bounds, @Nullable Text label);
 
   /**
    * Draws a panel background.
@@ -84,7 +84,7 @@ public interface Look {
    * @param brush  the drawing context
    * @param bounds the panel's absolute bounds in logical units
    */
-  void drawPanel(Brush brush, Box2 bounds);
+  void drawPanel(Graphics brush, Box2 bounds);
 
   /**
    * Draws a scroll pane background.
@@ -92,7 +92,7 @@ public interface Look {
    * @param brush  the drawing context
    * @param bounds the scroll pane's absolute bounds in logical units
    */
-  void drawScrollPane(Brush brush, Box2 bounds);
+  void drawScrollPane(Graphics brush, Box2 bounds);
 
   /**
    * Draws the outer chrome of a floating window, including background, border, and shadow.
@@ -101,7 +101,7 @@ public interface Look {
    * @param state  the current visual state of the window
    * @param bounds the window's total absolute bounds in logical units
    */
-  void drawWindowFrame(Brush brush, WindowState state, Box2 bounds);
+  void drawWindowFrame(Graphics brush, WindowState state, Box2 bounds);
 
   /**
    * Draws the title bar strip of a floating window.
@@ -111,7 +111,7 @@ public interface Look {
    * @param titleBarBounds the title bar's absolute bounds in logical units
    * @param title          the title text, or {@code null} for no title
    */
-  void drawWindowTitleBar(Brush brush, boolean focused, Box2 titleBarBounds, @Nullable Text title);
+  void drawWindowTitleBar(Graphics brush, boolean focused, Box2 titleBarBounds, @Nullable Text title);
 
   /**
    * Draws the close button of a floating window.
@@ -120,7 +120,7 @@ public interface Look {
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowCloseButton(Brush brush, boolean hovered, Box2 bounds);
+  void drawWindowCloseButton(Graphics brush, boolean hovered, Box2 bounds);
 
   /**
    * Draws the minimize button of a floating window.
@@ -129,7 +129,7 @@ public interface Look {
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowMinimizeButton(Brush brush, boolean hovered, Box2 bounds);
+  void drawWindowMinimizeButton(Graphics brush, boolean hovered, Box2 bounds);
 
   /**
    * Draws the maximize button of a floating window.
@@ -138,7 +138,7 @@ public interface Look {
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowMaximizeButton(Brush brush, boolean hovered, Box2 bounds);
+  void drawWindowMaximizeButton(Graphics brush, boolean hovered, Box2 bounds);
 
   /**
    * Draws a text label.
@@ -148,7 +148,7 @@ public interface Look {
    * @param text      the text to draw, or {@code null} for no text
    * @param alignment the alignment of the text within the bounds
    */
-  default void drawLabel(Brush brush, Box2 bounds, @Nullable Text text, Alignment alignment) {
+  default void drawLabel(Graphics brush, Box2 bounds, @Nullable Text text, Alignment alignment) {
   }
 
   /**
@@ -159,7 +159,7 @@ public interface Look {
    * @param hovered whether the cursor is over the checkbox
    * @param bounds  the checkbox's absolute bounds in logical units
    */
-  default void drawCheckbox(Brush brush, boolean checked, boolean hovered, Box2 bounds) {
+  default void drawCheckbox(Graphics brush, boolean checked, boolean hovered, Box2 bounds) {
   }
 
   /**
@@ -168,7 +168,7 @@ public interface Look {
    * @param brush  the drawing context
    * @param bounds the track's absolute bounds in logical units
    */
-  default void drawSliderTrack(Brush brush, Box2 bounds) {
+  default void drawSliderTrack(Graphics brush, Box2 bounds) {
   }
 
   /**
@@ -178,7 +178,7 @@ public interface Look {
    * @param dragging    whether the thumb is currently being dragged
    * @param thumbBounds the thumb's absolute bounds in logical units
    */
-  default void drawSliderThumb(Brush brush, boolean dragging, Box2 thumbBounds) {
+  default void drawSliderThumb(Graphics brush, boolean dragging, Box2 thumbBounds) {
   }
 
   /**

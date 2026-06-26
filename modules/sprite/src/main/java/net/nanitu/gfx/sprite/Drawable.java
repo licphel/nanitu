@@ -25,13 +25,13 @@
 package net.nanitu.gfx.sprite;
 
 /**
- * A drawable object that renders itself using a {@link Brush}.
+ * A drawable object that renders itself using a {@link Graphics2D}.
  *
  * <p>Implement this interface and pass instances to
- * {@link Brush#draw(Drawable, float, float, float, float, float, float, float, float)} to define custom drawing logic
- * driven by the Brush.
+ * {@link Graphics2D#draw(Drawable, float, float, float, float, float, float, float, float)} to define custom drawing logic
+ * driven by the Graphics.
  *
- * @see Brush#draw(Drawable, float, float, float, float, float, float, float, float)
+ * @see Graphics2D#draw(Drawable, float, float, float, float, float, float, float, float)
  */
 @FunctionalInterface
 public interface Drawable {
@@ -48,5 +48,5 @@ public interface Drawable {
    * @param uw    the U texture coordinate range
    * @param vh    the V texture coordinate range
    */
-  void draw(Brush brush, float x, float y, float w, float h, float u, float v, float uw, float vh);
+  void draw(Graphics brush, float x, float y, float w, float h, float u, float v, float uw, float vh);
 }

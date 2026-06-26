@@ -24,7 +24,7 @@
 
 package net.nanitu.ui.widget;
 
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.gfx.text.Text;
 import net.nanitu.math.Box2;
 import net.nanitu.ui.*;
@@ -299,7 +299,7 @@ public final class Window extends Widget {
    * windows skip child rendering.
    */
   @Override
-  public void render(Brush brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
@@ -322,7 +322,7 @@ public final class Window extends Widget {
   }
 
   @Override
-  protected void renderSelf(Brush brush, Look look) {
+  protected void renderSelf(Graphics brush, Look look) {
     Box2 abs = absoluteBounds();
     WindowState ws = focused ? WindowState.FOCUSED : WindowState.NORMAL;
     look.drawWindowFrame(brush, ws, abs);

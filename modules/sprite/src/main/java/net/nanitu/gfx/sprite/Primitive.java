@@ -25,21 +25,19 @@
 package net.nanitu.gfx.sprite;
 
 /**
- * Bitmask flags for controlling {@link Brush} drawing behavior.
+ * Primitive type used by {@link Graphics2D} to select the pipeline, resource set, and topology for rendering.
  *
- * <p>Combine flags with bitwise OR to enable multiple effects simultaneously.
- * Pass the combined value to {@link Brush#setFlags(int)}.
- *
- * @see Brush#setFlags(int)
+ * @see Graphics2D
  */
-public final class BrushFlag {
-  /** No flags set. */
-  public static final int NONE = 0;
-  /** Flip the drawn content horizontally. */
-  public static final int FLIP_X = 1;
-  /** Flip the drawn content vertically. */
-  public static final int FLIP_Y = 2;
-
-  private BrushFlag() {
-  }
+public enum Primitive {
+  /** No primitive — rendering is skipped. */
+  NONE,
+  /** Textured sprite, rendered as indexed triangles. */
+  TEXTURE_SPRITE,
+  /** Colored sprite without texture, rendered as indexed triangles. */
+  COLOR_SPRITE,
+  /** Colored line segments. */
+  COLOR_LINE,
+  /** Colored points. */
+  COLOR_POINT
 }

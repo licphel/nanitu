@@ -39,7 +39,7 @@ import net.nanitu.math.Box2;
  * overlap would be visible.
  *
  * @see Drawable
- * @see Brush#draw(Drawable, float, float, float, float)
+ * @see Graphics2D#draw(Drawable, float, float, float, float)
  */
 public final class NinePatches implements Drawable {
   private static final float P13 = 1.0F / 3.0F;
@@ -135,7 +135,7 @@ public final class NinePatches implements Drawable {
    * @param vh    ignored
    */
   @Override
-  public void draw(Brush brush, float x, float y, float w, float h, float u, float v, float uw, float vh) {
+  public void draw(Graphics brush, float x, float y, float w, float h, float u, float v, float uw, float vh) {
     int nw = cntX(w);
     int nh = cntY(h);
 

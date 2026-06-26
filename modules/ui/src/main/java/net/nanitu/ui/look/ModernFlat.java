@@ -25,7 +25,7 @@
 package net.nanitu.ui.look;
 
 import net.nanitu.gfx.sprite.Alignment;
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.gfx.text.Text;
 import net.nanitu.math.Box2;
 import net.nanitu.math.Color;
@@ -76,7 +76,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawButton(Brush brush, ButtonState state, Box2 bounds, @Nullable Text label) {
+  public void drawButton(Graphics brush, ButtonState state, Box2 bounds, @Nullable Text label) {
     Color bg = switch (state) {
       case IDLE -> BTN_IDLE;
       case HOVERED -> ACCENT_HOV;
@@ -95,7 +95,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawPanel(Brush brush, Box2 bounds) {
+  public void drawPanel(Graphics brush, Box2 bounds) {
     brush.setColor(SURFACE);
     brush.drawRectangle(bounds);
     brush.setColor(BORDER);
@@ -104,7 +104,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawScrollPane(Brush brush, Box2 bounds) {
+  public void drawScrollPane(Graphics brush, Box2 bounds) {
     brush.setColor(WIN_BG);
     brush.drawRectangle(bounds);
     brush.setColor(BORDER);
@@ -113,7 +113,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowFrame(Brush brush, WindowState state, Box2 bounds) {
+  public void drawWindowFrame(Graphics brush, WindowState state, Box2 bounds) {
     Box2 shadow = bounds.translate(4.0F, 4.0F);
     brush.setColor(WIN_SHADOW);
     brush.drawRectangle(shadow);
@@ -125,7 +125,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowTitleBar(Brush brush, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
+  public void drawWindowTitleBar(Graphics brush, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
     brush.setColor(focused ? ACCENT : TITLE_UNFOCUS);
     brush.drawRectangle(titleBarBounds);
     if (title != null) {
@@ -138,7 +138,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowCloseButton(Brush brush, boolean hovered, Box2 bounds) {
+  public void drawWindowCloseButton(Graphics brush, boolean hovered, Box2 bounds) {
     if (hovered) {
       brush.setColor(CLOSE_HOV);
       brush.drawRectangle(bounds);
@@ -151,7 +151,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowMinimizeButton(Brush brush, boolean hovered, Box2 bounds) {
+  public void drawWindowMinimizeButton(Graphics brush, boolean hovered, Box2 bounds) {
     if (hovered) {
       brush.setColor(ACCENT_HOV);
       brush.drawRectangle(bounds);
@@ -164,7 +164,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowMaximizeButton(Brush brush, boolean hovered, Box2 bounds) {
+  public void drawWindowMaximizeButton(Graphics brush, boolean hovered, Box2 bounds) {
     if (hovered) {
       brush.setColor(ACCENT_HOV);
       brush.drawRectangle(bounds);

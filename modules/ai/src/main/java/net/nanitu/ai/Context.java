@@ -138,8 +138,7 @@ public final class Context {
    *
    * @return the system instruction text, or {@code null}
    */
-  @Nullable
-  public String systemMessage() {
+  public @Nullable String systemMessage() {
     return systemMessage != null ? systemMessage.content() : null;
   }
 

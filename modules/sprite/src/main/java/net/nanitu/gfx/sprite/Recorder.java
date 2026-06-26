@@ -22,7 +22,38 @@
  * SOFTWARE.
  */
 
-@NullMarked
-package net.nanitu;
+package net.nanitu.gfx.sprite;
 
-import org.jspecify.annotations.NullMarked;
+import net.nanitu.gfx.pipe.Pipeline;
+import net.nanitu.gfx.shader.ResourceSet;
+import net.nanitu.gfx.texture.Texture;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * Internal render state tracking the active pipeline, primitive type, resource set, and texture for a {@link Graphics2D}.
+ */
+final class Recorder {
+  @Nullable Pipeline pipe;
+  @Nullable Primitive primitive;
+  @Nullable ResourceSet set;
+  @Nullable Texture tex;
+
+  Recorder() {
+  }
+
+  /**
+   * Replaces all state fields at once.
+   *
+   * @param pipe      the pipeline, may be {@code null}
+   * @param primitive the primitive type, may be {@code null}
+   * @param set       the resource set, may be {@code null}
+   * @param tex       the texture, may be {@code null}
+   */
+  void set(@Nullable Pipeline pipe, @Nullable Primitive primitive, @Nullable ResourceSet set,
+           @Nullable Texture tex) {
+    this.pipe = pipe;
+    this.primitive = primitive;
+    this.set = set;
+    this.tex = tex;
+  }
+}

@@ -24,7 +24,7 @@
 
 package net.nanitu.ui.widget;
 
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.math.Box2;
 import net.nanitu.ui.Look;
 import net.nanitu.ui.UiEvent;
@@ -60,7 +60,7 @@ public class Panel extends Widget {
    * Renders the panel background, then draws children clipped to the panel's content bounds.
    */
   @Override
-  public void render(Brush brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
@@ -81,7 +81,7 @@ public class Panel extends Widget {
   }
 
   @Override
-  protected void renderSelf(Brush brush, Look look) {
+  protected void renderSelf(Graphics brush, Look look) {
     look.drawPanel(brush, absoluteBounds());
   }
 

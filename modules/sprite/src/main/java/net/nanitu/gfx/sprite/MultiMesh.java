@@ -38,12 +38,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A mesh that manages a sequence of {@link Node}s for batched 2D rendering via {@link Brush}.
+ * A mesh that manages a sequence of {@link Node}s for batched 2D rendering via {@link Graphics2D}.
  *
  * <p>A MultiMesh can operate in two modes:
  * <ul>
- *   <li><strong>Recording mode:</strong> each {@link Brush#flush()} records a new Node.
- *       Nodes can be replayed later with {@link Brush#replay(MultiMesh)}.</li>
+ *   <li><strong>Recording mode:</strong> each {@link Graphics2D#flush()} records a new Node.
+ *       Nodes can be replayed later with {@link Graphics2D#replay(MultiMesh)}.</li>
  *   <li><strong>Direct mode:</strong> the current Node is submitted to the GPU
  *       immediately on flush. Set via {@link #setDirect(boolean)}.</li>
  * </ul>
@@ -51,12 +51,12 @@ import java.util.List;
  * <p>Call {@link #begin()} to start a recording session and {@link #end()} to finish it.
  * When done, call {@link #close()} to release GPU resources.
  *
- * @see Brush
+ * @see Graphics2D
  */
 public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable {
   private final Device device;
   private final List<Node> nodes = new ArrayList<>();
-  @Nullable Brush brush;
+  @Nullable Graphics2D brush;
   private int curNode;
   private boolean disposed;
   private boolean isDirect;
@@ -113,12 +113,16 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   /**
    * Begins a recording session and starts a render cycle.
    *
-   * @return the Brush for issuing draw commands
+   * @return the Graphics for issuing draw commands
    */
-  public Brush begin() {
+  public Graphics begin() {
     curNode = 0;
     if (brush == null) {
-      brush = new Brush(this, device);
+      /*
+       * Creates a default Graphics2D instance.
+       * This is a weighted object, so we cache it in the mesh.
+       */
+      brush = new Graphics2D(this, device);
     }
     brush.moveToNextNode();
     brush.begin();
@@ -132,7 +136,7 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
    */
   public void end() {
     if (brush == null) {
-      throw new IllegalStateException("Brush is not initialized");
+      throw new IllegalStateException("Graphics is not initialized");
     }
     brush.end0();
   }
@@ -159,7 +163,7 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   /**
    * A single mesh node holding a vertex buffer, an index buffer, and staging buffers for batched drawing.
    *
-   * <p>Each node tracks the {@link BrushState} that was active when data was recorded into it.
+   * <p>Each node tracks the {@link Recorder} that was active when data was recorded into it.
    */
   public static final class Node {
     static final int INITIAL_CAP = 128;
@@ -171,7 +175,7 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
     boolean dirty;
     int vertexCount;
     int indexCount;
-    BrushState recordedState = new BrushState();
+    Recorder recordedState = new Recorder();
 
     Node(Device device) {
       vbo = device.getBuffer(BufferObjectDesc.vertex(BufferFrequency.STREAM));

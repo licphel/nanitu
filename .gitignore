@@ -47,3 +47,4 @@ bin/
 .ref/
 .claude/settings.local.json
 nanitu-test
+modules/test/

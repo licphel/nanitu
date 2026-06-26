@@ -30,7 +30,7 @@ import net.nanitu.gfx.Device;
 import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.input.KeyAction;
 import net.nanitu.gfx.input.event.*;
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.math.Box2;
 import net.nanitu.math.Vector2;
 import net.nanitu.math.dim2.Camera2D;
@@ -193,7 +193,7 @@ public final class UiContext implements AutoCloseable {
    * @param brush     the drawing context
    * @param deltaTime seconds elapsed since the previous frame
    */
-  public void render(Brush brush, float deltaTime) {
+  public void render(Graphics brush, float deltaTime) {
     if (disposed) {
       return;
     }
@@ -349,8 +349,7 @@ public final class UiContext implements AutoCloseable {
    *
    * @return the focused widget, or {@code null} if no widget has focus
    */
-  @Nullable
-  public Widget focusedWidget() {
+  public @Nullable Widget focusedWidget() {
     return focusedWidget;
   }
 

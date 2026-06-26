@@ -24,7 +24,7 @@
 
 package net.nanitu.ui;
 
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.math.Box2;
 import org.jspecify.annotations.Nullable;
 
@@ -44,7 +44,7 @@ import java.util.List;
  *   <li>{@link #layout(Box2)} — resolves {@link AnchorLayout} positioning, recurses into
  *       children.</li>
  *   <li>{@link #update(float)} — per-frame logic tick.</li>
- *   <li>{@link #render(Brush, Look, Box2)} — draws self then children; containers apply
+ *   <li>{@link #render(Graphics, Look, Box2)} — draws self then children; containers apply
  *       scissor clipping.</li>
  * </ol>
  *
@@ -183,8 +183,7 @@ public abstract class Widget {
    *
    * @return the anchor layout, or {@code null} if none is set
    */
-  @Nullable
-  public AnchorLayout anchorLayout() {
+  public @Nullable AnchorLayout anchorLayout() {
     return anchorLayout;
   }
 
@@ -241,7 +240,7 @@ public abstract class Widget {
   /**
    * Renders this widget and its children.
    *
-   * <p>The default implementation calls {@link #renderSelf(Brush, Look)} then draws children in
+   * <p>The default implementation calls {@link #renderSelf(Graphics, Look)} then draws children in
    * z-order. Containers that need scissor clipping override this method.
    *
    * @param brush      the drawing context
@@ -249,7 +248,7 @@ public abstract class Widget {
    * @param parentClip the effective scissor rectangle in absolute logical coordinates, or
    *                   {@code null} if no clipping is active
    */
-  public void render(Brush brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
@@ -265,7 +264,7 @@ public abstract class Widget {
    * @param brush the drawing context
    * @param look  the active look implementation
    */
-  protected abstract void renderSelf(Brush brush, Look look);
+  protected abstract void renderSelf(Graphics brush, Look look);
 
   /**
    * Handles an input event. Children are tried in reverse z-order — topmost first — before
@@ -388,8 +387,7 @@ public abstract class Widget {
    *
    * @return the parent widget, or {@code null} if this is a root widget
    */
-  @Nullable
-  public Widget parent() {
+  public @Nullable Widget parent() {
     return parent;
   }
 

@@ -33,15 +33,6 @@ import net.nanitu.gfx.pipe.PipelineDesc;
  * list of attribute descriptors. The resulting layout is immutable and can be shared across pipelines with the same
  * vertex structure.
  *
- * <p><b>Example — two attributes (position + UV):</b>
- * <pre>{@code
- * VertexLayout layout = VertexLayout.bake(
- *     new VertexLayout.Attr(3, VertexAttributeType.FLOAT32, false),  // vec3 position
- *     new VertexLayout.Attr(2, VertexAttributeType.FLOAT32, false)   // vec2 UV
- * );
- * // layout.stride == 20 (12 + 8)
- * }</pre>
- *
  * @see PipelineDesc.Builder#vertexLayout
  */
 public final class VertexLayout {

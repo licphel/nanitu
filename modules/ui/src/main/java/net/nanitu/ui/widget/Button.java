@@ -24,7 +24,7 @@
 
 package net.nanitu.ui.widget;
 
-import net.nanitu.gfx.sprite.Brush;
+import net.nanitu.gfx.sprite.Graphics;
 import net.nanitu.gfx.text.Text;
 import net.nanitu.math.Box2;
 import net.nanitu.ui.ButtonState;
@@ -78,8 +78,7 @@ public final class Button extends Widget {
    *
    * @return the label text, or {@code null} if none is set
    */
-  @Nullable
-  public Text label() {
+  public @Nullable Text label() {
     return label;
   }
 
@@ -102,7 +101,7 @@ public final class Button extends Widget {
   }
 
   @Override
-  protected void renderSelf(Brush brush, Look look) {
+  protected void renderSelf(Graphics brush, Look look) {
     ButtonState drawState = enabled ? state : ButtonState.DISABLED;
     look.drawButton(brush, drawState, absoluteBounds(), label);
   }

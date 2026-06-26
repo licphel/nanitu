@@ -30,7 +30,7 @@ import net.nanitu.gfx.shader.*;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Lazy-initialized shader programs, pipelines, resource set layouts, and vertex layouts shared across all {@link Brush}
+ * Lazy-initialized shader programs, pipelines, resource set layouts, and vertex layouts shared across all {@link Graphics2D}
  * instances.
  *
  * <p>Resources are allocated once on the first call to {@link #init(Device)}; subsequent calls are no-ops.
@@ -103,22 +103,14 @@ final class InternalResources {
       }
       """;
 
-  @Nullable
-  static ShaderProgram s4c;
-  @Nullable
-  static ShaderProgram s4t;
-  @Nullable
-  static ResourceSetLayout rl4c;
-  @Nullable
-  static ResourceSetLayout rl4t;
-  @Nullable
-  static VertexLayout vl4c;
-  @Nullable
-  static VertexLayout vl4t;
-  @Nullable
-  static Pipeline p4c;
-  @Nullable
-  static Pipeline p4t;
+  static @Nullable ShaderProgram s4c;
+  static @Nullable ShaderProgram s4t;
+  static @Nullable ResourceSetLayout rl4c;
+  static @Nullable ResourceSetLayout rl4t;
+  static @Nullable VertexLayout vl4c;
+  static @Nullable VertexLayout vl4t;
+  static @Nullable Pipeline p4c;
+  static @Nullable Pipeline p4t;
   private static boolean init;
 
   private InternalResources() {

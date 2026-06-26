@@ -24,36 +24,22 @@
 
 package net.nanitu.gfx.sprite;
 
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.texture.Texture;
-import org.jspecify.annotations.Nullable;
-
 /**
- * Internal render state tracking the active pipeline, primitive type, resource set, and texture for a {@link Brush}.
+ * Bitmask flags for controlling {@link Graphics2D} drawing behavior.
+ *
+ * <p>Combine flags with bitwise OR to enable multiple effects simultaneously.
+ * Pass the combined value to {@link Graphics2D#setFlags(int)}.
+ *
+ * @see Graphics2D#setFlags(int)
  */
-final class BrushState {
-  @Nullable Pipeline pipe;
-  @Nullable BrushPrimitive primitive;
-  @Nullable ResourceSet set;
-  @Nullable Texture tex;
+public final class GraphicsFlag {
+  /** No flags set. */
+  public static final int NONE = 0;
+  /** Flip the drawn content horizontally. */
+  public static final int FLIP_X = 1;
+  /** Flip the drawn content vertically. */
+  public static final int FLIP_Y = 2;
 
-  BrushState() {
-  }
-
-  /**
-   * Replaces all state fields at once.
-   *
-   * @param pipe      the pipeline, may be {@code null}
-   * @param primitive the primitive type, may be {@code null}
-   * @param set       the resource set, may be {@code null}
-   * @param tex       the texture, may be {@code null}
-   */
-  void set(@Nullable Pipeline pipe, @Nullable BrushPrimitive primitive, @Nullable ResourceSet set,
-           @Nullable Texture tex) {
-    this.pipe = pipe;
-    this.primitive = primitive;
-    this.set = set;
-    this.tex = tex;
+  private GraphicsFlag() {
   }
 }

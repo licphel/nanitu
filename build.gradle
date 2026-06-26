@@ -25,7 +25,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    id 'java-library'
+    id 'maven-publish'
 }
 
 ext {
@@ -49,8 +49,8 @@ ext {
 }
 
 subprojects {
-    apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
 
     group = 'net.nanitu'
     version = property('nanitu_version')
@@ -59,6 +59,8 @@ subprojects {
         toolchain {
             languageVersion = JavaLanguageVersion.of(25)
         }
+        withJavadocJar()
+        withSourcesJar()
     }
 
     repositories {
@@ -84,5 +86,46 @@ subprojects {
 
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+
+                pom {
+                    name = project.name
+                    description = 'nanitu — a game engine framework'
+                    url = 'https://github.com/licphel/nanitu'
+
+                    licenses {
+                        license {
+                            name = 'MIT'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'licphel'
+                            name = 'Licphel'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/licphel/nanitu.git'
+                        developerConnection = 'scm:git:ssh://github.com:licphel/nanitu.git'
+                        url = 'https://github.com/licphel/nanitu'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = 'Local'
+                url = layout.buildDirectory.dir('repo')
+            }
+        }
     }
 }
