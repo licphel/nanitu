@@ -45,12 +45,12 @@ public final class GlfwViewProvider implements ViewProvider {
   }
 
   @Override
-  public View create() {
-    return new GlfwView();
+  public String name() {
+    return "GLFW-View-Provider";
   }
 
   @Override
-  public String name() {
-    return "GLFW-View-Provider";
+  public View create() {
+    return new GlfwView();
   }
 }

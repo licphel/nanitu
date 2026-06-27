@@ -61,8 +61,7 @@ public record SamplerDesc(TextureFilter magFilter, TextureFilter minFilter, Text
       new Builder().minFilter(TextureFilter.NEAREST).magFilter(TextureFilter.NEAREST).build();
 
   /**
-   * Builder for {@link SamplerDesc} with sensible defaults — linear filtering,
-   * repeat wrapping, no anisotropy.
+   * Builder for {@link SamplerDesc} with sensible defaults — linear filtering, repeat wrapping, no anisotropy.
    */
   public static final class Builder {
     public TextureFilter magFilter = TextureFilter.LINEAR;

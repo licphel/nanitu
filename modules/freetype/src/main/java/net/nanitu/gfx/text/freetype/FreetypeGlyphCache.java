@@ -104,7 +104,7 @@ final class FreetypeGlyphCache implements AutoCloseable {
     if (glyphIndex == 0) {
       return null; // glyph 0 is the .notdef sentinel — control chars, unmapped codepoints, etc.
     }
-    GlyphKey key = new GlyphKey(font.filePath(), resolution, glyphIndex, fontStyle);
+    GlyphKey key = new GlyphKey(font, resolution, glyphIndex, fontStyle);
     if (cache.containsKey(key)) {
       return cache.get(key);
     }
@@ -224,8 +224,9 @@ final class FreetypeGlyphCache implements AutoCloseable {
     }
   }
 
-  // Stable cache key: filePath + resolution + glyphIndex + fontStyle avoids identityHashCode collisions.
-  private record GlyphKey(String filePath, int resolution, int glyphIndex, int fontStyle) {}
+  // Stable cache key: font + resolution + glyphIndex + fontStyle avoids identityHashCode collisions.
+  private record GlyphKey(Font font, int resolution, int glyphIndex, int fontStyle) {
+  }
 
   // FragileTexture impl: holds a mutable Texture pointer. TextureParts pin() this to get current atlas.
   private static final class GrowableAtlas implements FragileTexture {

@@ -112,7 +112,8 @@ public final class NinePatches implements Drawable {
     this(texPart, 1.0F);
   }
 
-  private static net.nanitu.gfx.texture.TexturePart slice(net.nanitu.gfx.texture.TexturePart texPart, float u, float v, float w, float h) {
+  private static net.nanitu.gfx.texture.TexturePart slice(net.nanitu.gfx.texture.TexturePart texPart, float u,
+                                                          float v, float w, float h) {
     float w0 = texPart.width();
     float h0 = texPart.height();
     return new net.nanitu.gfx.texture.TexturePart(texPart, Box2.create(w0 * u, h0 * v, w0 * w, h0 * h));
@@ -124,18 +125,18 @@ public final class NinePatches implements Drawable {
    * <p>The source region parameters {@code (u, v, uw, vh)} are ignored — this drawable uses
    * its own internal grid derived from the source texture.
    *
-   * @param brush the brush to draw with
-   * @param x     the X position in world units
-   * @param y     the Y position in world units
-   * @param w     the destination width in world units
-   * @param h     the destination height in world units
-   * @param u     ignored
-   * @param v     ignored
-   * @param uw    ignored
-   * @param vh    ignored
+   * @param g  the g to draw with
+   * @param x  the X position in world units
+   * @param y  the Y position in world units
+   * @param w  the destination width in world units
+   * @param h  the destination height in world units
+   * @param u  ignored
+   * @param v  ignored
+   * @param uw ignored
+   * @param vh ignored
    */
   @Override
-  public void draw(Graphics brush, float x, float y, float w, float h, float u, float v, float uw, float vh) {
+  public void draw(Graphics g, float x, float y, float w, float h, float u, float v, float uw, float vh) {
     int nw = cntX(w);
     int nh = cntY(h);
 
@@ -156,7 +157,7 @@ public final class NinePatches implements Drawable {
           float drawY = y + j * ath;
           float drawW = i == nw - 2 ? lcw : atw;
           float drawH = j == nh - 2 ? lch : ath;
-          brush.drawTexture(central, drawX, drawY, drawW, drawH);
+          g.drawTexture(central, drawX, drawY, drawW, drawH);
         }
       }
 
@@ -164,22 +165,22 @@ public final class NinePatches implements Drawable {
       for (int j = 1; j < nh - 1; j++) {
         float drawY = y + j * ath;
         float drawH = j == nh - 2 ? lch : ath;
-        brush.drawTexture(left, x, drawY, atw, drawH);
-        brush.drawTexture(right, rx, drawY, atw, drawH);
+        g.drawTexture(left, x, drawY, atw, drawH);
+        g.drawTexture(right, rx, drawY, atw, drawH);
       }
 
       for (int i = 1; i < nw - 1; i++) {
         float drawX = x + i * atw;
         float drawW = i == nw - 2 ? lcw : atw;
-        brush.drawTexture(top, drawX, y, drawW, ath);
-        brush.drawTexture(bottom, drawX, by, drawW, ath);
+        g.drawTexture(top, drawX, y, drawW, ath);
+        g.drawTexture(bottom, drawX, by, drawW, ath);
       }
 
       // Corners
-      brush.drawTexture(topLeft, x, y, atw, ath);
-      brush.drawTexture(topRight, rx, y, atw, ath);
-      brush.drawTexture(bottomLeft, x, by, atw, ath);
-      brush.drawTexture(bottomRight, rx, by, atw, ath);
+      g.drawTexture(topLeft, x, y, atw, ath);
+      g.drawTexture(topRight, rx, y, atw, ath);
+      g.drawTexture(bottomLeft, x, by, atw, ath);
+      g.drawTexture(bottomRight, rx, by, atw, ath);
     } else {
       float rx = x + atw * (nw - 1);
       float by = y + ath * (nh - 1);
@@ -189,28 +190,28 @@ public final class NinePatches implements Drawable {
         for (int i = 1; i < nw - 1; i++) {
           float drawX = x + i * atw;
           float drawY = y + j * ath;
-          brush.drawTexture(central, drawX, drawY, atw, ath);
+          g.drawTexture(central, drawX, drawY, atw, ath);
         }
       }
 
       // Edges
       for (int j = 1; j < nh - 1; j++) {
         float drawY = y + j * ath;
-        brush.drawTexture(left, x, drawY, atw, ath);
-        brush.drawTexture(right, rx, drawY, atw, ath);
+        g.drawTexture(left, x, drawY, atw, ath);
+        g.drawTexture(right, rx, drawY, atw, ath);
       }
 
       for (int i = 1; i < nw - 1; i++) {
         float drawX = x + i * atw;
-        brush.drawTexture(top, drawX, y, atw, ath);
-        brush.drawTexture(bottom, drawX, by, atw, ath);
+        g.drawTexture(top, drawX, y, atw, ath);
+        g.drawTexture(bottom, drawX, by, atw, ath);
       }
 
       // Corners
-      brush.drawTexture(topLeft, x, y, atw, ath);
-      brush.drawTexture(topRight, rx, y, atw, ath);
-      brush.drawTexture(bottomLeft, x, by, atw, ath);
-      brush.drawTexture(bottomRight, rx, by, atw, ath);
+      g.drawTexture(topLeft, x, y, atw, ath);
+      g.drawTexture(topRight, rx, y, atw, ath);
+      g.drawTexture(bottomLeft, x, by, atw, ath);
+      g.drawTexture(bottomRight, rx, by, atw, ath);
     }
   }
 

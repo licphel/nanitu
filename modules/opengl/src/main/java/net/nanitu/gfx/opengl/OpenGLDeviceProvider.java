@@ -49,12 +49,12 @@ public final class OpenGLDeviceProvider implements DeviceProvider {
   }
 
   @Override
-  public Device create() {
-    return new OpenGLDevice();
+  public String name() {
+    return "OpenGL-Device-Provider";
   }
 
   @Override
-  public String name() {
-    return "OpenGL-Device-Provider";
+  public Device create() {
+    return new OpenGLDevice();
   }
 }

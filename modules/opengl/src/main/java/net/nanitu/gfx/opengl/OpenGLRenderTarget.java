@@ -44,11 +44,11 @@ import static org.lwjgl.opengl.GL33.*;
 @InternalApi
 final class OpenGLRenderTarget implements RenderTarget {
   private final OpenGLDevice ctx;
+  private final int fboWidth;
+  private final int fboHeight;
   private int handle;
   private int colorTex;
   private int depthRbo;
-  private final int fboWidth;
-  private final int fboHeight;
 
   /**
    * Creates an off-screen FBO.
@@ -59,8 +59,8 @@ final class OpenGLRenderTarget implements RenderTarget {
    * @throws RuntimeException if the FBO is incomplete after assembly
    */
   OpenGLRenderTarget(OpenGLDevice ctx, int width, int height) {
-    this.ctx       = ctx;
-    this.fboWidth  = width;
+    this.ctx = ctx;
+    this.fboWidth = width;
     this.fboHeight = height;
 
     ctx.submit(() -> {
@@ -98,16 +98,6 @@ final class OpenGLRenderTarget implements RenderTarget {
   }
 
   @Override
-  public int width() {
-    return fboWidth;
-  }
-
-  @Override
-  public int height() {
-    return fboHeight;
-  }
-
-  @Override
   public void blit(RenderTarget target, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY, int dstW,
                    int dstH, TextureFilter filter) {
     ctx.submit(() -> {
@@ -119,6 +109,16 @@ final class OpenGLRenderTarget implements RenderTarget {
           GL_COLOR_BUFFER_BIT, glFilter);
       ctx.cache.bindFramebuffer(GL_FRAMEBUFFER, 0);
     });
+  }
+
+  @Override
+  public int width() {
+    return fboWidth;
+  }
+
+  @Override
+  public int height() {
+    return fboHeight;
   }
 
   @Override

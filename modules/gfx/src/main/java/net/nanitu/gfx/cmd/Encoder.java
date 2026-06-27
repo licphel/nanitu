@@ -70,9 +70,8 @@ public interface Encoder extends AutoCloseable {
    * Begins a render pass targeting the render target in {@code desc}.
    *
    * <p>Binds the target framebuffer, performs any requested clears, and stores
-   * the target so that {@link #setViewport} and {@link #setScissor} can apply
-   * the correct Y-flip. If {@code desc.target()} is {@code null}, the swapchain
-   * (default framebuffer) is used.
+   * the target so that {@link #setViewport} and {@link #setScissor} can apply the correct Y-flip. If
+   * {@code desc.target()} is {@code null}, the swapchain (default framebuffer) is used.
    *
    * <p>Must be followed by a matching {@link #endPass()} call.
    *
@@ -87,8 +86,7 @@ public interface Encoder extends AutoCloseable {
    * targets this is a no-op (the result stays in GPU memory).
    *
    * <p>Clears the internal current-target reference; calling {@link #setViewport}
-   * after {@code endPass} without a subsequent {@link #beginPass} throws
-   * {@link net.nanitu.gfx.GraphicsException}.
+   * after {@code endPass} without a subsequent {@link #beginPass} throws {@link net.nanitu.gfx.GraphicsException}.
    */
   void endPass();
 

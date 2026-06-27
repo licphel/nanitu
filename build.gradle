@@ -84,6 +84,11 @@ subprojects {
         it.options.compilerArgs.add("-Werror")
     }
 
+    tasks.withType(Javadoc).configureEach {
+        options.addBooleanOption('Xdoclint:all,-missing,-html5', true)
+        failOnError = false
+    }
+
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }

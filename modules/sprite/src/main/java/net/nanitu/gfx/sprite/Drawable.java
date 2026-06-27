@@ -28,8 +28,8 @@ package net.nanitu.gfx.sprite;
  * A drawable object that renders itself using a {@link Graphics2D}.
  *
  * <p>Implement this interface and pass instances to
- * {@link Graphics2D#draw(Drawable, float, float, float, float, float, float, float, float)} to define custom drawing logic
- * driven by the Graphics.
+ * {@link Graphics2D#draw(Drawable, float, float, float, float, float, float, float, float)} to define custom drawing
+ * logic driven by the Graphics.
  *
  * @see Graphics2D#draw(Drawable, float, float, float, float, float, float, float, float)
  */
@@ -38,15 +38,15 @@ public interface Drawable {
   /**
    * Draws this object at the given position and size.
    *
-   * @param brush the brush to draw with
-   * @param x     the X position
-   * @param y     the Y position
-   * @param w     the width
-   * @param h     the height
-   * @param u     the U texture coordinate offset
-   * @param v     the V texture coordinate offset
-   * @param uw    the U texture coordinate range
-   * @param vh    the V texture coordinate range
+   * @param g  the g to draw with
+   * @param x  the X position
+   * @param y  the Y position
+   * @param w  the width
+   * @param h  the height
+   * @param u  the U texture coordinate offset
+   * @param v  the V texture coordinate offset
+   * @param uw the U texture coordinate range
+   * @param vh the V texture coordinate range
    */
-  void draw(Graphics brush, float x, float y, float w, float h, float u, float v, float uw, float vh);
+  void draw(Graphics g, float x, float y, float w, float h, float u, float v, float uw, float vh);
 }

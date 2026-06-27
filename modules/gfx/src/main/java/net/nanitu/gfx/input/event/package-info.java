@@ -26,7 +26,7 @@
  * Immutable input event records that implement {@link net.nanitu.event.Event}.
  *
  * <p>Each event type is a record dispatched through the core
- * {@link net.nanitu.event.EventBus}. Listeners register for specific event
- * types via {@code EventBus.register(Class, EventListener)}.
+ * {@link net.nanitu.event.EventBus}. Listeners register for specific event types via
+ * {@code EventBus.register(Class, EventListener)}.
  */
 package net.nanitu.gfx.input.event;

@@ -35,14 +35,13 @@ import org.jspecify.annotations.Nullable;
  * Pluggable rendering strategy for UI widgets.
  *
  * <p>Implement this interface to fully control the visual appearance of every widget type. Each
- * {@code draw*} method receives the widget's current state and absolute bounds, and must render
- * using only the given {@link Graphics}. Every draw method must restore the brush color to
- * {@code Color.WHITE} before returning so the caller's color state is not corrupted.
+ * {@code draw*} method receives the widget's current state and absolute bounds, and must render using only the given
+ * {@link Graphics}. Every draw method must restore the g color to {@code Color.WHITE} before returning so the caller's
+ * color state is not corrupted.
  *
  * <p>Metric methods such as {@link #titleBarHeight()}, {@link #resizeHandleSize()}, and
- * {@link #borderWidth()} are called during layout and must return stable values within a single
- * frame. The framework ships a default implementation, {@link ModernFlat}, that provides a flat
- * dark style requiring no textures.
+ * {@link #borderWidth()} are called during layout and must return stable values within a single frame. The framework
+ * ships a default implementation, {@link ModernFlat}, that provides a flat dark style requiring no textures.
  *
  * <p>Implementations of this interface should be stateless or immutable.
  */
@@ -71,119 +70,119 @@ public interface Look {
   /**
    * Draws a button in the given visual state.
    *
-   * @param brush  the drawing context
+   * @param g      the drawing context
    * @param state  the current visual state of the button
    * @param bounds the button's absolute bounds in logical units
    * @param label  the label text centered on the button, or {@code null} for no text
    */
-  void drawButton(Graphics brush, ButtonState state, Box2 bounds, @Nullable Text label);
+  void drawButton(Graphics g, ButtonState state, Box2 bounds, @Nullable Text label);
 
   /**
    * Draws a panel background.
    *
-   * @param brush  the drawing context
+   * @param g      the drawing context
    * @param bounds the panel's absolute bounds in logical units
    */
-  void drawPanel(Graphics brush, Box2 bounds);
+  void drawPanel(Graphics g, Box2 bounds);
 
   /**
    * Draws a scroll pane background.
    *
-   * @param brush  the drawing context
+   * @param g      the drawing context
    * @param bounds the scroll pane's absolute bounds in logical units
    */
-  void drawScrollPane(Graphics brush, Box2 bounds);
+  void drawScrollPane(Graphics g, Box2 bounds);
 
   /**
    * Draws the outer chrome of a floating window, including background, border, and shadow.
    *
-   * @param brush  the drawing context
+   * @param g      the drawing context
    * @param state  the current visual state of the window
    * @param bounds the window's total absolute bounds in logical units
    */
-  void drawWindowFrame(Graphics brush, WindowState state, Box2 bounds);
+  void drawWindowFrame(Graphics g, WindowState state, Box2 bounds);
 
   /**
    * Draws the title bar strip of a floating window.
    *
-   * @param brush          the drawing context
+   * @param g              the drawing context
    * @param focused        whether this window currently has keyboard focus
    * @param titleBarBounds the title bar's absolute bounds in logical units
    * @param title          the title text, or {@code null} for no title
    */
-  void drawWindowTitleBar(Graphics brush, boolean focused, Box2 titleBarBounds, @Nullable Text title);
+  void drawWindowTitleBar(Graphics g, boolean focused, Box2 titleBarBounds, @Nullable Text title);
 
   /**
    * Draws the close button of a floating window.
    *
-   * @param brush   the drawing context
+   * @param g       the drawing context
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowCloseButton(Graphics brush, boolean hovered, Box2 bounds);
+  void drawWindowCloseButton(Graphics g, boolean hovered, Box2 bounds);
 
   /**
    * Draws the minimize button of a floating window.
    *
-   * @param brush   the drawing context
+   * @param g       the drawing context
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowMinimizeButton(Graphics brush, boolean hovered, Box2 bounds);
+  void drawWindowMinimizeButton(Graphics g, boolean hovered, Box2 bounds);
 
   /**
    * Draws the maximize button of a floating window.
    *
-   * @param brush   the drawing context
+   * @param g       the drawing context
    * @param hovered whether the cursor is over the button
    * @param bounds  the button's absolute bounds in logical units
    */
-  void drawWindowMaximizeButton(Graphics brush, boolean hovered, Box2 bounds);
+  void drawWindowMaximizeButton(Graphics g, boolean hovered, Box2 bounds);
 
   /**
    * Draws a text label.
    *
-   * @param brush     the drawing context
+   * @param g         the drawing context
    * @param bounds    the label's absolute bounds in logical units
    * @param text      the text to draw, or {@code null} for no text
    * @param alignment the alignment of the text within the bounds
    */
-  default void drawLabel(Graphics brush, Box2 bounds, @Nullable Text text, Alignment alignment) {
+  default void drawLabel(Graphics g, Box2 bounds, @Nullable Text text, Alignment alignment) {
   }
 
   /**
    * Draws a checkbox.
    *
-   * @param brush   the drawing context
+   * @param g       the drawing context
    * @param checked whether the checkbox is checked
    * @param hovered whether the cursor is over the checkbox
    * @param bounds  the checkbox's absolute bounds in logical units
    */
-  default void drawCheckbox(Graphics brush, boolean checked, boolean hovered, Box2 bounds) {
+  default void drawCheckbox(Graphics g, boolean checked, boolean hovered, Box2 bounds) {
   }
 
   /**
    * Draws a slider track.
    *
-   * @param brush  the drawing context
+   * @param g      the drawing context
    * @param bounds the track's absolute bounds in logical units
    */
-  default void drawSliderTrack(Graphics brush, Box2 bounds) {
+  default void drawSliderTrack(Graphics g, Box2 bounds) {
   }
 
   /**
    * Draws a slider thumb.
    *
-   * @param brush       the drawing context
+   * @param g           the drawing context
    * @param dragging    whether the thumb is currently being dragged
    * @param thumbBounds the thumb's absolute bounds in logical units
    */
-  default void drawSliderThumb(Graphics brush, boolean dragging, Box2 thumbBounds) {
+  default void drawSliderThumb(Graphics g, boolean dragging, Box2 thumbBounds) {
   }
 
   /**
-   * Called when the physical-to-logical pixel density changes, for example on window resize or
-   * DPI change. Implementations that scale fonts or borders by density may cache the value.
+   * Called when the physical-to-logical pixel density changes, for example on window resize or DPI change.
+   * Implementations that scale fonts or borders by density may cache the value.
    *
    * @param density the ratio of physical pixels per logical unit
    */

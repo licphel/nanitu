@@ -60,8 +60,8 @@ public interface Service {
    * {@link #collect(Class)}. Returns {@code null} if no provider is available.
    *
    * @param serviceClass the service interface to discover
+   * @param <T>          the type of the service interface
    * @return the first available service, or {@code null} if none found
-   * @param <T> the type of the service interface
    * @throws RuntimeException if no service is available
    */
   @SuppressWarnings("unchecked")

@@ -34,13 +34,13 @@ import org.jspecify.annotations.Nullable;
  * A draggable, resizable, closeable, minimizable, and maximizable floating window.
  *
  * <p>A {@code Window} is the primary container for grouping widgets into independent panels.
- * It consists of outer chrome — a border and a title bar with decoration buttons — and an inner
- * content area to which children are added.
+ * It consists of outer chrome — a border and a title bar with decoration buttons — and an inner content area to which
+ * children are added.
  *
  * <p>Instances are created via {@link #create(float, float, float, float)} and registered with
- * {@link UiContext#addWindow(Window)}. The context must be set before the window can participate
- * in focus management and maximize/restore operations. Dragging the title bar moves the window;
- * dragging the bottom-right corner resizes it (if enabled).
+ * {@link UiContext#addWindow(Window)}. The context must be set before the window can participate in focus management
+ * and maximize/restore operations. Dragging the title bar moves the window; dragging the bottom-right corner resizes it
+ * (if enabled).
  *
  * <p>This class is not thread-safe.
  */
@@ -249,9 +249,9 @@ public final class Window extends Widget {
   }
 
   /**
-   * Returns the inner content area in parent-local coordinates, below the title bar and inside
-   * the border. Children added to this window are positioned relative to this area's top-left
-   * corner. When minimized, the content height is zero.
+   * Returns the inner content area in parent-local coordinates, below the title bar and inside the border. Children
+   * added to this window are positioned relative to this area's top-left corner. When minimized, the content height is
+   * zero.
    */
   @Override
   public Box2 contentBounds() {
@@ -263,8 +263,8 @@ public final class Window extends Widget {
   }
 
   /**
-   * Computes decoration button positions and lays out children relative to the content area.
-   * Floating windows use absolute root coordinates, so the parent content is ignored.
+   * Computes decoration button positions and lays out children relative to the content area. Floating windows use
+   * absolute root coordinates, so the parent content is ignored.
    */
   @Override
   public void layout(Box2 parentContent) {
@@ -295,56 +295,55 @@ public final class Window extends Widget {
   }
 
   /**
-   * Renders the window chrome, then draws children clipped to the content area. Minimized
-   * windows skip child rendering.
+   * Renders the window chrome, then draws children clipped to the content area. Minimized windows skip child
+   * rendering.
    */
   @Override
-  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics g, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
-    renderSelf(brush, look);
+    renderSelf(g, look);
 
     if (!minimized && !children.isEmpty()) {
       Box2 contentAbs = absoluteContentBounds();
       Box2 effectiveClip = parentClip != null ? Box2.getIntersection(parentClip, contentAbs) : contentAbs;
 
-      brush.setScissor(effectiveClip);
+      g.setScissor(effectiveClip);
       for (Widget child : children) {
-        child.render(brush, look, effectiveClip);
+        child.render(g, look, effectiveClip);
       }
       if (parentClip != null) {
-        brush.setScissor(parentClip);
+        g.setScissor(parentClip);
       } else {
-        brush.disableScissor();
+        g.disableScissor();
       }
     }
   }
 
   @Override
-  protected void renderSelf(Graphics brush, Look look) {
+  protected void renderSelf(Graphics g, Look look) {
     Box2 abs = absoluteBounds();
     WindowState ws = focused ? WindowState.FOCUSED : WindowState.NORMAL;
-    look.drawWindowFrame(brush, ws, abs);
+    look.drawWindowFrame(g, ws, abs);
 
     Box2 titleAbs = absoluteTitleBarBounds();
-    look.drawWindowTitleBar(brush, focused, titleAbs, title);
+    look.drawWindowTitleBar(g, focused, titleAbs, title);
 
     if (closeable) {
-      look.drawWindowCloseButton(brush, closeHovered, closeButtonBounds);
+      look.drawWindowCloseButton(g, closeHovered, closeButtonBounds);
     }
     if (maximizable) {
-      look.drawWindowMaximizeButton(brush, maxHovered, maxButtonBounds);
+      look.drawWindowMaximizeButton(g, maxHovered, maxButtonBounds);
     }
     if (minimizable) {
-      look.drawWindowMinimizeButton(brush, minHovered, minButtonBounds);
+      look.drawWindowMinimizeButton(g, minHovered, minButtonBounds);
     }
   }
 
   /**
-   * Handles mouse, keyboard, and character events for this window. Manages title bar dragging,
-   * resize handle interaction, and decoration button clicks. Delegates to children for events
-   * inside the content area.
+   * Handles mouse, keyboard, and character events for this window. Manages title bar dragging, resize handle
+   * interaction, and decoration button clicks. Delegates to children for events inside the content area.
    */
   @Override
   public boolean handleEvent(UiEvent event, boolean reachable) {
@@ -504,8 +503,7 @@ public final class Window extends Widget {
   }
 
   /**
-   * Toggles the window between minimized — collapsed to its title bar — and restored to its
-   * previous height.
+   * Toggles the window between minimized — collapsed to its title bar — and restored to its previous height.
    */
   public void minimize() {
     if (minimized) {
@@ -519,8 +517,7 @@ public final class Window extends Widget {
   }
 
   /**
-   * Toggles the window between maximized — filling the entire camera view — and its previous
-   * position and size.
+   * Toggles the window between maximized — filling the entire camera view — and its previous position and size.
    */
   public void maximize() {
     if (maximized) {
@@ -545,8 +542,8 @@ public final class Window extends Widget {
   }
 
   /**
-   * Clamps the window position so it stays within the given logical viewport bounds. Called by
-   * {@link UiContext} after a resize.
+   * Clamps the window position so it stays within the given logical viewport bounds. Called by {@link UiContext} after
+   * a resize.
    *
    * @param logW the logical viewport width
    * @param logH the logical viewport height

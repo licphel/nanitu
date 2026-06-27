@@ -26,17 +26,16 @@ package net.nanitu.gfx.input.event;
 
 import net.nanitu.event.Event;
 import net.nanitu.gfx.input.KeyAction;
-import net.nanitu.gfx.input.MouseButton;
+import net.nanitu.gfx.input.KeyCode;
 
 /**
  * A mouse button was pressed or released.
  *
- * @param button    the mouse button
+ * @param button    the mouse button as a {@link KeyCode}
  * @param action    {@link KeyAction#PRESS} or {@link KeyAction#RELEASE}
  * @param x         cursor X at the time of the event
  * @param y         cursor Y at the time of the event
  * @param modifiers a bitmask of modifier keys active at the time of the event
  */
-public record MouseButtonEvent(MouseButton button, KeyAction action, double x, double y,
-                               int modifiers) implements Event {
+public record MouseButtonEvent(KeyCode button, KeyAction action, double x, double y, int modifiers) implements Event {
 }

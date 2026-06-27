@@ -28,10 +28,10 @@ package net.nanitu.gfx.input;
  * The action of a key or mouse button transition.
  */
 public enum KeyAction {
-  /** The key or button transitioned from up to down. */
-  PRESS,
   /** The key or button transitioned from down to up. */
   RELEASE,
+  /** The key or button transitioned from up to down. */
+  PRESS,
   /** The key is being held down and the system is generating repeat events. */
   REPEAT
 }

@@ -27,12 +27,16 @@ package net.nanitu.gfx.text.freetype;
 import net.nanitu.gfx.Device;
 import net.nanitu.gfx.text.Font;
 import net.nanitu.gfx.text.spi.FontProvider;
+import net.nanitu.memory.Memory;
 import net.nanitu.util.InternalApi;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * {@link net.nanitu.gfx.text.spi.FontProvider} implementation backed by the FreeType library.
+ * {@link FontProvider} implementation backed by the FreeType library.
  *
- * <p>Creates {@link FreetypeFont} instances from font file paths.
+ * <p>Creates {@link FreetypeFont} instances from font data read entirely into memory.
  */
 @InternalApi
 public final class FreetypeFontProvider implements FontProvider {
@@ -47,7 +51,8 @@ public final class FreetypeFontProvider implements FontProvider {
   }
 
   @Override
-  public Font create(Device device, String path) {
-    return new FreetypeFont(device, path, 0);
+  public Font create(Device device, InputStream stream) throws IOException {
+    Memory memory = new Memory(stream.readAllBytes());
+    return new FreetypeFont(device, memory, 0);
   }
 }

@@ -28,7 +28,7 @@ import net.nanitu.event.Event;
 import net.nanitu.event.EventBus;
 import net.nanitu.gfx.GraphicsException;
 import net.nanitu.gfx.ViewInfo;
-import net.nanitu.gfx.input.InputState;
+import net.nanitu.gfx.input.Snapshot;
 import net.nanitu.gfx.input.event.*;
 import net.nanitu.gfx.io.ImageInfo;
 import net.nanitu.math.Vector2;
@@ -38,8 +38,8 @@ import org.jspecify.annotations.Nullable;
  * A window or drawable surface that a graphics device renders into.
  *
  * <p>{@code View} provides concrete window state management and input event routing, while
- * delegating platform-specific window operations to protected methods that subclasses implement.
- * It supports desktop windowing, mobile surfaces, and VR compositor layers through a single API.
+ * delegating platform-specific window operations to protected methods that subclasses implement. It supports desktop
+ * windowing, mobile surfaces, and VR compositor layers through a single API.
  *
  * <h3>Lifecycle</h3>
  * <ol>
@@ -53,9 +53,11 @@ import org.jspecify.annotations.Nullable;
  * <p>This class is not thread-safe. All methods must be called from the rendering thread.
  *
  * @see EventBus
- * @see InputState
+ * @see Snapshot
  */
 public abstract class View implements AutoCloseable {
+  private final EventBus eventBus = new EventBus();
+  private final Snapshot snapshot = new Snapshot();
   /** Current framebuffer width in pixels. */
   protected int width = 800;
   /** Current framebuffer height in pixels. */
@@ -101,9 +103,6 @@ public abstract class View implements AutoCloseable {
   /** Whether the view has been initialized via {@link #initialize()}. */
   protected boolean initialized;
 
-  private final EventBus eventBus = new EventBus();
-  private final InputState inputState = new InputState();
-
   /**
    * Returns static information about this view, including the backend name.
    *
@@ -136,8 +135,8 @@ public abstract class View implements AutoCloseable {
   }
 
   /**
-   * Returns whether the view has been requested to close, for example by the user clicking the
-   * close button or the platform sending a close signal.
+   * Returns whether the view has been requested to close, for example by the user clicking the close button or the
+   * platform sending a close signal.
    *
    * @return {@code true} if the view should close
    */
@@ -151,7 +150,6 @@ public abstract class View implements AutoCloseable {
    */
   public final void pollEvents() {
     onPollEvents();
-    inputState.clearFrameState();
   }
 
   /**
@@ -213,8 +211,8 @@ public abstract class View implements AutoCloseable {
    *
    * @return the input state
    */
-  public InputState inputState() {
-    return inputState;
+  public Snapshot snapshot() {
+    return snapshot;
   }
 
   /**
@@ -648,13 +646,13 @@ public abstract class View implements AutoCloseable {
   protected void dispatchInputEvent(Event event) {
     // Update pollable state
     if (event instanceof KeyEvent e) {
-      inputState.applyKeyEvent(e);
+      snapshot.applyKeyEvent(e);
     } else if (event instanceof MouseMoveEvent(double x1, double y1)) {
-      inputState.applyMouseMove(x1, y1);
+      snapshot.applyMouseMove(x1, y1);
     } else if (event instanceof MouseButtonEvent e) {
-      inputState.applyMouseButton(e);
+      snapshot.applyMouseButton(e);
     } else if (event instanceof ScrollEvent e) {
-      inputState.applyScroll(e.dx(), e.dy());
+      snapshot.applyScroll(e.dx(), e.dy());
     } else if (event instanceof ResizeEvent(int width1, int height1)) {
       width = width1;
       height = height1;
@@ -671,8 +669,7 @@ public abstract class View implements AutoCloseable {
   }
 
   /**
-   * Creates the native view — a window, surface, or compositor layer — and configures it with
-   * the current view state.
+   * Creates the native view — a window, surface, or compositor layer — and configures it with the current view state.
    */
   protected abstract void onInitialize();
 
@@ -682,8 +679,8 @@ public abstract class View implements AutoCloseable {
   protected abstract void onClose();
 
   /**
-   * Polls native events from the platform, translates each into an {@link Event}, and
-   * dispatches it via {@link #dispatchInputEvent(Event)}.
+   * Polls native events from the platform, translates each into an {@link Event}, and dispatches it via
+   * {@link #dispatchInputEvent(Event)}.
    */
   protected abstract void onPollEvents();
 

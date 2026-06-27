@@ -46,10 +46,9 @@ import java.util.List;
  * Root manager for the UI widget tree.
  *
  * <p>{@code UiContext} translates physical screen events into logical {@link UiEvent}s using an
- * active {@link Camera2D}, then dispatches them through the widget tree. Keyboard and character
- * events are routed to the currently focused widget. Mouse events are routed to floating windows
- * in reverse z-order, with modal windows intercepting all input. Root widgets receive events only
- * when no floating window covers the cursor position.
+ * active {@link Camera2D}, then dispatches them through the widget tree. Keyboard and character events are routed to
+ * the currently focused widget. Mouse events are routed to floating windows in reverse z-order, with modal windows
+ * intercepting all input. Root widgets receive events only when no floating window covers the cursor position.
  *
  * <p>This class is not thread-safe. All methods must be called from the rendering thread.
  */
@@ -78,13 +77,13 @@ public final class UiContext implements AutoCloseable {
    * Creates a {@code UiContext} attached to the given view.
    *
    * <p>The camera's logical size is initialized to the canvas. On
-   * subsequent resizes both the camera and viewport scale together, so widgets with anchor
-   * layouts reflow naturally and floating windows are clamped to stay on-screen.
+   * subsequent resizes both the camera and viewport scale together, so widgets with anchor layouts reflow naturally and
+   * floating windows are clamped to stay on-screen.
    *
    * @param device the graphics device
    * @param view   the view to attach to
    * @param look   the look implementation used for all rendering
-   * @param canvas   the size of the canvas
+   * @param canvas the size of the canvas
    */
   public UiContext(Device device, View view, Look look, Box2 canvas) {
     float w = canvas.width();
@@ -124,8 +123,7 @@ public final class UiContext implements AutoCloseable {
 
     // Mouse move
     EventListener<MouseMoveEvent> mouseMove = (ctx, e) -> {
-      Vector2 logical = camera.unproject(
-          new Vector2((float) e.x(), (float) e.y()), viewport);
+      Vector2 logical = camera.unproject(new Vector2((float) e.x(), (float) e.y()), viewport);
       mouseX = logical.x();
       mouseY = logical.y();
       dispatchEvent(new UiEvent.MouseMove(mouseX, mouseY));
@@ -134,15 +132,13 @@ public final class UiContext implements AutoCloseable {
 
     // Mouse button
     EventListener<MouseButtonEvent> mouseButton = (ctx, e) -> {
-      dispatchEvent(
-          new UiEvent.MouseButton(mouseX, mouseY, e.button().id(),
-              e.action() != KeyAction.RELEASE));
+      dispatchEvent(new UiEvent.MouseButton(mouseX, mouseY, e.button().mouseId(), e.action() != KeyAction.RELEASE));
     };
     bus.register(MouseButtonEvent.class, mouseButton, this);
 
     // Scroll
-    EventListener<ScrollEvent> scroll = (ctx, e) ->
-        dispatchEvent(new UiEvent.Scroll(mouseX, mouseY, (float) e.dx(), (float) e.dy()));
+    EventListener<ScrollEvent> scroll = (ctx, e) -> dispatchEvent(new UiEvent.Scroll(mouseX, mouseY, (float) e.dx(),
+        (float) e.dy()));
     bus.register(ScrollEvent.class, scroll, this);
 
     // Key
@@ -154,8 +150,7 @@ public final class UiContext implements AutoCloseable {
     bus.register(KeyEvent.class, key, this);
 
     // Char
-    EventListener<CharEvent> ch = (ctx, e) ->
-        dispatchEvent(new UiEvent.Char((char) e.codepoint()));
+    EventListener<CharEvent> ch = (ctx, e) -> dispatchEvent(new UiEvent.Char((char) e.codepoint()));
     bus.register(CharEvent.class, ch, this);
 
     // Resize
@@ -190,10 +185,10 @@ public final class UiContext implements AutoCloseable {
    *
    * <p>Call this once per frame, before {@code Device.execute()}.
    *
-   * @param brush     the drawing context
+   * @param g         the drawing context
    * @param deltaTime seconds elapsed since the previous frame
    */
-  public void render(Graphics brush, float deltaTime) {
+  public void render(Graphics g, float deltaTime) {
     if (disposed) {
       return;
     }
@@ -217,17 +212,17 @@ public final class UiContext implements AutoCloseable {
     }
 
     // Render pass
-    brush.setCamera(camera);
-    brush.setViewport(viewport);
+    g.setCamera(camera);
+    g.setViewport(viewport);
 
     for (Widget w : rootWidgets) {
-      w.render(brush, look, null);
+      w.render(g, look, null);
     }
     for (Window fw : windows) {
-      fw.render(brush, look, null);
+      fw.render(g, look, null);
     }
 
-    brush.flush();
+    g.flush();
   }
 
   private void dispatchEvent(UiEvent event) {
@@ -286,8 +281,7 @@ public final class UiContext implements AutoCloseable {
   }
 
   /**
-   * Brings the given window to the top of the z-order and gives it keyboard focus.
-   * All other windows lose focus.
+   * Brings the given window to the top of the z-order and gives it keyboard focus. All other windows lose focus.
    *
    * @param window the window to bring to the front
    */
@@ -301,8 +295,7 @@ public final class UiContext implements AutoCloseable {
   }
 
   /**
-   * Pushes a modal window onto the modal stack. While any modal is active, only the topmost
-   * modal receives events.
+   * Pushes a modal window onto the modal stack. While any modal is active, only the topmost modal receives events.
    *
    * @param window the modal window
    */
@@ -372,8 +365,8 @@ public final class UiContext implements AutoCloseable {
   }
 
   /**
-   * Returns the ratio of physical pixels per logical unit. A value of 1.0 means logical
-   * coordinates map 1:1 to screen pixels.
+   * Returns the ratio of physical pixels per logical unit. A value of 1.0 means logical coordinates map 1:1 to screen
+   * pixels.
    *
    * @return the current pixel density ratio
    */
@@ -391,8 +384,7 @@ public final class UiContext implements AutoCloseable {
   }
 
   /**
-   * Destroys this UI context, deregistering all input listeners and releasing resources.
-   * This method is idempotent.
+   * Destroys this UI context, deregistering all input listeners and releasing resources. This method is idempotent.
    */
   @Override
   public void close() {

@@ -182,6 +182,4 @@ public final class TextSequence implements Text {
 
     return this;
   }
-
-
 }

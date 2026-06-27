@@ -26,8 +26,8 @@
  * Backend-agnostic view abstraction.
  *
  * <p>The {@link net.nanitu.gfx.back.View} abstract class provides concrete
- * implementations for window state management and input handling, leaving
- * only platform-specific operations to backend subclasses.
+ * implementations for window state management and input handling, leaving only platform-specific operations to backend
+ * subclasses.
  *
  * <p>Concrete backends (GLFW, SDL, Android, OpenXR, etc.) extend {@code View}
  * and implement the protected template methods.

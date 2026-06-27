@@ -43,8 +43,8 @@ import static org.lwjgl.opengl.GL33.*;
  */
 @InternalApi
 public final class OpenGLSwapchain implements RenderTarget {
-  private final OpenGLDevice ctx;
   final List<Runnable> presentHooks = new CopyOnWriteArrayList<>();
+  private final OpenGLDevice ctx;
 
   OpenGLSwapchain(OpenGLDevice ctx) {
     this.ctx = ctx;
@@ -67,7 +67,7 @@ public final class OpenGLSwapchain implements RenderTarget {
 
   @Override
   public int width() {
-    if(ctx.view == null) {
+    if (ctx.view == null) {
       return 0;
     }
     return ctx.view.width();
@@ -75,7 +75,7 @@ public final class OpenGLSwapchain implements RenderTarget {
 
   @Override
   public int height() {
-    if(ctx.view == null) {
+    if (ctx.view == null) {
       return 0;
     }
     return ctx.view.height();

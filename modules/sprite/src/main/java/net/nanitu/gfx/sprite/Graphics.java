@@ -129,7 +129,7 @@ public abstract class Graphics implements AutoCloseable {
   public abstract Box2 currentViewport();
 
   /**
-   * Replays the recorded nodes of a non-direct mesh, submitting them with the current brush state.
+   * Replays the recorded nodes of a non-direct mesh, submitting them with the current g state.
    *
    * <p>Direct meshes are skipped — they cannot be replayed.
    *
@@ -141,7 +141,7 @@ public abstract class Graphics implements AutoCloseable {
    * Submits all recorded draw data to the GPU.
    *
    * <p>In direct mode the current node is submitted immediately. In recording mode,
-   * the current node is finalized only if it contains data, and the brush advances to the next node.
+   * the current node is finalized only if it contains data, and the g advances to the next node.
    *
    * @param force if {@code true}, submits the node even when no vertex data has been recorded
    */

@@ -30,7 +30,8 @@ import net.nanitu.gfx.texture.Texture;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Internal render state tracking the active pipeline, primitive type, resource set, and texture for a {@link Graphics2D}.
+ * Internal render state tracking the active pipeline, primitive type, resource set, and texture for a
+ * {@link Graphics2D}.
  */
 final class Recorder {
   @Nullable Pipeline pipe;
@@ -49,8 +50,7 @@ final class Recorder {
    * @param set       the resource set, may be {@code null}
    * @param tex       the texture, may be {@code null}
    */
-  void set(@Nullable Pipeline pipe, @Nullable Primitive primitive, @Nullable ResourceSet set,
-           @Nullable Texture tex) {
+  void set(@Nullable Pipeline pipe, @Nullable Primitive primitive, @Nullable ResourceSet set, @Nullable Texture tex) {
     this.pipe = pipe;
     this.primitive = primitive;
     this.set = set;

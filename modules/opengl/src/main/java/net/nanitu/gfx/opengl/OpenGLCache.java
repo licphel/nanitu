@@ -453,8 +453,8 @@ final class OpenGLCache {
   }
 
   /**
-   * Sets the viewport rectangle. The caller is responsible for computing the correct {@code glY}
-   * (i.e. {@code fbHeight - y - h}) before calling this method.
+   * Sets the viewport rectangle. The caller is responsible for computing the correct {@code glY} (i.e.
+   * {@code fbHeight - y - h}) before calling this method.
    *
    * @param x   the left edge in pixels
    * @param glY the bottom edge in OpenGL coordinates (already Y-flipped)
@@ -472,8 +472,8 @@ final class OpenGLCache {
   }
 
   /**
-   * Sets the scissor rectangle. The caller is responsible for computing the correct {@code glY}
-   * (i.e. {@code fbHeight - y - h}) before calling this method.
+   * Sets the scissor rectangle. The caller is responsible for computing the correct {@code glY} (i.e.
+   * {@code fbHeight - y - h}) before calling this method.
    *
    * @param x      the left edge in pixels
    * @param glY    the bottom edge in OpenGL coordinates (already Y-flipped)

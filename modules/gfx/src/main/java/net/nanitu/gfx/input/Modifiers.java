@@ -22,23 +22,25 @@
  * SOFTWARE.
  */
 
-/**
- * Platform-agnostic input event system.
- *
- * <p>This package provides types for representing user input independent of
- * any windowing backend, plus pollable per-frame input state. Input events extend {@link net.nanitu.event.Event} and
- * are dispatched through the core {@link net.nanitu.event.EventBus}.
- *
- * <h3>Key types</h3>
- * <ul>
- *   <li>{@link net.nanitu.gfx.input.event} — immutable input event records
- *       (key, mouse, scroll, resize, etc.)</li>
- *   <li>{@link net.nanitu.gfx.input.Snapshot} — per-frame pollable input
- *       state for game-style queries</li>
- *   <li>{@link net.nanitu.gfx.input.KeyCode} — platform-agnostic key codes
- *       based on USB HID Usage Tables</li>
- *   <li>{@link net.nanitu.gfx.input.KeyAction} — press/release/repeat enum</li>
- *   <li>{@link net.nanitu.gfx.input.MouseButton} — platform-agnostic mouse buttons</li>
- * </ul>
- */
 package net.nanitu.gfx.input;
+
+/**
+ * Modifier key bitmask constants aligned with GLFW modifier flags.
+ *
+ * <p>Combine with bitwise OR: {@code Modifiers.SHIFT | Modifiers.CONTROL}.
+ * Pass {@link #ANY} to {@code Key.transitioned(int)} to match regardless of modifier state.
+ */
+public final class Modifiers {
+  /** Sentinel value that matches any modifier combination. */
+  public static final int ANY = -1;
+  public static final int NONE = 0;
+  public static final int SHIFT = 0x1;
+  public static final int CONTROL = 0x2;
+  public static final int ALT = 0x4;
+  public static final int SUPER = 0x8;
+  public static final int CAPS_LOCK = 0x10;
+  public static final int NUM_LOCK = 0x20;
+
+  private Modifiers() {
+  }
+}

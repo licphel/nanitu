@@ -76,6 +76,15 @@ public final class PngInputStream extends ImageInputStream {
     return info;
   }
 
+  /**
+   * Returns the entire pixel data as a byte array (RGBA, row-major).
+   *
+   * @return pixel data
+   */
+  public byte[] readAllBytes() {
+    return data;
+  }
+
   @Override
   public int read() {
     if (pos >= data.length) {
@@ -93,14 +102,5 @@ public final class PngInputStream extends ImageInputStream {
     System.arraycopy(data, pos, b, off, available);
     pos += available;
     return available;
-  }
-
-  /**
-   * Returns the entire pixel data as a byte array (RGBA, row-major).
-   *
-   * @return pixel data
-   */
-  public byte[] readAllBytes() {
-    return data;
   }
 }

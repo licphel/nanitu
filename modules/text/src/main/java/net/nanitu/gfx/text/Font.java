@@ -30,6 +30,7 @@ import net.nanitu.gfx.text.spi.FontProvider;
 import net.nanitu.util.Service;
 import org.jspecify.annotations.Nullable;
 
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -60,10 +61,14 @@ public interface Font extends AutoCloseable {
    *
    * @param device the graphics device
    * @param path   the file system path to the font file
-   * @return the opened font, or {@code null} if no font backend is available
+   * @return the opened font, or {@code null} if no font backend is available or font file not found
    */
-  static Font open(Device device, String path) {
-    return Service.get(FontProvider.class).create(device, path);
+  static @Nullable Font open(Device device, String path) {
+    try {
+      return Service.get(FontProvider.class).create(device, new FileInputStream(path));
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   /**
@@ -114,13 +119,6 @@ public interface Font extends AutoCloseable {
    * @return the resolution, in pixels
    */
   float resolution();
-
-  /**
-   * Returns the file system path this font was loaded from.
-   *
-   * @return the font file path
-   */
-  String filePath();
 
   /**
    * Returns the raw font file content as a read-only byte buffer.

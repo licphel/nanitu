@@ -28,12 +28,12 @@ import net.nanitu.math.Box2;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Identifies a sub-region of a texture, defined by a {@link FragileTexture} reference and a
- * bounding rectangle in texel coordinates.
+ * Identifies a sub-region of a texture, defined by a {@link FragileTexture} reference and a bounding rectangle in texel
+ * coordinates.
  *
  * <p>The backing texture is held via {@link FragileTexture} so that atlas-backed parts remain
- * valid even when the underlying texture is swapped (e.g. when a glyph atlas grows). Call
- * {@link #src()} to pin and obtain the current backing texture at draw time.
+ * valid even when the underlying texture is swapped (e.g. when a glyph atlas grows). Call {@link #src()} to pin and
+ * obtain the current backing texture at draw time.
  *
  * <p>Texture parts are immutable. Create one from a full texture or offset from a parent part to
  * describe a relative sub-region.

@@ -46,10 +46,9 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * via {@link OpenGLDevice#submit(Runnable)} for execution on the render thread.
  *
  * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
- * a {@link #submit(byte[], int, int)} call at offset 0 discards the previous allocation (via an extra {@code
- * glBufferData})
- * before writing. This technique avoids GPU pipeline stalls by letting the driver rotate through fresh backing storage
- * each frame. The trade-off is an extra allocation per frame.
+ * a {@link #submit(byte[], int, int)} call at offset 0 discards the previous allocation (via an extra
+ * {@code glBufferData}) before writing. This technique avoids GPU pipeline stalls by letting the driver rotate through
+ * fresh backing storage each frame. The trade-off is an extra allocation per frame.
  *
  * <p><b>Auto-expansion:</b> {@link #canExpand()} always returns {@code true}.
  * If a {@link #submit} would overflow the current capacity, the buffer is transparently reallocated to at least double

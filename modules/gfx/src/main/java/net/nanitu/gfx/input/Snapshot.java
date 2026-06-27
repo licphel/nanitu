@@ -28,24 +28,26 @@ import net.nanitu.gfx.input.event.KeyEvent;
 import net.nanitu.gfx.input.event.MouseButtonEvent;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Per-frame pollable input state for game-style queries.
  *
- * <p>{@code InputState} accumulates keyboard, mouse, and scroll state as events
- * are dispatched through the {@link net.nanitu.gfx.back.View}. At the end of each
- * frame, {@link #clearFrameState()} resets transient accumulators and transitions
- * single-frame press states to release, so polled queries reflect the latest frame
- * only.
+ * <p>{@code Snapshot} accumulates keyboard, mouse, and scroll state as events
+ * are dispatched through the {@link net.nanitu.gfx.back.View}. Key press state persists across frames — a held key
+ * remains {@link KeyAction#PRESS} until the platform reports a release.
+ *
+ * <p>For higher-level key binding support, use {@link #key(KeyCode)} to obtain
+ * a {@link Key} instance with persistent press tracking, transition detection, and modifier-aware queries.
  *
  * <p>This class is not thread-safe. All methods must be called from the rendering
  * thread.
  */
-public final class InputState {
-  private final EnumMap<KeyCode, Byte> keyStates = new EnumMap<>(KeyCode.class);
+public final class Snapshot {
+  private final EnumMap<KeyCode, KeyAction> keyStates = new EnumMap<>(KeyCode.class);
   private final EnumMap<KeyCode, Integer> keyMods = new EnumMap<>(KeyCode.class);
-  private final EnumMap<MouseButton, KeyAction> mouseStates = new EnumMap<>(MouseButton.class);
+  private final Map<KeyCode, Key> keyCache = new HashMap<>();
   private double cursorX;
   private double cursorY;
   private double scrollX;
@@ -54,31 +56,26 @@ public final class InputState {
   /**
    * Returns the current action state of the given key.
    *
+   * <p>State persists across frames: a held key returns {@link KeyAction#PRESS}
+   * or {@link KeyAction#REPEAT} until the platform reports a release.
+   *
    * @param code the key to query
-   * @return the action state; defaults to {@link KeyAction#RELEASE} if the key
-   *         has not been recorded
+   * @return the action state; defaults to {@link KeyAction#RELEASE} if the key has not been recorded
    */
-  public KeyAction keyAction(KeyCode code) {
-    byte s = keyStates.getOrDefault(code, (byte) 0);
-    return switch (s) {
-      case 1 -> KeyAction.PRESS;
-      case 2 -> KeyAction.REPEAT;
-      default -> KeyAction.RELEASE;
-    };
+  public KeyAction get(KeyCode code) {
+    return keyStates.getOrDefault(code, KeyAction.RELEASE);
   }
 
   /**
-   * Returns whether the given key is currently down.
+   * Returns whether the given key is currently held down.
    *
-   * <p>A key is considered down while in {@link KeyAction#PRESS} or
-   * {@link KeyAction#REPEAT} state.
+   * <p>This is a convenience for {@code get(code) != KeyAction.RELEASE}.
    *
    * @param code the key to query
    * @return {@code true} if the key is pressed or repeating
    */
-  public boolean isKeyDown(KeyCode code) {
-    byte s = keyStates.getOrDefault(code, (byte) 0);
-    return s == 1 || s == 2;
+  public boolean isDown(KeyCode code) {
+    return keyStates.getOrDefault(code, KeyAction.RELEASE) != KeyAction.RELEASE;
   }
 
   /**
@@ -87,29 +84,8 @@ public final class InputState {
    * @param code the key to query
    * @return the modifier bitmask, or {@code 0} if not recorded
    */
-  public int keyModifiers(KeyCode code) {
+  public int getMods(KeyCode code) {
     return keyMods.getOrDefault(code, 0);
-  }
-
-  /**
-   * Returns the current action state of the given mouse button.
-   *
-   * @param button the mouse button to query
-   * @return the action state; defaults to {@link KeyAction#RELEASE} if the
-   *         button has not been recorded
-   */
-  public KeyAction mouseButtonAction(MouseButton button) {
-    return mouseStates.getOrDefault(button, KeyAction.RELEASE);
-  }
-
-  /**
-   * Returns whether the given mouse button is currently down.
-   *
-   * @param button the mouse button to query
-   * @return {@code true} if the button is pressed
-   */
-  public boolean isMouseButtonDown(MouseButton button) {
-    return mouseStates.getOrDefault(button, KeyAction.RELEASE) == KeyAction.PRESS;
   }
 
   /**
@@ -149,17 +125,35 @@ public final class InputState {
   }
 
   /**
+   * Returns a {@link Key} instance for the given physical key code, creating it if necessary.
+   *
+   * <p>Subsequent calls with the same code return the same instance. The
+   * returned key tracks persistent press state, transition detection, and supports rebinding via
+   * {@link Key#rebind(KeyCode)}.
+   *
+   * @param code the physical key code
+   * @return the cached or newly created {@code Key}
+   */
+  public Key key(KeyCode code) {
+    return keyCache.computeIfAbsent(code, k -> new Key(k, this));
+  }
+
+  /**
    * Updates the keyboard state from a key event.
    *
    * <p>Called during event dispatch to record the key action and modifier
-   * bitmask for subsequent polling via {@link #keyAction(KeyCode)} and
-   * {@link #keyModifiers(KeyCode)}.
+   * bitmask for subsequent polling. Also updates any cached {@link Key} instance bound to the event's key code.
    *
    * @param event the key event to apply
    */
   public void applyKeyEvent(KeyEvent event) {
-    keyStates.put(event.code(), (byte) event.action().ordinal());
+    keyStates.put(event.code(), event.action());
     keyMods.put(event.code(), event.modifiers());
+
+    Key key = keyCache.get(event.code());
+    if (key != null) {
+      key.apply(event.action(), event.modifiers());
+    }
   }
 
   /**
@@ -180,15 +174,20 @@ public final class InputState {
    * Updates the mouse button state from a mouse button event.
    *
    * <p>Called during event dispatch to record the button action and cursor
-   * position for subsequent polling via {@link #mouseButtonAction(MouseButton)}
-   * and {@link #isMouseButtonDown(MouseButton)}.
+   * position. Also updates any cached {@link Key} instance bound to the mouse button's key code.
    *
    * @param event the mouse button event to apply
    */
   public void applyMouseButton(MouseButtonEvent event) {
-    mouseStates.put(event.button(), event.action());
+    keyStates.put(event.button(), event.action());
+    keyMods.put(event.button(), event.modifiers());
     cursorX = event.x();
     cursorY = event.y();
+
+    Key key = keyCache.get(event.button());
+    if (key != null) {
+      key.apply(event.action(), event.modifiers());
+    }
   }
 
   /**
@@ -209,22 +208,26 @@ public final class InputState {
    * Resets transient per-frame state.
    *
    * <p>Call at the end of each frame. Resets scroll accumulators to zero and
-   * transitions any {@link KeyAction#PRESS} states to
-   * {@link KeyAction#RELEASE}, so pressed states are only visible for a single
-   * frame when polling.
+   * clears per-frame transition flags on all cached {@link Key} instances. Key press state is <em>not</em> modified —
+   * held keys remain in their current state until the platform reports a release.
    */
   public void clearFrameState() {
     scrollX = 0;
     scrollY = 0;
-    for (Map.Entry<KeyCode, Byte> entry : keyStates.entrySet()) {
-      if (entry.getValue() == 1) {
-        entry.setValue((byte) 0);
-      }
+
+    for (Key key : keyCache.values()) {
+      key.endFrame();
     }
-    for (Map.Entry<MouseButton, KeyAction> entry : mouseStates.entrySet()) {
-      if (entry.getValue() == KeyAction.PRESS) {
-        entry.setValue(KeyAction.RELEASE);
-      }
-    }
+  }
+
+  /**
+   * Moves a key's cache entry from its current code to a new code.
+   *
+   * <p>Called by {@link Key#rebind(KeyCode)}.
+   */
+  void rebindKey(Key key, KeyCode newCode) {
+    keyCache.remove(key.code);
+    key.code = newCode;
+    keyCache.put(newCode, key);
   }
 }

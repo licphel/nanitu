@@ -29,7 +29,6 @@ import net.nanitu.gfx.ViewInfo;
 import net.nanitu.gfx.back.View;
 import net.nanitu.gfx.input.KeyAction;
 import net.nanitu.gfx.input.KeyCode;
-import net.nanitu.gfx.input.MouseButton;
 import net.nanitu.gfx.input.event.*;
 import net.nanitu.gfx.io.ImageInfo;
 import net.nanitu.util.InternalApi;
@@ -206,6 +205,12 @@ public final class GlfwView extends View {
     map(GLFW_KEY_MENU, KeyCode.MENU);
   }
 
+  /** Holds strong references to GLFW callback objects to prevent GC. */
+  private final Object[] callbacks = new Object[CB_COUNT];
+  private long handle;
+  private long cursorHandle;
+  private boolean closeRequested;
+
   private static void map(int glfwKey, KeyCode code) {
     if (glfwKey >= 0 && glfwKey < GLFW_KEY_MAP.length) {
       GLFW_KEY_MAP[glfwKey] = code;
@@ -225,12 +230,6 @@ public final class GlfwView extends View {
       default -> KeyAction.RELEASE;
     };
   }
-
-  /** Holds strong references to GLFW callback objects to prevent GC. */
-  private final Object[] callbacks = new Object[CB_COUNT];
-  private long handle;
-  private long cursorHandle;
-  private boolean closeRequested;
 
   /**
    * Terminates GLFW globally. Should be called once when the application exits.
@@ -367,7 +366,7 @@ public final class GlfwView extends View {
   @Override
   protected void applyPlatformIcon(@Nullable ImageInfo image) {
     if (handle != NULL) {
-      if(image == null) {
+      if (image == null) {
         glfwSetWindowIcon(handle, null);
         return;
       }
@@ -528,8 +527,8 @@ public final class GlfwView extends View {
 
   private void setupCallbacks() {
     // Framebuffer size
-    callbacks[CB_FRAMEBUFFER_SIZE] = (GLFWFramebufferSizeCallbackI) (win, w, h) ->
-        dispatchInputEvent(new ResizeEvent(w, h));
+    callbacks[CB_FRAMEBUFFER_SIZE] =
+        (GLFWFramebufferSizeCallbackI) (win, w, h) -> dispatchInputEvent(new ResizeEvent(w, h));
     glfwSetFramebufferSizeCallback(handle, (GLFWFramebufferSizeCallbackI) callbacks[CB_FRAMEBUFFER_SIZE]);
 
     // Key
@@ -542,18 +541,16 @@ public final class GlfwView extends View {
     glfwSetKeyCallback(handle, (GLFWKeyCallbackI) callbacks[CB_KEY]);
 
     // Char
-    callbacks[CB_CHAR] = (GLFWCharCallbackI) (win, codepoint) ->
-        dispatchInputEvent(new CharEvent(codepoint));
+    callbacks[CB_CHAR] = (GLFWCharCallbackI) (win, codepoint) -> dispatchInputEvent(new CharEvent(codepoint));
     glfwSetCharCallback(handle, (GLFWCharCallbackI) callbacks[CB_CHAR]);
 
     // Cursor position
-    callbacks[CB_CURSOR_POS] = (GLFWCursorPosCallbackI) (win, cx, cy) ->
-        dispatchInputEvent(new MouseMoveEvent(cx, cy));
+    callbacks[CB_CURSOR_POS] = (GLFWCursorPosCallbackI) (win, cx, cy) -> dispatchInputEvent(new MouseMoveEvent(cx, cy));
     glfwSetCursorPosCallback(handle, (GLFWCursorPosCallbackI) callbacks[CB_CURSOR_POS]);
 
     // Mouse button
     callbacks[CB_MOUSE_BUTTON] = (GLFWMouseButtonCallbackI) (win, button, action, mods) -> {
-      MouseButton mb = MouseButton.fromId(button);
+      KeyCode mb = KeyCode.fromMouseId(button);
       if (mb != null) {
         dispatchInputEvent(new MouseButtonEvent(mb, glfwToKeyAction(action), cursorX, cursorY, mods));
       }
@@ -561,13 +558,14 @@ public final class GlfwView extends View {
     glfwSetMouseButtonCallback(handle, (GLFWMouseButtonCallbackI) callbacks[CB_MOUSE_BUTTON]);
 
     // Scroll
-    callbacks[CB_SCROLL] = (GLFWScrollCallbackI) (win, xOffset, yOffset) ->
-        dispatchInputEvent(new ScrollEvent(xOffset, yOffset, cursorX, cursorY));
+    callbacks[CB_SCROLL] =
+        (GLFWScrollCallbackI) (win, xOffset, yOffset) -> dispatchInputEvent(new ScrollEvent(xOffset, yOffset, cursorX
+            , cursorY));
     glfwSetScrollCallback(handle, (GLFWScrollCallbackI) callbacks[CB_SCROLL]);
 
     // Cursor enter
-    callbacks[CB_CURSOR_ENTER] = (GLFWCursorEnterCallbackI) (win, entered) ->
-        dispatchInputEvent(new CursorEnterEvent(entered));
+    callbacks[CB_CURSOR_ENTER] =
+        (GLFWCursorEnterCallbackI) (win, entered) -> dispatchInputEvent(new CursorEnterEvent(entered));
     glfwSetCursorEnterCallback(handle, (GLFWCursorEnterCallbackI) callbacks[CB_CURSOR_ENTER]);
 
     // Window close
@@ -575,23 +573,23 @@ public final class GlfwView extends View {
     glfwSetWindowCloseCallback(handle, (GLFWWindowCloseCallbackI) callbacks[CB_WINDOW_CLOSE]);
 
     // Window focus
-    callbacks[CB_WINDOW_FOCUS] = (GLFWWindowFocusCallbackI) (win, focused) ->
-        dispatchInputEvent(new FocusEvent(focused));
+    callbacks[CB_WINDOW_FOCUS] =
+        (GLFWWindowFocusCallbackI) (win, focused) -> dispatchInputEvent(new FocusEvent(focused));
     glfwSetWindowFocusCallback(handle, (GLFWWindowFocusCallbackI) callbacks[CB_WINDOW_FOCUS]);
 
     // Window iconify
-    callbacks[CB_WINDOW_ICONIFY] = (GLFWWindowIconifyCallbackI) (win, iconified) ->
-        dispatchInputEvent(new IconifyEvent(iconified));
+    callbacks[CB_WINDOW_ICONIFY] =
+        (GLFWWindowIconifyCallbackI) (win, iconified) -> dispatchInputEvent(new IconifyEvent(iconified));
     glfwSetWindowIconifyCallback(handle, (GLFWWindowIconifyCallbackI) callbacks[CB_WINDOW_ICONIFY]);
 
     // Window maximize
-    callbacks[CB_WINDOW_MAXIMIZE] = (GLFWWindowMaximizeCallbackI) (win, maximized) ->
-        dispatchInputEvent(new MaximizeEvent(maximized));
+    callbacks[CB_WINDOW_MAXIMIZE] =
+        (GLFWWindowMaximizeCallbackI) (win, maximized) -> dispatchInputEvent(new MaximizeEvent(maximized));
     glfwSetWindowMaximizeCallback(handle, (GLFWWindowMaximizeCallbackI) callbacks[CB_WINDOW_MAXIMIZE]);
 
     // Window move
-    callbacks[CB_WINDOW_MOVE] = (GLFWWindowPosCallbackI) (win, xpos, ypos) ->
-        dispatchInputEvent(new MoveEvent(xpos, ypos));
+    callbacks[CB_WINDOW_MOVE] = (GLFWWindowPosCallbackI) (win, xpos, ypos) -> dispatchInputEvent(new MoveEvent(xpos,
+        ypos));
     glfwSetWindowPosCallback(handle, (GLFWWindowPosCallbackI) callbacks[CB_WINDOW_MOVE]);
 
     // File drop

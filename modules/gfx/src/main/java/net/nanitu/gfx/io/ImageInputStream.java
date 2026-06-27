@@ -32,12 +32,11 @@ import java.io.InputStream;
  * Abstract base for decoded image streams.
  *
  * <p>Subclasses wrap a specific image format (e.g. PNG) and expose decoded
- * pixel data via {@link #info()} which returns an {@link ImageInfo} carrying
- * both metadata and the full pixel array.
+ * pixel data via {@link #info()} which returns an {@link ImageInfo} carrying both metadata and the full pixel array.
  *
  * <p>Use {@link #open(InputStream)} to obtain an instance without knowing
- * the underlying format. After opening, call {@link #info()} to get
- * dimensions and pixels directly — there is no need to stream bytes.
+ * the underlying format. After opening, call {@link #info()} to get dimensions and pixels directly — there is no need
+ * to stream bytes.
  *
  * @see PngInputStream
  * @see ImageInfo

@@ -60,7 +60,7 @@ public final class HarfbuzzShaper implements ShaperProvider, AutoCloseable {
     } else {
       long blob = hb_blob_create(font.fileData(), HB_MEMORY_MODE_READONLY, 0L, null);
       face = hb_face_create(blob, 0);
-      faceCache.put(font, new long[]{face, blob});
+      faceCache.put(font, new long[] {face, blob});
     }
 
     long hbFont = hb_font_create(face);

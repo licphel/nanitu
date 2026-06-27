@@ -75,8 +75,8 @@ public abstract class Widget {
   /** The parent widget, or {@code null} if this is a root widget. */
   protected @Nullable Widget parent;
   /**
-   * The anchor layout that controls positioning during {@link #layout(Box2)}.
-   * When {@code null}, the widget uses its raw position and size directly.
+   * The anchor layout that controls positioning during {@link #layout(Box2)}. When {@code null}, the widget uses its
+   * raw position and size directly.
    */
   private @Nullable AnchorLayout anchorLayout = null;
 
@@ -95,8 +95,8 @@ public abstract class Widget {
    * Returns the content area in parent-local coordinates.
    *
    * <p>Plain widgets return the same rectangle as {@link #bounds()}. Containers with insets
-   * — title bars, padding, borders — override this to return only the drawable interior.
-   * Children are positioned relative to this area's top-left corner.
+   * — title bars, padding, borders — override this to return only the drawable interior. Children are positioned
+   * relative to this area's top-left corner.
    *
    * @return the content area in parent-local coordinates
    */
@@ -105,8 +105,8 @@ public abstract class Widget {
   }
 
   /**
-   * Computes this widget's bounds in absolute root-level logical coordinates by walking up the
-   * parent chain and accumulating each ancestor's content-area origin.
+   * Computes this widget's bounds in absolute root-level logical coordinates by walking up the parent chain and
+   * accumulating each ancestor's content-area origin.
    *
    * @return the bounds rectangle in absolute logical coordinates
    */
@@ -188,8 +188,8 @@ public abstract class Widget {
   }
 
   /**
-   * Resolves this widget's position and size from its anchor layout relative to the given parent
-   * content bounds, then recurses into children.
+   * Resolves this widget's position and size from its anchor layout relative to the given parent content bounds, then
+   * recurses into children.
    *
    * <p>If no anchor layout is set, the raw position and size are left unchanged.
    *
@@ -243,38 +243,37 @@ public abstract class Widget {
    * <p>The default implementation calls {@link #renderSelf(Graphics, Look)} then draws children in
    * z-order. Containers that need scissor clipping override this method.
    *
-   * @param brush      the drawing context
+   * @param g          the drawing context
    * @param look       the active look implementation
-   * @param parentClip the effective scissor rectangle in absolute logical coordinates, or
-   *                   {@code null} if no clipping is active
+   * @param parentClip the effective scissor rectangle in absolute logical coordinates, or {@code null} if no clipping
+   *                   is active
    */
-  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics g, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
-    renderSelf(brush, look);
+    renderSelf(g, look);
     for (Widget child : children) {
-      child.render(brush, look, parentClip);
+      child.render(g, look, parentClip);
     }
   }
 
   /**
    * Draws only this widget's own visual content, without children.
    *
-   * @param brush the drawing context
-   * @param look  the active look implementation
+   * @param g    the drawing context
+   * @param look the active look implementation
    */
-  protected abstract void renderSelf(Graphics brush, Look look);
+  protected abstract void renderSelf(Graphics g, Look look);
 
   /**
-   * Handles an input event. Children are tried in reverse z-order — topmost first — before
-   * this widget processes the event itself.
+   * Handles an input event. Children are tried in reverse z-order — topmost first — before this widget processes the
+   * event itself.
    *
    * @param event     the input event in logical UI coordinates
-   * @param reachable {@code false} when this widget is covered by another widget above it in
-   *                  z-order; the event still arrives so drag and release sequences can complete,
-   *                  but the widget must not trigger interactive state changes such as hover or
-   *                  press transitions
+   * @param reachable {@code false} when this widget is covered by another widget above it in z-order; the event still
+   *                  arrives so drag and release sequences can complete, but the widget must not trigger interactive
+   *                  state changes such as hover or press transitions
    * @return {@code true} if the event was consumed and should not propagate further
    */
   public boolean handleEvent(UiEvent event, boolean reachable) {
@@ -345,8 +344,7 @@ public abstract class Widget {
   }
 
   /**
-   * Sets the visibility of this widget. Invisible widgets are skipped during rendering and event
-   * dispatch.
+   * Sets the visibility of this widget. Invisible widgets are skipped during rendering and event dispatch.
    *
    * @param visible {@code true} to make the widget visible
    */
@@ -373,8 +371,7 @@ public abstract class Widget {
   }
 
   /**
-   * Returns the z-order of this widget. Higher values are drawn on top and receive input events
-   * first.
+   * Returns the z-order of this widget. Higher values are drawn on top and receive input events first.
    *
    * @return the z-order value
    */
@@ -414,8 +411,8 @@ public abstract class Widget {
   }
 
   /**
-   * Sets the z-order and re-sorts the parent's children list. Higher values are drawn on top and
-   * receive input events first.
+   * Sets the z-order and re-sorts the parent's children list. Higher values are drawn on top and receive input events
+   * first.
    *
    * @param zOrder the new z-order value
    */

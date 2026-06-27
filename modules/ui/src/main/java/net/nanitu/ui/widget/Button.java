@@ -37,9 +37,8 @@ import org.jspecify.annotations.Nullable;
  * A clickable button widget.
  *
  * <p>The button tracks three interactive states — idle, hovered, and pressed — in response to
- * mouse events. Its click callback fires when the primary mouse button is released while the
- * cursor is inside its bounds and the widget is reachable. Rendering is delegated to
- * {@link Look#drawButton}.
+ * mouse events. Its click callback fires when the primary mouse button is released while the cursor is inside its
+ * bounds and the widget is reachable. Rendering is delegated to {@link Look#drawButton}.
  */
 public final class Button extends Widget {
   private ButtonState state = ButtonState.IDLE;
@@ -101,14 +100,13 @@ public final class Button extends Widget {
   }
 
   @Override
-  protected void renderSelf(Graphics brush, Look look) {
+  protected void renderSelf(Graphics g, Look look) {
     ButtonState drawState = enabled ? state : ButtonState.DISABLED;
-    look.drawButton(brush, drawState, absoluteBounds(), label);
+    look.drawButton(g, drawState, absoluteBounds(), label);
   }
 
   /**
-   * Handles mouse events to track hover and press states, and fires the click callback on
-   * primary button release.
+   * Handles mouse events to track hover and press states, and fires the click callback on primary button release.
    */
   @Override
   public boolean handleEvent(UiEvent event, boolean reachable) {

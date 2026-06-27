@@ -55,8 +55,8 @@ public record TextureDesc(int width, int height, int depth, TextureFormat format
   }
 
   /**
-   * Builder for {@link TextureDesc} with sensible defaults — 1×1 RGBA8 2D texture,
-   * 1 mip level, sampled usage, no initial data.
+   * Builder for {@link TextureDesc} with sensible defaults — 1×1 RGBA8 2D texture, 1 mip level, sampled usage, no
+   * initial data.
    */
   public static final class Builder {
     public int width = 1;

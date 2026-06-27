@@ -56,7 +56,7 @@ import java.util.List;
 public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable {
   private final Device device;
   private final List<Node> nodes = new ArrayList<>();
-  @Nullable Graphics2D brush;
+  @Nullable Graphics2D g;
   private int curNode;
   private boolean disposed;
   private boolean isDirect;
@@ -117,16 +117,16 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
    */
   public Graphics begin() {
     curNode = 0;
-    if (brush == null) {
+    if (g == null) {
       /*
        * Creates a default Graphics2D instance.
        * This is a weighted object, so we cache it in the mesh.
        */
-      brush = new Graphics2D(this, device);
+      g = new Graphics2D(this, device);
     }
-    brush.moveToNextNode();
-    brush.begin();
-    return brush;
+    g.moveToNextNode();
+    g.begin();
+    return g;
   }
 
   /**
@@ -135,10 +135,10 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
    * @throws IllegalStateException if {@link #begin()} was not called first
    */
   public void end() {
-    if (brush == null) {
+    if (g == null) {
       throw new IllegalStateException("Graphics is not initialized");
     }
-    brush.end0();
+    g.end0();
   }
 
   @Override
@@ -152,8 +152,8 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
       return;
     }
     disposed = true;
-    if (brush != null) {
-      brush.close();
+    if (g != null) {
+      g.close();
     }
     for (Node node : nodes) {
       node.close();

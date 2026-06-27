@@ -30,8 +30,8 @@ import net.nanitu.gfx.shader.*;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Lazy-initialized shader programs, pipelines, resource set layouts, and vertex layouts shared across all {@link Graphics2D}
- * instances.
+ * Lazy-initialized shader programs, pipelines, resource set layouts, and vertex layouts shared across all
+ * {@link Graphics2D} instances.
  *
  * <p>Resources are allocated once on the first call to {@link #init(Device)}; subsequent calls are no-ops.
  */

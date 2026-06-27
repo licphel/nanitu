@@ -44,8 +44,8 @@ public record PipelineDesc(Blend blend, Depth depth, Stencil stencil, Rasterizat
                            @Nullable Object shaderProgram, VertexLayout vertexLayout,
                            ResourceSetLayout[] resourceLayouts, PipelineUsage usage) {
   /**
-   * Builder for {@link PipelineDesc} with sensible defaults — alpha blend,
-   * disabled depth/stencil, empty vertex layout, render usage.
+   * Builder for {@link PipelineDesc} with sensible defaults — alpha blend, disabled depth/stencil, empty vertex layout,
+   * render usage.
    */
   public static final class Builder {
     public Blend blend = Blend.ALPHA_MIX;

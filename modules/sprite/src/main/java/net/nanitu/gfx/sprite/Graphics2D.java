@@ -152,27 +152,6 @@ final class Graphics2D extends Graphics {
     return currentViewport;
   }
 
-  /**
-   * Acquires the render target, beginning a render pass.
-   */
-  public void begin() {
-    encoder.beginPass(RenderPassDesc.of(renderTarget, Color.BLACK));
-  }
-
-  /**
-   * Flushes all pending draws and presents the render target.
-   */
-  void end0() {
-    flush(true);
-  }
-
-  void moveToNextNode() {
-    if (target != null) {
-      target.recordedState.set(rec.pipe, rec.primitive, rec.set, rec.tex);
-    }
-    target = parent.acquire();
-  }
-
   @Override
   public void replay(MultiMesh mesh) {
     if (mesh.isDirect()) {
@@ -232,23 +211,9 @@ final class Graphics2D extends Graphics {
     uploadViewProjection(vpm);
   }
 
-  private void uploadViewProjection(Matrix4x4 vpm) {
-    float[] m = vpm.toFloatArray();
-    byte[] bytes = new byte[64];
-    for (int i = 0; i < 16; i++) {
-      int bits = Float.floatToRawIntBits(m[i]);
-      int off = i * 4;
-      bytes[off] = (byte) (bits);
-      bytes[off + 1] = (byte) (bits >> 8);
-      bytes[off + 2] = (byte) (bits >> 16);
-      bytes[off + 3] = (byte) (bits >> 24);
-    }
-    ubo.submit(bytes, 0, bytes.length);
-  }
-
   @Override
-  public void drawTexture(@Nullable FragileTexture tex, float x, float y, float w, float h, float u, float v, float uw,
-                          float vh) {
+  public void drawTexture(@Nullable FragileTexture tex, float x, float y, float w, float h, float u, float v,
+                          float uw, float vh) {
     if (tex == null || target == null) {
       return;
     }
@@ -468,6 +433,52 @@ final class Graphics2D extends Graphics {
     setColor(originalColor);
   }
 
+  @Override
+  public void close() {
+    if (disposed) {
+      return;
+    }
+    disposed = true;
+    sampler.close();
+    encoder.close();
+    ubo.close();
+  }
+
+  /**
+   * Acquires the render target, beginning a render pass.
+   */
+  public void begin() {
+    encoder.beginPass(RenderPassDesc.of(renderTarget, Color.BLACK));
+  }
+
+  /**
+   * Flushes all pending draws and presents the render target.
+   */
+  void end0() {
+    flush(true);
+  }
+
+  void moveToNextNode() {
+    if (target != null) {
+      target.recordedState.set(rec.pipe, rec.primitive, rec.set, rec.tex);
+    }
+    target = parent.acquire();
+  }
+
+  private void uploadViewProjection(Matrix4x4 vpm) {
+    float[] m = vpm.toFloatArray();
+    byte[] bytes = new byte[64];
+    for (int i = 0; i < 16; i++) {
+      int bits = Float.floatToRawIntBits(m[i]);
+      int off = i * 4;
+      bytes[off] = (byte) (bits);
+      bytes[off + 1] = (byte) (bits >> 8);
+      bytes[off + 2] = (byte) (bits >> 16);
+      bytes[off + 3] = (byte) (bits >> 24);
+    }
+    ubo.submit(bytes, 0, bytes.length);
+  }
+
   private void submitNode(MultiMesh.Node node, boolean force) {
     if (rec.pipe == null || rec.set == null || rec.primitive == null) {
       return;
@@ -566,16 +577,5 @@ final class Graphics2D extends Graphics {
     }
     flush();
     rec.tex = tex;
-  }
-
-  @Override
-  public void close() {
-    if (disposed) {
-      return;
-    }
-    disposed = true;
-    sampler.close();
-    encoder.close();
-    ubo.close();
   }
 }

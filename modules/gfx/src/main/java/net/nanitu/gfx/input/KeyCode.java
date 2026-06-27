@@ -25,12 +25,14 @@
 package net.nanitu.gfx.input;
 
 /**
- * Platform-agnostic key codes based on the USB HID Usage Tables (Keyboard/Keypad Page 0x07).
+ * Platform-agnostic key codes based on the USB HID Usage Tables (Keyboard/Keypad Page 0x07), with mouse buttons mapped
+ * to virtual codes starting at {@value #MOUSE_OFFSET}.
  *
  * <p>Each backend maps its native key codes to these values. For example, a GLFW
  * backend maps {@code GLFW_KEY_A} → {@link #A}, an Android backend maps {@code KeyEvent.KEYCODE_A} → {@link #A}.
  *
- * <p>Use {@link #fromHidCode(int)} for reverse mapping from HID usage IDs.
+ * <p>Use {@link #fromHidCode(int)} for reverse mapping from HID usage IDs,
+ * and {@link #fromMouseId(int)} for mouse button IDs.
  */
 public enum KeyCode {
   A(0x04),
@@ -163,42 +165,86 @@ public enum KeyCode {
   RIGHT_CONTROL(0xE4),
   RIGHT_SHIFT(0xE5),
   RIGHT_ALT(0xE6),
-  RIGHT_SUPER(0xE7);
+  RIGHT_SUPER(0xE7),
+
+  /** Left mouse button. */
+  MOUSE_LEFT(480),
+  /** Right mouse button. */
+  MOUSE_RIGHT(481),
+  /** Middle mouse button (wheel click). */
+  MOUSE_MIDDLE(482),
+  /** Back thumb button. */
+  MOUSE_BACK(483),
+  /** Forward thumb button. */
+  MOUSE_FORWARD(484),
+  /** Extra mouse button 5. */
+  MOUSE_5(485),
+  /** Extra mouse button 6. */
+  MOUSE_6(486),
+  /** Extra mouse button 7. */
+  MOUSE_7(487);
+
+  /** First virtual code assigned to mouse buttons. */
+  public static final int MOUSE_OFFSET = 480;
 
   private static final KeyCode[] LOOKUP;
+  private static final KeyCode[] MOUSE_LOOKUP = new KeyCode[8];
 
   static {
     int max = 0;
     for (KeyCode k : values()) {
-      max = Math.max(k.hidCode, max);
+      max = Math.max(k.code, max);
     }
     LOOKUP = new KeyCode[max + 1];
     for (KeyCode k : values()) {
-      LOOKUP[k.hidCode] = k;
+      LOOKUP[k.code] = k;
     }
+    System.arraycopy(LOOKUP, 480, MOUSE_LOOKUP, 0, 8);
   }
 
-  private final int hidCode;
+  private final int code;
 
-  KeyCode(int hidCode) {
-    this.hidCode = hidCode;
+  KeyCode(int code) {
+    this.code = code;
   }
 
   /**
    * Returns the {@code KeyCode} for the given USB HID usage ID, or {@code null} if no matching key exists.
    *
-   * @param hidCode USB HID usage ID
-   * @return converted keycode
+   * @param hidCode USB HID usage ID (keyboard page 0x07)
+   * @return the matching key code, or {@code null}
    */
   public static KeyCode fromHidCode(int hidCode) {
     return (hidCode >= 0 && hidCode < LOOKUP.length) ? LOOKUP[hidCode] : null;
   }
 
-  /** Returns the USB HID usage ID for this key.
+  /**
+   * Returns the {@code KeyCode} for the given standard mouse button ID ({@code 0} = left, {@code 1} = right, …,
+   * {@code 7} = button 7).
    *
-   * @return the USB HID usage ID for this key
+   * @param mouseId the mouse button ID in {@code [0, 7]}
+   * @return the matching key code, or {@code null} if out of range
+   */
+  public static KeyCode fromMouseId(int mouseId) {
+    return (mouseId >= 0 && mouseId < MOUSE_LOOKUP.length) ? MOUSE_LOOKUP[mouseId] : null;
+  }
+
+  /**
+   * Returns the USB HID usage ID for keyboard keys, or the virtual code for mouse buttons.
+   *
+   * @return the numeric code
    */
   public int hidCode() {
-    return hidCode;
+    return code;
+  }
+
+  /**
+   * Returns the standard mouse button ID ({@code 0} = left, …, {@code 7} = button 7), or {@code -1} if this is not a
+   * mouse button.
+   *
+   * @return the mouse button ID, or {@code -1}
+   */
+  public int mouseId() {
+    return (code >= MOUSE_OFFSET && code < MOUSE_OFFSET + 8) ? code - MOUSE_OFFSET : -1;
   }
 }

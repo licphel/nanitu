@@ -28,14 +28,13 @@ package net.nanitu.ui;
  * Describes how a widget is positioned and sized relative to its parent's content area.
  *
  * <p>Each axis is independently defined by two normalized anchor values in the range
- * {@code [0, 1]} and two pixel offsets. The anchor values select reference lines within the
- * parent: {@code minAnchorX}/{@code minAnchorY} for the widget's leading edge and
- * {@code maxAnchorX}/{@code maxAnchorY} for its trailing edge. The offset values are added after
- * the anchor position is resolved from the parent size.
+ * {@code [0, 1]} and two pixel offsets. The anchor values select reference lines within the parent:
+ * {@code minAnchorX}/{@code minAnchorY} for the widget's leading edge and {@code maxAnchorX}/{@code maxAnchorY} for its
+ * trailing edge. The offset values are added after the anchor position is resolved from the parent size.
  *
  * <p>When the min and max anchors are equal the widget has a fixed size; when they differ the
- * widget stretches between the two anchor lines. Use the static factory methods for common
- * configurations such as pinning to a corner, centering, or filling the parent.
+ * widget stretches between the two anchor lines. Use the static factory methods for common configurations such as
+ * pinning to a corner, centering, or filling the parent.
  *
  * @param minAnchorX the normalized parent position for the widget's left edge
  * @param minAnchorY the normalized parent position for the widget's top edge

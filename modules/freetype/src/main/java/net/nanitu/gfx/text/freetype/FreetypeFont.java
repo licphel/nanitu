@@ -28,6 +28,7 @@ import net.nanitu.gfx.Device;
 import net.nanitu.gfx.text.Font;
 import net.nanitu.gfx.text.FontMetrics;
 import net.nanitu.gfx.text.raster.Glyph;
+import net.nanitu.memory.Memory;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
@@ -35,9 +36,8 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.freetype.FT_Face;
 import org.lwjgl.util.freetype.FT_Size;
 
+import java.lang.foreign.ValueLayout;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.lwjgl.util.freetype.FreeType.*;
 
@@ -57,32 +57,25 @@ final class FreetypeFont implements Font {
   private final long ftLib;
   private final FontMetrics metrics;
   private final ByteBuffer fileData;
-  private final String filePath;
+  private final Device device;
   private boolean disposed;
   private @Nullable FreetypeGlyphCache glyphCache;
   private float resolution = DEFAULT_RESOLUTION;
-  private final Device device;
 
-  FreetypeFont(Device device, String path, int faceIndex) {
+  FreetypeFont(Device device, Memory bytes, int faceIndex) {
     this.device = device;
-    this.filePath = path;
+
+    // Buffer the font data first — FT_New_Memory_Face reads from this buffer.
+    fileData = ByteBuffer.allocateDirect((int) bytes.size()).put(bytes.segment().toArray(ValueLayout.JAVA_BYTE)).flip();
 
     try (MemoryStack stack = MemoryStack.stackPush()) {
       PointerBuffer libOut = stack.callocPointer(1);
       check(FT_Init_FreeType(libOut));
       ftLib = libOut.get(0);
       PointerBuffer faceOut = stack.callocPointer(1);
-      check(FT_New_Face(ftLib, stack.UTF8(path), faceIndex, faceOut), path);
+      check(FT_New_Memory_Face(ftLib, fileData, faceIndex, faceOut));
       ftFace = FT_Face.create(faceOut.get(0));
       FT_Select_Charmap(ftFace, FT_ENCODING_UNICODE);
-
-      try {
-        Path pth = Path.of(path);
-        fileData = ByteBuffer.allocateDirect((int) Files.size(pth)).put(Files.readAllBytes(pth)).flip();
-      } catch (java.io.IOException e) {
-        throw new RuntimeException(e);
-      }
-
       FT_Set_Pixel_Sizes(ftFace, 0, (int) BASIC_LINE_HEIGHT);
       // sz.metrics() values are 26.6 fixed-point pixels at BASIC_LINE_HEIGHT.
       // Divide by 64 → pixels, then by BASIC_LINE_HEIGHT → normalized ratio.
@@ -154,11 +147,6 @@ final class FreetypeFont implements Font {
   @Override
   public float resolution() {
     return resolution;
-  }
-
-  @Override
-  public String filePath() {
-    return filePath;
   }
 
   @Override

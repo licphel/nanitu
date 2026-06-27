@@ -40,7 +40,7 @@ import org.jspecify.annotations.Nullable;
  * @param clearMask    bitmask of {@link #CLEAR_COLOR}, {@link #CLEAR_DEPTH}, {@link #CLEAR_STENCIL}
  */
 public record RenderPassDesc(@Nullable RenderTarget target, Color clearColor, double clearDepth, int clearStencil,
-                              int clearMask) {
+                             int clearMask) {
   /** Clear the color attachment. */
   public static final int CLEAR_COLOR = 1;
   /** Clear the depth attachment. */
@@ -79,8 +79,7 @@ public record RenderPassDesc(@Nullable RenderTarget target, Color clearColor, do
   }
 
   /**
-   * Builder for {@link RenderPassDesc} with sensible defaults — clear color and depth,
-   * no stencil, swapchain target.
+   * Builder for {@link RenderPassDesc} with sensible defaults — clear color and depth, no stencil, swapchain target.
    */
   public static final class Builder {
     public @Nullable RenderTarget target = null;

@@ -180,8 +180,8 @@ public final class EventBus {
   }
 
   /**
-   * Registers a listener with an owner object that can later deregister all its handlers
-   * at once via {@link #deregister(Object)}.
+   * Registers a listener with an owner object that can later deregister all its handlers at once via
+   * {@link #deregister(Object)}.
    *
    * @param eventType the event type to listen for
    * @param listener  the handler callback
@@ -234,10 +234,9 @@ public final class EventBus {
    * Removes all handlers whose listener or owner matches the given reference.
    *
    * <p>When a listener was registered with an owner via
-   * {@link #register(Class, EventListener, Object)}, passing that same owner removes all
-   * handlers in the group. When a listener was registered without an owner, passing the
-   * listener itself removes it. For handlers registered via {@link #register(Object)}
-   * (reflective discovery), use {@link #unregister(Object)} instead.
+   * {@link #register(Class, EventListener, Object)}, passing that same owner removes all handlers in the group. When a
+   * listener was registered without an owner, passing the listener itself removes it. For handlers registered via
+   * {@link #register(Object)} (reflective discovery), use {@link #unregister(Object)} instead.
    *
    * @param token the listener or owner object to deregister
    */

@@ -30,8 +30,8 @@ import org.jspecify.annotations.Nullable;
  * A potentially unstable texture reference whose backing {@link Texture} may change at runtime.
  *
  * <p>Call {@link #pin()} immediately before use to obtain the current backing texture. Implementors
- * that wrap a mutable reference (e.g. a growing glyph atlas) may return a different {@link Texture}
- * on each call; stable implementors (e.g. {@link Texture} itself) always return {@code this}.
+ * that wrap a mutable reference (e.g. a growing glyph atlas) may return a different {@link Texture} on each call;
+ * stable implementors (e.g. {@link Texture} itself) always return {@code this}.
  *
  * <p><b>Thread safety:</b> pin() must be called on the render thread.
  */

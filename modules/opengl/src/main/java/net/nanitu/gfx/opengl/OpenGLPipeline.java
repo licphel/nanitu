@@ -132,7 +132,7 @@ final class OpenGLPipeline implements Pipeline {
    * <p>Must be called on the render thread. Each state block is diffed
    * against the cache so only changed values trigger GL calls.
    *
-   * @param cache    the GL state cache (render-thread only)
+   * @param cache the GL state cache (render-thread only)
    */
   public void apply(OpenGLCache cache) {
     applyBlend(cache, desc.blend());

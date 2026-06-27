@@ -60,34 +60,34 @@ public class Panel extends Widget {
    * Renders the panel background, then draws children clipped to the panel's content bounds.
    */
   @Override
-  public void render(Graphics brush, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics g, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
-    renderSelf(brush, look);
+    renderSelf(g, look);
 
     Box2 myClip = absoluteContentBounds();
     Box2 effectiveClip = parentClip != null ? Box2.getIntersection(parentClip, myClip) : myClip;
 
-    brush.setScissor(effectiveClip);
+    g.setScissor(effectiveClip);
     for (Widget child : children) {
-      child.render(brush, look, effectiveClip);
+      child.render(g, look, effectiveClip);
     }
     if (parentClip != null) {
-      brush.setScissor(parentClip);
+      g.setScissor(parentClip);
     } else {
-      brush.disableScissor();
+      g.disableScissor();
     }
   }
 
   @Override
-  protected void renderSelf(Graphics brush, Look look) {
-    look.drawPanel(brush, absoluteBounds());
+  protected void renderSelf(Graphics g, Look look) {
+    look.drawPanel(g, absoluteBounds());
   }
 
   /**
-   * Handles an input event, dispatching to children only when the cursor is inside the panel's
-   * bounds. Keyboard and character events always pass through.
+   * Handles an input event, dispatching to children only when the cursor is inside the panel's bounds. Keyboard and
+   * character events always pass through.
    */
   @Override
   public boolean handleEvent(UiEvent event) {

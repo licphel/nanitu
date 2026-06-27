@@ -38,10 +38,10 @@ import org.jspecify.annotations.Nullable;
  * Default flat dark look implementation requiring no textures.
  *
  * <p>All widgets are drawn with colored rectangles and lines. The palette uses deep navy-purple
- * tones common in modern game tool UIs. All color constants are shared, so draw methods perform
- * no per-frame allocation.
+ * tones common in modern game tool UIs. All color constants are shared, so draw methods perform no per-frame
+ * allocation.
  *
- * <p>Every draw method restores the brush color to {@code Color.WHITE} before returning.
+ * <p>Every draw method restores the g color to {@code Color.WHITE} before returning.
  */
 public final class ModernFlat implements Look {
   private static final Color SURFACE = Color.create(0x2a, 0x2a, 0x3e);
@@ -76,102 +76,102 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawButton(Graphics brush, ButtonState state, Box2 bounds, @Nullable Text label) {
+  public void drawButton(Graphics g, ButtonState state, Box2 bounds, @Nullable Text label) {
     Color bg = switch (state) {
       case IDLE -> BTN_IDLE;
       case HOVERED -> ACCENT_HOV;
       case PRESSED -> ACCENT_PRESS;
       case DISABLED -> new Color(BTN_IDLE, 0.4F);
     };
-    brush.setColor(bg);
-    brush.drawRectangle(bounds);
-    brush.setColor(BORDER);
-    brush.drawRectangleFrame(bounds);
+    g.setColor(bg);
+    g.drawRectangle(bounds);
+    g.setColor(BORDER);
+    g.drawRectangleFrame(bounds);
     if (label != null) {
-      brush.setColor(state == ButtonState.DISABLED ? TEXT_DIM : TEXT_COLOR);
-      brush.drawText(label, bounds.centralX(), bounds.centralY(), Alignment.CENTRAL);
+      g.setColor(state == ButtonState.DISABLED ? TEXT_DIM : TEXT_COLOR);
+      g.drawText(label, bounds.centralX(), bounds.centralY(), Alignment.CENTRAL);
     }
-    brush.setColor(Color.WHITE);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawPanel(Graphics brush, Box2 bounds) {
-    brush.setColor(SURFACE);
-    brush.drawRectangle(bounds);
-    brush.setColor(BORDER);
-    brush.drawRectangleFrame(bounds);
-    brush.setColor(Color.WHITE);
+  public void drawPanel(Graphics g, Box2 bounds) {
+    g.setColor(SURFACE);
+    g.drawRectangle(bounds);
+    g.setColor(BORDER);
+    g.drawRectangleFrame(bounds);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawScrollPane(Graphics brush, Box2 bounds) {
-    brush.setColor(WIN_BG);
-    brush.drawRectangle(bounds);
-    brush.setColor(BORDER);
-    brush.drawRectangleFrame(bounds);
-    brush.setColor(Color.WHITE);
+  public void drawScrollPane(Graphics g, Box2 bounds) {
+    g.setColor(WIN_BG);
+    g.drawRectangle(bounds);
+    g.setColor(BORDER);
+    g.drawRectangleFrame(bounds);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawWindowFrame(Graphics brush, WindowState state, Box2 bounds) {
+  public void drawWindowFrame(Graphics g, WindowState state, Box2 bounds) {
     Box2 shadow = bounds.translate(4.0F, 4.0F);
-    brush.setColor(WIN_SHADOW);
-    brush.drawRectangle(shadow);
-    brush.setColor(SURFACE_MID);
-    brush.drawRectangle(bounds);
-    brush.setColor(state == WindowState.FOCUSED ? BORDER_FOCUS : BORDER);
-    brush.drawRectangleFrame(bounds);
-    brush.setColor(Color.WHITE);
+    g.setColor(WIN_SHADOW);
+    g.drawRectangle(shadow);
+    g.setColor(SURFACE_MID);
+    g.drawRectangle(bounds);
+    g.setColor(state == WindowState.FOCUSED ? BORDER_FOCUS : BORDER);
+    g.drawRectangleFrame(bounds);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawWindowTitleBar(Graphics brush, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
-    brush.setColor(focused ? ACCENT : TITLE_UNFOCUS);
-    brush.drawRectangle(titleBarBounds);
+  public void drawWindowTitleBar(Graphics g, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
+    g.setColor(focused ? ACCENT : TITLE_UNFOCUS);
+    g.drawRectangle(titleBarBounds);
     if (title != null) {
       float tx = titleBarBounds.minX() + 6.0F;
       float ty = titleBarBounds.centralY();
-      brush.setColor(TEXT_COLOR);
-      brush.drawText(title, tx, ty, LEFT_CENTER);
+      g.setColor(TEXT_COLOR);
+      g.drawText(title, tx, ty, LEFT_CENTER);
     }
-    brush.setColor(Color.WHITE);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawWindowCloseButton(Graphics brush, boolean hovered, Box2 bounds) {
+  public void drawWindowCloseButton(Graphics g, boolean hovered, Box2 bounds) {
     if (hovered) {
-      brush.setColor(CLOSE_HOV);
-      brush.drawRectangle(bounds);
+      g.setColor(CLOSE_HOV);
+      g.drawRectangle(bounds);
     }
     float pad = 4.0F;
-    brush.setColor(TEXT_COLOR);
-    brush.drawLine(bounds.minX() + pad, bounds.minY() + pad, bounds.maxX() - pad, bounds.maxY() - pad);
-    brush.drawLine(bounds.maxX() - pad, bounds.minY() + pad, bounds.minX() + pad, bounds.maxY() - pad);
-    brush.setColor(Color.WHITE);
+    g.setColor(TEXT_COLOR);
+    g.drawLine(bounds.minX() + pad, bounds.minY() + pad, bounds.maxX() - pad, bounds.maxY() - pad);
+    g.drawLine(bounds.maxX() - pad, bounds.minY() + pad, bounds.minX() + pad, bounds.maxY() - pad);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawWindowMinimizeButton(Graphics brush, boolean hovered, Box2 bounds) {
+  public void drawWindowMinimizeButton(Graphics g, boolean hovered, Box2 bounds) {
     if (hovered) {
-      brush.setColor(ACCENT_HOV);
-      brush.drawRectangle(bounds);
+      g.setColor(ACCENT_HOV);
+      g.drawRectangle(bounds);
     }
     float pad = 4.0F;
     float midY = bounds.centralY();
-    brush.setColor(TEXT_COLOR);
-    brush.drawLine(bounds.minX() + pad, midY, bounds.maxX() - pad, midY);
-    brush.setColor(Color.WHITE);
+    g.setColor(TEXT_COLOR);
+    g.drawLine(bounds.minX() + pad, midY, bounds.maxX() - pad, midY);
+    g.setColor(Color.WHITE);
   }
 
   @Override
-  public void drawWindowMaximizeButton(Graphics brush, boolean hovered, Box2 bounds) {
+  public void drawWindowMaximizeButton(Graphics g, boolean hovered, Box2 bounds) {
     if (hovered) {
-      brush.setColor(ACCENT_HOV);
-      brush.drawRectangle(bounds);
+      g.setColor(ACCENT_HOV);
+      g.drawRectangle(bounds);
     }
     float pad = 3.0F;
-    brush.setColor(TEXT_COLOR);
-    brush.drawRectangleFrame(bounds.inflate(-pad, -pad));
-    brush.setColor(Color.WHITE);
+    g.setColor(TEXT_COLOR);
+    g.drawRectangleFrame(bounds.inflate(-pad, -pad));
+    g.setColor(Color.WHITE);
   }
 }

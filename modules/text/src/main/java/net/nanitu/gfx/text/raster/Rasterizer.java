@@ -421,7 +421,7 @@ public final class Rasterizer {
     }
 
     // Entry bounds stay in pen/layout space — no global shift applied.
-    // Caller (Brush.drawText) adds the draw origin when rendering.
+    // Caller (Graphics.drawText) adds the draw origin when rendering.
     List<Raster.Entry> entries = new ArrayList<>();
     int gbIdx = 0;
     for (LayoutRun run : layoutRuns) {
