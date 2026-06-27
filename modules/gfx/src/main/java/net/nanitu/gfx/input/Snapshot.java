@@ -28,8 +28,8 @@ import net.nanitu.gfx.input.event.KeyEvent;
 import net.nanitu.gfx.input.event.MouseButtonEvent;
 
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Per-frame pollable input state for game-style queries.
@@ -38,8 +38,9 @@ import java.util.Map;
  * are dispatched through the {@link net.nanitu.gfx.back.View}. Key press state persists across frames — a held key
  * remains {@link KeyAction#PRESS} until the platform reports a release.
  *
- * <p>For higher-level key binding support, use {@link #key(KeyCode)} to obtain
- * a {@link Key} instance with persistent press tracking, transition detection, and modifier-aware queries.
+ * <p>For higher-level key binding support, use {@link #key(KeyCode)} to create
+ * a {@link Key} instance with persistent press tracking, transition detection, and modifier-aware queries. Release it
+ * with {@link #destroy(Key)} (or via {@link Key#destroy()}) when no longer needed.
  *
  * <p>This class is not thread-safe. All methods must be called from the rendering
  * thread.
@@ -47,7 +48,7 @@ import java.util.Map;
 public final class Snapshot {
   private final EnumMap<KeyCode, KeyAction> keyStates = new EnumMap<>(KeyCode.class);
   private final EnumMap<KeyCode, Integer> keyMods = new EnumMap<>(KeyCode.class);
-  private final Map<KeyCode, Key> keyCache = new HashMap<>();
+  private final Set<Key> keys = new HashSet<>();
   private double cursorX;
   private double cursorY;
   private double scrollX;
@@ -125,24 +126,36 @@ public final class Snapshot {
   }
 
   /**
-   * Returns a {@link Key} instance for the given physical key code, creating it if necessary.
+   * Creates a new {@link Key} bound to the given physical key code and registers it for per-frame updates.
    *
-   * <p>Subsequent calls with the same code return the same instance. The
-   * returned key tracks persistent press state, transition detection, and supports rebinding via
-   * {@link Key#rebind(KeyCode)}.
+   * <p>Each call returns a new instance — multiple keys may bind to the same
+   * physical key simultaneously. Release with {@link #destroy(Key)} (or {@link Key#destroy()}) when the key is no
+   * longer needed.
    *
-   * @param code the physical key code
-   * @return the cached or newly created {@code Key}
+   * @param code the physical key code to bind
+   * @return a newly created {@code Key}
    */
   public Key key(KeyCode code) {
-    return keyCache.computeIfAbsent(code, k -> new Key(k, this));
+    Key key = new Key(code, this);
+    keys.add(key);
+    return key;
+  }
+
+  /**
+   * Removes a key from this snapshot. The key will no longer receive input events.
+   *
+   * @param key the key to destroy
+   */
+  public void destroy(Key key) {
+    keys.remove(key);
   }
 
   /**
    * Updates the keyboard state from a key event.
    *
    * <p>Called during event dispatch to record the key action and modifier
-   * bitmask for subsequent polling. Also updates any cached {@link Key} instance bound to the event's key code.
+   * bitmask for subsequent polling. Also forwards the event to every registered {@link Key} whose bound code matches
+   * the event.
    *
    * @param event the key event to apply
    */
@@ -150,9 +163,10 @@ public final class Snapshot {
     keyStates.put(event.code(), event.action());
     keyMods.put(event.code(), event.modifiers());
 
-    Key key = keyCache.get(event.code());
-    if (key != null) {
-      key.apply(event.action(), event.modifiers());
+    for (Key key : keys) {
+      if (key.code == event.code()) {
+        key.apply(event.action(), event.modifiers());
+      }
     }
   }
 
@@ -174,7 +188,7 @@ public final class Snapshot {
    * Updates the mouse button state from a mouse button event.
    *
    * <p>Called during event dispatch to record the button action and cursor
-   * position. Also updates any cached {@link Key} instance bound to the mouse button's key code.
+   * position. Also forwards the event to every registered {@link Key} whose bound code matches the event.
    *
    * @param event the mouse button event to apply
    */
@@ -184,9 +198,10 @@ public final class Snapshot {
     cursorX = event.x();
     cursorY = event.y();
 
-    Key key = keyCache.get(event.button());
-    if (key != null) {
-      key.apply(event.action(), event.modifiers());
+    for (Key key : keys) {
+      if (key.code == event.button()) {
+        key.apply(event.action(), event.modifiers());
+      }
     }
   }
 
@@ -208,26 +223,15 @@ public final class Snapshot {
    * Resets transient per-frame state.
    *
    * <p>Call at the end of each frame. Resets scroll accumulators to zero and
-   * clears per-frame transition flags on all cached {@link Key} instances. Key press state is <em>not</em> modified —
-   * held keys remain in their current state until the platform reports a release.
+   * clears per-frame transition flags on all registered {@link Key} instances. Key press state is <em>not</em> modified
+   * — held keys remain in their current state until the platform reports a release.
    */
   public void clearFrameState() {
     scrollX = 0;
     scrollY = 0;
 
-    for (Key key : keyCache.values()) {
+    for (Key key : keys) {
       key.endFrame();
     }
-  }
-
-  /**
-   * Moves a key's cache entry from its current code to a new code.
-   *
-   * <p>Called by {@link Key#rebind(KeyCode)}.
-   */
-  void rebindKey(Key key, KeyCode newCode) {
-    keyCache.remove(key.code);
-    key.code = newCode;
-    keyCache.put(newCode, key);
   }
 }

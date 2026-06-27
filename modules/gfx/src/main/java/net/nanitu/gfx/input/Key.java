@@ -28,15 +28,14 @@ package net.nanitu.gfx.input;
  * A logical key binding that wraps a physical {@link KeyCode} with persistent press tracking and modifier-aware
  * transition detection.
  *
- * <p>Acquire instances via {@link Snapshot#key(KeyCode)} — each
- * {@code KeyCode} maps to at most one {@code Key}. The bound key code can be changed at any time with
- * {@link #rebind(KeyCode)}.
+ * <p>Acquire instances via {@link Snapshot#key(KeyCode)} and release via
+ * {@link Snapshot#destroy(Key)} (or {@link #destroy()}). Multiple {@code Key} instances may bind to the same physical
+ * key simultaneously.
  *
  * <h3>Usage</h3>
  * <pre>{@code
  * Snapshot input = view.inputState();
  * Key jump = input.key(KeyCode.SPACE);
- * Key crouch = input.key(KeyCode.C);
  *
  * if (jump.transitioned()) {
  *     // SPACE was just pressed this frame
@@ -44,8 +43,8 @@ package net.nanitu.gfx.input;
  * if (jump.isDown()) {
  *     // SPACE is currently held
  * }
- * if (crouch.transitioned(Modifiers.CONTROL)) {
- *     // Ctrl+C was just pressed this frame
+ * if (jump.transitioned(Modifiers.CONTROL)) {
+ *     // Ctrl+SPACE was just pressed this frame
  * }
  * }</pre>
  *
@@ -53,7 +52,7 @@ package net.nanitu.gfx.input;
  * rendering thread.
  */
 public final class Key {
-  final Snapshot owner;
+  Snapshot owner;
   KeyCode code;
   boolean down;
   boolean pressTransitioning;
@@ -78,13 +77,19 @@ public final class Key {
   /**
    * Rebinds this logical key to a different physical key.
    *
-   * <p>The old mapping is removed from the cache; future calls to
-   * {@code Snapshot.key(oldCode)} will create a new {@code Key}.
-   *
    * @param code the new physical key code to bind
    */
   public void rebind(KeyCode code) {
-    owner.rebindKey(this, code);
+    this.code = code;
+  }
+
+  /**
+   * Destroys this key, removing it from the owning {@link Snapshot}.
+   *
+   * <p>After destruction the key is no longer updated by input events.
+   */
+  public void destroy() {
+    owner.destroy(this);
   }
 
   /**

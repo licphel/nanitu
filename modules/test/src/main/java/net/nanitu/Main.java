@@ -315,6 +315,8 @@ public class Main {
     MultiMesh mesh = new MultiMesh(dev, true);
     mesh.setDirect(true);
 
+    Key key0 = theView.snapshot().key(KeyCode.E);
+
     while (!theView.shouldClose() && frame < MAX_FRAMES) {
       double now = System.nanoTime();
       float delta = (float) ((now - lastTime) * 1e-9);
@@ -432,7 +434,6 @@ public class Main {
 
       frame++;
 
-      Key key0 = theView.snapshot().key(KeyCode.E);
       if(key0.transitioned()) {
         System.out.println(1);
       }
