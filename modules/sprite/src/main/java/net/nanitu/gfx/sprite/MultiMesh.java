@@ -28,9 +28,8 @@ import net.nanitu.gfx.Device;
 import net.nanitu.gfx.buffer.BufferFrequency;
 import net.nanitu.gfx.buffer.BufferObject;
 import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.memory.Buffer;
+import net.nanitu.memory.Buf;
 import net.nanitu.memory.Endianness;
-import net.nanitu.memory.MemoryAllocator;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -168,8 +167,8 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
   public static final class Node {
     static final int INITIAL_CAP = 128;
 
-    final Buffer vertexBuf = allocateBuffer();
-    final Buffer indexBuf = allocateBuffer();
+    final Buf vertexBuf = allocateBuffer();
+    final Buf indexBuf = allocateBuffer();
     final BufferObject vbo;
     final BufferObject ibo;
     boolean dirty;
@@ -185,8 +184,8 @@ public final class MultiMesh implements Iterable<MultiMesh.Node>, AutoCloseable 
       ibo.allocate(INITIAL_CAP, null);
     }
 
-    private static Buffer allocateBuffer() {
-      return new Buffer(MemoryAllocator.NATIVE.allocate(INITIAL_CAP), Endianness.NATIVE);
+    private static Buf allocateBuffer() {
+      return Buf.direct(Endianness.NATIVE, INITIAL_CAP);
     }
 
     /**

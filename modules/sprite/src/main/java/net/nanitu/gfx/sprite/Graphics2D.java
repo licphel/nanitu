@@ -43,7 +43,7 @@ import net.nanitu.gfx.texture.SamplerDesc;
 import net.nanitu.gfx.texture.Texture;
 import net.nanitu.math.*;
 import net.nanitu.math.dim2.Camera2D;
-import net.nanitu.memory.Buffer;
+import net.nanitu.memory.Buf;
 import net.nanitu.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
@@ -224,8 +224,8 @@ final class Graphics2D extends Graphics {
     assertPrimitive(Primitive.TEXTURE_SPRITE);
     assertTexture(pinned);
 
-    Buffer vBuf = target.vertexBuf;
-    Buffer iBuf = target.indexBuf;
+    Buf vBuf = target.vertexBuf;
+    Buf iBuf = target.indexBuf;
 
     float invW = 1.0F / pinned.width();
     float invH = 1.0F / pinned.height();
@@ -300,8 +300,8 @@ final class Graphics2D extends Graphics {
     }
     assertPrimitive(Primitive.COLOR_SPRITE);
 
-    Buffer vBuf = target.vertexBuf;
-    Buffer iBuf = target.indexBuf;
+    Buf vBuf = target.vertexBuf;
+    Buf iBuf = target.indexBuf;
 
     Vector3 p0 = transform.top().transform(new Vector3(x, y, 0.0F));
     Vector3 p1 = transform.top().transform(new Vector3(x + w, y, 0.0F));
@@ -349,7 +349,7 @@ final class Graphics2D extends Graphics {
     }
     assertPrimitive(Primitive.COLOR_LINE);
 
-    Buffer vBuf = target.vertexBuf;
+    Buf vBuf = target.vertexBuf;
 
     Vector3 t1 = transform.top().transform(new Vector3(x1, y1, 0.0F));
     Vector3 t2 = transform.top().transform(new Vector3(x2, y2, 0.0F));
@@ -374,7 +374,7 @@ final class Graphics2D extends Graphics {
     }
     assertPrimitive(Primitive.COLOR_POINT);
 
-    Buffer vBuf = target.vertexBuf;
+    Buf vBuf = target.vertexBuf;
 
     Vector3 t = transform.top().transform(new Vector3(x, y, 0.0F));
 
@@ -503,7 +503,8 @@ final class Graphics2D extends Graphics {
     encoder.setRenderPipe(rec.pipe);
 
     if (node.dirty) {
-      node.vbo.submit(node.vertexBuf.slice());
+      byte[] vdata = node.vertexBuf.toByteArray();
+      node.vbo.submit(vdata, 0, vdata.length);
     }
     encoder.setBuffer(node.vbo);
 
@@ -517,7 +518,8 @@ final class Graphics2D extends Graphics {
         }
         encoder.setTopology(Topology.TRIANGLE);
         if (node.dirty) {
-          node.ibo.submit(node.indexBuf.slice());
+          byte[] idata = node.indexBuf.toByteArray();
+          node.ibo.submit(idata, 0, idata.length);
         }
         encoder.setBuffer(node.ibo);
         encoder.drawIndexed(node.indexCount, 0);
@@ -525,7 +527,8 @@ final class Graphics2D extends Graphics {
       case COLOR_SPRITE -> {
         encoder.setTopology(Topology.TRIANGLE);
         if (node.dirty) {
-          node.ibo.submit(node.indexBuf.slice());
+          byte[] idata = node.indexBuf.toByteArray();
+          node.ibo.submit(idata, 0, idata.length);
         }
         encoder.setBuffer(node.ibo);
         encoder.drawIndexed(node.indexCount, 0);

@@ -22,21 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
-
-/**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
- *
- * <ul>
- *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).
- *   <li>{@link #DYNAMIC} — updated occasionally (e.g. per-frame uniforms).
- *   <li>{@link #STREAM} — updated every frame (e.g. particles), enables buffer orphaning.
- * </ul>
- *
- * @see BufferObjectDesc
- */
-public enum BufferFrequency {
-  STATIC,
-  DYNAMIC,
-  STREAM
+dependencies {
+    api project(':nanitu-core')
+    implementation platform('io.netty:netty-bom:4.1.118.Final')
+    implementation 'io.netty:netty-handler'
+    implementation 'io.netty:netty-transport'
 }

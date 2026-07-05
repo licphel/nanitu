@@ -24,6 +24,7 @@
 
 dependencies {
     implementation project(':nanitu-core')
+    implementation project(':nanitu-net')
     implementation project(':nanitu-gfx')
     implementation project(':nanitu-sprite')
     implementation project(':nanitu-ai')

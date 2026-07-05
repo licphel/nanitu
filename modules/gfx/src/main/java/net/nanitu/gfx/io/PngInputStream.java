@@ -36,7 +36,6 @@ import java.io.InputStream;
  * as a byte array; pixel data is read back via {@link #read()}.
  */
 public final class PngInputStream extends ImageInputStream {
-
   private final ImageInfo info;
   private final byte[] data;
   private int pos;

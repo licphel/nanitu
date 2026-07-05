@@ -22,21 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+@NullMarked
+package net.nanitu.net.session;
 
-/**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
- *
- * <ul>
- *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).
- *   <li>{@link #DYNAMIC} — updated occasionally (e.g. per-frame uniforms).
- *   <li>{@link #STREAM} — updated every frame (e.g. particles), enables buffer orphaning.
- * </ul>
- *
- * @see BufferObjectDesc
- */
-public enum BufferFrequency {
-  STATIC,
-  DYNAMIC,
-  STREAM
-}
+import org.jspecify.annotations.NullMarked;

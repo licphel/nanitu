@@ -22,21 +22,39 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.nanitu.net;
+
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.io.Serial;
 
 /**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
+ * Unchecked exception for network-level errors.
  *
- * <ul>
- *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).
- *   <li>{@link #DYNAMIC} — updated occasionally (e.g. per-frame uniforms).
- *   <li>{@link #STREAM} — updated every frame (e.g. particles), enables buffer orphaning.
- * </ul>
- *
- * @see BufferObjectDesc
+ * <p>Covers connection failures, protocol violations, and problems encountered during packet encoding or decoding.
  */
-public enum BufferFrequency {
-  STATIC,
-  DYNAMIC,
-  STREAM
+@NullMarked
+public class NetworkException extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 2026070400L;
+
+  /**
+   * Creates an exception with a descriptive message.
+   *
+   * @param message a human-readable description of the error
+   */
+  public NetworkException(String message) {
+    super(message);
+  }
+
+  /**
+   * Creates an exception with a descriptive message and a root cause.
+   *
+   * @param message a human-readable description of the error
+   * @param cause   the underlying throwable that triggered this error, or {@code null}
+   */
+  public NetworkException(String message, @Nullable Throwable cause) {
+    super(message, cause);
+  }
 }

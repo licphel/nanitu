@@ -24,7 +24,7 @@
 
 package net.nanitu.nbt;
 
-import net.nanitu.memory.Buffer;
+import net.nanitu.memory.Buf;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -76,7 +76,7 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    * @return the deserialized compound
    * @throws IndexOutOfBoundsException if {@code buffer} has insufficient readable bytes
    */
-  public static NbtCompound deserialize(Buffer buffer) {
+  public static NbtCompound deserialize(Buf buffer) {
     NbtCompound compound = new NbtCompound();
 
     while (true) {
@@ -103,7 +103,7 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    * @param value  the value to write, may be {@code null}
    * @throws IllegalArgumentException if the value's type is not a supported NBT type
    */
-  public static void writeValue(Buffer buffer, @Nullable Object value) {
+  public static void writeValue(Buf buffer, @Nullable Object value) {
     if (value == null) {
       return;
     }
@@ -134,7 +134,7 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    * @param tagType the NBT tag type that identifies how to decode the value
    * @return the decoded value, or {@code null} if the tag carries no data
    */
-  public static @Nullable Object readValue(Buffer buffer, Mark tagType) {
+  public static @Nullable Object readValue(Buf buffer, Mark tagType) {
     return switch (tagType) {
       case BYTE -> buffer.getByte();
       case BOOLEAN -> buffer.getByte() != 0;
@@ -693,7 +693,7 @@ public final class NbtCompound implements Iterable<Map.Entry<String, @Nullable O
    *
    * @param buffer the destination buffer
    */
-  public void serialize(Buffer buffer) {
+  public void serialize(Buf buffer) {
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();

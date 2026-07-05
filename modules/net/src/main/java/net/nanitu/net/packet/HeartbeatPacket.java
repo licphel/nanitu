@@ -22,21 +22,39 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.nanitu.net.packet;
+
+import net.nanitu.memory.Buf;
+import net.nanitu.net.NetConfig;
+import net.nanitu.net.session.Session;
 
 /**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
+ * A built-in keepalive packet with no payload.
  *
- * <ul>
- *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).
- *   <li>{@link #DYNAMIC} — updated occasionally (e.g. per-frame uniforms).
- *   <li>{@link #STREAM} — updated every frame (e.g. particles), enables buffer orphaning.
- * </ul>
+ * <p>Sent periodically by both client and server to detect stale connections. This packet is registered at ID 0 and is
+ * always available. Reception is tracked by the session activity timestamp, with timeout detection handled automatically
+ * by the server.
  *
- * @see BufferObjectDesc
+ * @see NetConfig#HEARTBEAT_INTERVAL_MS
+ * @see NetConfig#SESSION_TIMEOUT_MS
  */
-public enum BufferFrequency {
-  STATIC,
-  DYNAMIC,
-  STREAM
+public final class HeartbeatPacket extends Packet {
+  /** Wire-format ID for heartbeat packets, always 0. */
+  public static final int ID = PacketRegistry.register(HeartbeatPacket.class, HeartbeatPacket::new);
+
+  @Override
+  public void read(Buf buf) {
+    // Heartbeat carries no payload.
+  }
+
+  @Override
+  public void write(Buf buf) {
+    // Heartbeat carries no payload.
+  }
+
+  @Override
+  public void handle(Session session) {
+    // Heartbeat reception is tracked by the session's activity timestamp;
+    // timeout detection runs in the server's processing loop.
+  }
 }

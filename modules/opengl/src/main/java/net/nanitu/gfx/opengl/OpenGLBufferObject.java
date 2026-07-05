@@ -45,7 +45,7 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * or {@code GL_UNIFORM_BUFFER}) and a usage hint derived from its {@link BufferFrequency}. All GL calls are enqueued
  * via {@link OpenGLDevice#submit(Runnable)} for execution on the render thread.
  *
- * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
+ * <p><b>Buf orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
  * a {@link #submit(byte[], int, int)} call at offset 0 discards the previous allocation (via an extra
  * {@code glBufferData}) before writing. This technique avoids GPU pipeline stalls by letting the driver rotate through
  * fresh backing storage each frame. The trade-off is an extra allocation per frame.
@@ -151,7 +151,7 @@ final class OpenGLBufferObject implements BufferObject {
       }
 
       if (desc.frequency() == BufferFrequency.STREAM && offset == 0) {
-        // Buffer orphaning: discard the old allocation before writing.
+        // Buf orphaning: discard the old allocation before writing.
         glBufferData(target, capacity, hint);
       }
 

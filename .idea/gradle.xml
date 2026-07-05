@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/modules/gfx" />
             <option value="$PROJECT_DIR$/modules/glfw" />
             <option value="$PROJECT_DIR$/modules/harfbuzz" />
+            <option value="$PROJECT_DIR$/modules/net" />
             <option value="$PROJECT_DIR$/modules/openal" />
             <option value="$PROJECT_DIR$/modules/opengl" />
             <option value="$PROJECT_DIR$/modules/sprite" />

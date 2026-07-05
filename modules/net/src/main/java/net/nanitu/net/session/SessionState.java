@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.nanitu.net.session;
 
 /**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
+ * Lifecycle states of a {@link Session}.
  *
- * <ul>
- *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).
- *   <li>{@link #DYNAMIC} — updated occasionally (e.g. per-frame uniforms).
- *   <li>{@link #STREAM} — updated every frame (e.g. particles), enables buffer orphaning.
- * </ul>
+ * <p>The canonical progression is {@link #CONNECTING} → {@link #CONNECTED} → {@link #DISCONNECTING} →
+ * {@link #DISCONNECTED}. A freshly created session that has never connected starts at {@code DISCONNECTED}.
  *
- * @see BufferObjectDesc
+ * @see Session#state()
  */
-public enum BufferFrequency {
-  STATIC,
-  DYNAMIC,
-  STREAM
+public enum SessionState {
+  /** Initial connection handshake is in progress. */
+  CONNECTING,
+  /** Connection is established and data may flow. */
+  CONNECTED,
+  /** Close handshake has been initiated but the channel may still be open. */
+  DISCONNECTING,
+  /** Connection is fully closed and no further communication is possible. */
+  DISCONNECTED
 }

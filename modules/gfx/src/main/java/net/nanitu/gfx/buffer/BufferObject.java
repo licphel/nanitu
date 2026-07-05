@@ -46,7 +46,7 @@ import org.jspecify.annotations.Nullable;
  *   <li>Call {@link #close()} when the buffer is no longer needed.
  * </ol>
  *
- * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
+ * <p><b>Buf orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
  * calling {@link #submit} with {@code offset == 0} discards the previous
  * allocation (via {@code glBufferData}) before uploading, which avoids
  * GPU pipeline stalls at the cost of an extra allocation per frame.

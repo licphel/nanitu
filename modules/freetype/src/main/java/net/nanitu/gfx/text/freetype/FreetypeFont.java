@@ -65,7 +65,7 @@ final class FreetypeFont implements Font {
   FreetypeFont(Device device, Memory bytes, int faceIndex) {
     this.device = device;
 
-    // Buffer the font data first — FT_New_Memory_Face reads from this buffer.
+    // Buf the font data first — FT_New_Memory_Face reads from this buffer.
     fileData = ByteBuffer.allocateDirect((int) bytes.size()).put(bytes.segment().toArray(ValueLayout.JAVA_BYTE)).flip();
 
     try (MemoryStack stack = MemoryStack.stackPush()) {

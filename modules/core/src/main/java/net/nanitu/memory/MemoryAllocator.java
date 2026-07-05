@@ -44,7 +44,7 @@ import java.lang.foreign.Arena;
  * memory-mapped files, or pooled native buffers.
  *
  * @see Memory
- * @see Buffer
+ * @see Buf
  */
 public interface MemoryAllocator {
   /**

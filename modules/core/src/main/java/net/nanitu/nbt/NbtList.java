@@ -24,7 +24,7 @@
 
 package net.nanitu.nbt;
 
-import net.nanitu.memory.Buffer;
+import net.nanitu.memory.Buf;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -65,7 +65,7 @@ public final class NbtList implements Iterable<@Nullable Object> {
    * @return a new list containing the deserialized elements
    * @throws IndexOutOfBoundsException if {@code buffer} has insufficient readable bytes
    */
-  public static NbtList deserialize(Buffer buffer) {
+  public static NbtList deserialize(Buf buffer) {
     NbtList list = new NbtList();
 
     int size = buffer.getInt();
@@ -546,7 +546,7 @@ public final class NbtList implements Iterable<@Nullable Object> {
    *
    * @param buffer the destination buffer
    */
-  public void serialize(Buffer buffer) {
+  public void serialize(Buf buffer) {
     if (isEmpty()) {
       buffer.putInt(0);
       return;

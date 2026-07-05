@@ -27,7 +27,7 @@ package net.nanitu.memory;
 import java.nio.ByteOrder;
 
 /**
- * Byte order for multibyte reads and writes in {@link Buffer} and {@link Memory}.
+ * Byte order for multibyte reads and writes in {@link Buf} and {@link Memory}.
  *
  * <p>Most serialization formats have a fixed byte order. This enum lets you
  * specify the desired order when reading or writing integers, floats, and other multibyte values. Use {@link #LITTLE}
@@ -37,7 +37,7 @@ import java.nio.ByteOrder;
  * network streams where the sender negotiates the order — use {@link #UNSURE}. Most multibyte operations reject
  * {@code UNSURE} with an {@link IllegalArgumentException} to catch missing negotiation early.
  *
- * @see Buffer
+ * @see Buf
  * @see Memory
  */
 public enum Endianness {
