@@ -23,44 +23,42 @@
  */
 
 dependencies {
-    implementation project(':nanitu-core')
-    implementation project(':nanitu-net')
-    implementation project(':nanitu-gfx')
-    implementation project(':nanitu-sprite')
-    implementation project(':nanitu-ai')
-    implementation project(':nanitu-audio')
-    implementation project(':nanitu-text')
-    implementation project(':nanitu-ui')
-    runtimeOnly project(':nanitu-freetype')
-    runtimeOnly project(':nanitu-harfbuzz')
-    runtimeOnly project(':nanitu-opengl')
-    runtimeOnly project(':nanitu-glfw')
-    runtimeOnly project(':nanitu-openal')
+  implementation project(':fmhi-core')
+  implementation project(':fmhi-gfx')
+  implementation project(':fmhi-sprite')
+  implementation project(':fmhi-audio')
+  implementation project(':fmhi-text')
+  implementation project(':fmhi-ui')
+  runtimeOnly project(':fmhi-freetype')
+  runtimeOnly project(':fmhi-harfbuzz')
+  runtimeOnly project(':fmhi-opengl')
+  runtimeOnly project(':fmhi-glfw')
+  runtimeOnly project(':fmhi-openal')
 }
 
 tasks.register('copyDependencies', Copy) {
-    from(configurations.runtimeClasspath)
-    into(layout.buildDirectory.dir('libs'))
+  from(configurations.runtimeClasspath)
+  into(layout.buildDirectory.dir('libs'))
 }
 
 tasks.jar {
-    dependsOn('copyDependencies')
+  dependsOn('copyDependencies')
 
-    manifest {
-        attributes(
-                'Main-Class': 'net.nanitu.Main',
-                'Class-Path': configurations.runtimeClasspath.files.collect { it.name }.join(' ')
-        )
-    }
+  manifest {
+    attributes(
+        'Main-Class': 'net.fmhi.Main',
+        'Class-Path': configurations.runtimeClasspath.files.collect { it.name }.join(' ')
+    )
+  }
 }
 
 tasks.register('run', JavaExec) {
-    group = 'application'
-    description = 'Runs the smoke test'
+  group = 'application'
+  description = 'Runs the smoke test'
 
-    mainClass.set('net.nanitu.Main')
-    classpath = sourceSets.main.runtimeClasspath
-    workingDir = rootProject.projectDir
+  mainClass.set('net.fmhi.Main')
+  classpath = sourceSets.main.runtimeClasspath
+  workingDir = rootProject.projectDir
 
-    enableAssertions = true
+  enableAssertions = true
 }

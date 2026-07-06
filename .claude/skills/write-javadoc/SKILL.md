@@ -98,7 +98,7 @@ public Point { ...}
 
 ### Exemplar
 
-See `nanitu-core:net.nanitu.event` package. This is a small-scaled but good exemplar.
+See `fmhi-core:net.fmhi.event` package. This is a small-scaled but good exemplar.
 
 ## Example
 

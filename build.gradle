@@ -25,112 +25,112 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    id 'maven-publish'
+  id 'maven-publish'
 }
 
 ext {
-    switch (OperatingSystem.current()) {
-        case OperatingSystem.WINDOWS:
-            def osArch = System.getProperty("os.arch")
-            lwjglNatives = osArch.contains("64")
-                    ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
-                    : "natives-windows-x86"
-            break
-        case OperatingSystem.MAC_OS:
-            lwjglNatives = System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos"
-            break
-        default:
-            def osArch = System.getProperty("os.arch")
-            lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
-                    ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
-                    : "natives-linux"
-            break
-    }
+  switch (OperatingSystem.current()) {
+    case OperatingSystem.WINDOWS:
+      def osArch = System.getProperty("os.arch")
+      lwjglNatives = osArch.contains("64")
+          ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
+          : "natives-windows-x86"
+      break
+    case OperatingSystem.MAC_OS:
+      lwjglNatives = System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos"
+      break
+    default:
+      def osArch = System.getProperty("os.arch")
+      lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+          ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+          : "natives-linux"
+      break
+  }
 }
 
 subprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
+  apply plugin: 'java-library'
+  apply plugin: 'maven-publish'
 
-    group = 'net.nanitu'
-    version = property('nanitu_version')
+  group = 'net.fmhi'
+  version = property('fmhi_version')
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(25)
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(25)
+    }
+    withJavadocJar()
+    withSourcesJar()
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    compileOnly 'org.jspecify:jspecify:1.0.0'
+
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.4'
+    implementation 'org.apache.logging.log4j:log4j-api:2.25.4'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.compilerArgs.add("-Xlint:all")
+    it.options.compilerArgs.add("-Werror")
+  }
+
+  tasks.withType(Javadoc).configureEach {
+    options.addBooleanOption('Xdoclint:all,-missing,-html5', true)
+    failOnError = false
+  }
+
+  tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+  }
+
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        from components.java
+
+        pom {
+          name = project.name
+          description = 'fmhi: java game development framework'
+          url = 'https://github.com/licphel/fmhi'
+
+          licenses {
+            license {
+              name = 'MIT'
+              url = 'https://opensource.org/licenses/MIT'
+            }
+          }
+
+          developers {
+            developer {
+              id = 'licphel'
+              name = 'Licphel'
+            }
+          }
+
+          scm {
+            connection = 'scm:git:git://github.com/licphel/fmhi.git'
+            developerConnection = 'scm:git:ssh://github.com:licphel/fmhi.git'
+            url = 'https://github.com/licphel/fmhi'
+          }
         }
-        withJavadocJar()
-        withSourcesJar()
+      }
     }
 
     repositories {
-        mavenCentral()
+      maven {
+        name = 'Local'
+        url = layout.buildDirectory.dir('repo')
+      }
     }
-
-    dependencies {
-        compileOnly 'org.jspecify:jspecify:1.0.0'
-
-        implementation 'org.apache.logging.log4j:log4j-core:2.25.4'
-        implementation 'org.apache.logging.log4j:log4j-api:2.25.4'
-
-        testImplementation platform('org.junit:junit-bom:5.10.0')
-        testImplementation 'org.junit.jupiter:junit-jupiter'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.encoding = "UTF-8"
-        it.options.compilerArgs.add("-Xlint:all")
-        it.options.compilerArgs.add("-Werror")
-    }
-
-    tasks.withType(Javadoc).configureEach {
-        options.addBooleanOption('Xdoclint:all,-missing,-html5', true)
-        failOnError = false
-    }
-
-    tasks.withType(Test).configureEach {
-        useJUnitPlatform()
-    }
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                from components.java
-
-                pom {
-                    name = project.name
-                    description = 'nanitu — a game engine framework'
-                    url = 'https://github.com/licphel/nanitu'
-
-                    licenses {
-                        license {
-                            name = 'MIT'
-                            url = 'https://opensource.org/licenses/MIT'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id = 'licphel'
-                            name = 'Licphel'
-                        }
-                    }
-
-                    scm {
-                        connection = 'scm:git:git://github.com/licphel/nanitu.git'
-                        developerConnection = 'scm:git:ssh://github.com:licphel/nanitu.git'
-                        url = 'https://github.com/licphel/nanitu'
-                    }
-                }
-            }
-        }
-
-        repositories {
-            maven {
-                name = 'Local'
-                url = layout.buildDirectory.dir('repo')
-            }
-        }
-    }
+  }
 }

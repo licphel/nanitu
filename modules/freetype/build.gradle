@@ -26,14 +26,14 @@ def lwjglVersion = property('lwjgl_version')
 def lwjglNatives = rootProject.ext.lwjglNatives
 
 dependencies {
-    api project(':nanitu-core')
-    api project(':nanitu-gfx')
-    api project(':nanitu-text')
+  api project(':fmhi-core')
+  api project(':fmhi-gfx')
+  api project(':fmhi-text')
 
-    implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
-    implementation 'org.lwjgl:lwjgl'
-    implementation 'org.lwjgl:lwjgl-freetype'
+  implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
+  implementation 'org.lwjgl:lwjgl'
+  implementation 'org.lwjgl:lwjgl-freetype'
 
-    runtimeOnly "org.lwjgl:lwjgl::${lwjglNatives}"
-    runtimeOnly "org.lwjgl:lwjgl-freetype::${lwjglNatives}"
+  runtimeOnly "org.lwjgl:lwjgl::${lwjglNatives}"
+  runtimeOnly "org.lwjgl:lwjgl-freetype::${lwjglNatives}"
 }

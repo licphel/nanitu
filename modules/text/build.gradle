@@ -23,7 +23,7 @@
  */
 
 dependencies {
-    api project(':nanitu-core')
-    api project(':nanitu-gfx')
-    implementation 'com.ibm.icu:icu4j:76.1'
+  api project(':fmhi-core')
+  api project(':fmhi-gfx')
+  implementation 'com.ibm.icu:icu4j:76.1'
 }
