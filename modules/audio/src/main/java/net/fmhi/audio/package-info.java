@@ -23,6 +23,10 @@
  */
 
 @NullMarked
+<<<<<<<< HEAD:modules/audio/src/main/java/net/fmhi/audio/package-info.java
 package net.fmhi.audio;
+========
+package net.fmhi.network;
+>>>>>>>> origin/main:modules/core/src/main/java/net/nanitu/network/package-info.java
 
 import org.jspecify.annotations.NullMarked;

@@ -23,6 +23,10 @@
  */
 
 @NullMarked
+<<<<<<<< HEAD:modules/text/src/main/java/net/fmhi/gfx/text/spi/package-info.java
 package net.fmhi.gfx.text.spi;
+========
+package net.fmhi.network.packet;
+>>>>>>>> origin/main:modules/core/src/main/java/net/nanitu/network/packet/package-info.java
 
 import org.jspecify.annotations.NullMarked;
