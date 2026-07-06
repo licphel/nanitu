@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.gfx.shader.ResourceSetLayout;
-import net.nanitu.gfx.shader.VertexLayout;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.gfx.shader.ResourceSetLayout;
+import net.fmhi.gfx.shader.VertexLayout;
 
 /**
  * An immutable render pipeline that bundles all fixed-function and programmable state for a draw call.

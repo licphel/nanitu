@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.memory.buf;
+package net.fmhi.memory.buf;
 
-import net.nanitu.memory.Buf;
-import net.nanitu.memory.Endianness;
+import net.fmhi.memory.Buf;
+import net.fmhi.memory.Endianness;
 import org.jspecify.annotations.NullMarked;
 
 import java.nio.ByteBuffer;

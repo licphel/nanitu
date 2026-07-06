@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
 /**
  * Primitive type used by {@link Graphics2D} to select the pipeline, resource set, and topology for rendering.

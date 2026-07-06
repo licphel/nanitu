@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.freetype;
+package net.fmhi.gfx.text.freetype;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.Glyph;
-import net.nanitu.gfx.texture.FragileTexture;
-import net.nanitu.gfx.texture.Texture;
-import net.nanitu.gfx.texture.TextureDesc;
-import net.nanitu.gfx.texture.TexturePart;
-import net.nanitu.math.Box2;
-import net.nanitu.math.Box3;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.raster.Glyph;
+import net.fmhi.gfx.texture.FragileTexture;
+import net.fmhi.gfx.texture.Texture;
+import net.fmhi.gfx.texture.TextureDesc;
+import net.fmhi.gfx.texture.TexturePart;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Box3;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.util.freetype.FT_Bitmap;
 import org.lwjgl.util.freetype.FT_Face;

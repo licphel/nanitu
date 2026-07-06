@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.texture.TextureFilter;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.texture.TextureFilter;
+import net.fmhi.util.InternalApi;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

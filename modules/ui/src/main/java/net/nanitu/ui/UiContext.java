@@ -22,19 +22,19 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
-import net.nanitu.event.EventBus;
-import net.nanitu.event.EventListener;
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.back.View;
-import net.nanitu.gfx.input.KeyAction;
-import net.nanitu.gfx.input.event.*;
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.math.Box2;
-import net.nanitu.math.Vector2;
-import net.nanitu.math.dim2.Camera2D;
-import net.nanitu.ui.widget.Window;
+import net.fmhi.event.EventBus;
+import net.fmhi.event.EventListener;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.input.KeyAction;
+import net.fmhi.gfx.input.event.*;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Vector2;
+import net.fmhi.math.dim2.Camera2D;
+import net.fmhi.ui.widget.Window;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayDeque;

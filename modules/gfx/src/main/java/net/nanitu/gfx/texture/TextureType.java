@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
 /**
  * Texture dimensionality.

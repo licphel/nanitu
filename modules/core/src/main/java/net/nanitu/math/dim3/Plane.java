@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.dim3;
+package net.fmhi.math.dim3;
 
-import net.nanitu.math.Matrix4x4;
-import net.nanitu.math.Vector3;
+import net.fmhi.math.Matrix4x4;
+import net.fmhi.math.Vector3;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
 /**
  * Ridge octave noise — sums ridge-transformed layers to produce sharp, vein-like patterns.

@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.freetype;
+package net.fmhi.gfx.text.freetype;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.spi.FontProvider;
-import net.nanitu.memory.Memory;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.spi.FontProvider;
+import net.fmhi.memory.Memory;
+import net.fmhi.util.InternalApi;
 
 import java.io.IOException;
 import java.io.InputStream;

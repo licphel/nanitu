@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
 /**
  * Winding order that determines which face of a triangle is considered "front".

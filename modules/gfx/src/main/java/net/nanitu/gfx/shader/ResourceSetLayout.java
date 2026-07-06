@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
-import net.nanitu.gfx.pipe.PipelineDesc;
+import net.fmhi.gfx.pipe.PipelineDesc;
 import org.jspecify.annotations.Nullable;
 
 /**

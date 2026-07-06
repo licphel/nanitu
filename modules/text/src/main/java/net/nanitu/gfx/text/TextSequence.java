@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
-import net.nanitu.gfx.text.raster.Raster;
-import net.nanitu.gfx.text.raster.Rasterizer;
+import net.fmhi.gfx.text.raster.Raster;
+import net.fmhi.gfx.text.raster.Rasterizer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;

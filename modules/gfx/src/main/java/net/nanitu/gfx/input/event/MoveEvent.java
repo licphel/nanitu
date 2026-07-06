@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input.event;
+package net.fmhi.gfx.input.event;
 
-import net.nanitu.event.Event;
+import net.fmhi.event.Event;
 
 /**
  * The view position on screen changed.

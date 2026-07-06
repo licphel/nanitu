@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
 /**
  * Turbulence octave noise — sums the absolute value of each layer to produce fluid, folded patterns.

@@ -22,29 +22,29 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.gfx.cmd.EncoderDesc;
-import net.nanitu.gfx.pass.RenderPassDesc;
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.pipe.Topology;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.gfx.text.raster.Glyph;
-import net.nanitu.gfx.text.raster.Raster;
-import net.nanitu.gfx.texture.FragileTexture;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.SamplerDesc;
-import net.nanitu.gfx.texture.Texture;
-import net.nanitu.math.*;
-import net.nanitu.math.dim2.Camera2D;
-import net.nanitu.memory.Buf;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferObjectDesc;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.gfx.cmd.EncoderDesc;
+import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.pipe.Pipeline;
+import net.fmhi.gfx.pipe.Topology;
+import net.fmhi.gfx.shader.ResourceSet;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.gfx.text.raster.Glyph;
+import net.fmhi.gfx.text.raster.Raster;
+import net.fmhi.gfx.texture.FragileTexture;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.SamplerDesc;
+import net.fmhi.gfx.texture.Texture;
+import net.fmhi.math.*;
+import net.fmhi.math.dim2.Camera2D;
+import net.fmhi.memory.Buf;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -73,7 +73,7 @@ final class Graphics2D extends Graphics {
     this.parent = parent;
     this.isDirect = parent.isDirect();
 
-    InternalResources.init(ctx);
+    NRS_330.init(ctx);
 
     renderTarget = ctx.getSwapchain();
     sampler = ctx.getSampler(SamplerDesc.PIXEL);
@@ -81,14 +81,14 @@ final class Graphics2D extends Graphics {
     ubo = ctx.getBuffer(BufferObjectDesc.uniform());
     encoder = ctx.getEncoder(EncoderDesc.DEFAULT);
 
-    assert InternalResources.p4c != null;
-    assert InternalResources.p4t != null;
-    assert InternalResources.rl4c != null;
-    assert InternalResources.rl4t != null;
-    pipes[0] = InternalResources.p4c;
-    pipes[1] = InternalResources.p4t;
-    sets[0] = ctx.getResourceSet(InternalResources.rl4c);
-    sets[1] = ctx.getResourceSet(InternalResources.rl4t);
+    assert NRS_330.p4c != null;
+    assert NRS_330.p4t != null;
+    assert NRS_330.rl4c != null;
+    assert NRS_330.rl4t != null;
+    pipes[0] = NRS_330.p4c;
+    pipes[1] = NRS_330.p4t;
+    sets[0] = ctx.getResourceSet(NRS_330.rl4c);
+    sets[1] = ctx.getResourceSet(NRS_330.rl4t);
 
     // Upload identity view-projection
     uploadViewProjection(Matrix4x4.IDENTITY);

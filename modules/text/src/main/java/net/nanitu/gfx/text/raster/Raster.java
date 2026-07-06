@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.raster;
+package net.fmhi.gfx.text.raster;
 
 import com.ibm.icu.text.BreakIterator;
-import net.nanitu.gfx.text.Meta;
-import net.nanitu.math.Box2;
-import net.nanitu.math.Color;
-import net.nanitu.math.Vector2;
+import net.fmhi.gfx.text.Meta;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Color;
+import net.fmhi.math.Vector2;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;

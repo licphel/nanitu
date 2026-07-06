@@ -22,20 +22,20 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.GraphicsException;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferType;
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.gfx.pass.RenderPassDesc;
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.pipe.Topology;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.shader.ResourceSetLayout;
-import net.nanitu.math.Color;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.GraphicsException;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferType;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.pipe.Pipeline;
+import net.fmhi.gfx.pipe.Topology;
+import net.fmhi.gfx.shader.ResourceSet;
+import net.fmhi.gfx.shader.ResourceSetLayout;
+import net.fmhi.math.Color;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;

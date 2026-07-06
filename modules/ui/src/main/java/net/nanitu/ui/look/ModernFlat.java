@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui.look;
+package net.fmhi.ui.look;
 
-import net.nanitu.gfx.sprite.Alignment;
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.math.Box2;
-import net.nanitu.math.Color;
-import net.nanitu.ui.ButtonState;
-import net.nanitu.ui.Look;
-import net.nanitu.ui.WindowState;
+import net.fmhi.gfx.sprite.Alignment;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Color;
+import net.fmhi.ui.ButtonState;
+import net.fmhi.ui.Look;
+import net.fmhi.ui.WindowState;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.audio.spi;
+package net.fmhi.audio.spi;
 
 import org.jspecify.annotations.NullMarked;

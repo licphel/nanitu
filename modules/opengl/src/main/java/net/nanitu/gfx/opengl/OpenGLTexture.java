@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.texture.Texture;
-import net.nanitu.gfx.texture.TextureDesc;
-import net.nanitu.gfx.texture.TextureType;
-import net.nanitu.math.Box3;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.texture.Texture;
+import net.fmhi.gfx.texture.TextureDesc;
+import net.fmhi.gfx.texture.TextureType;
+import net.fmhi.math.Box3;
+import net.fmhi.util.InternalApi;
 
 import java.nio.ByteBuffer;
 

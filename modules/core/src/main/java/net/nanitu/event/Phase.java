@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * Lifecycle phase of an event, allowing the same event type to be posted at different points during processing.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * A fixed-depth matrix stack (max 256 entries).

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

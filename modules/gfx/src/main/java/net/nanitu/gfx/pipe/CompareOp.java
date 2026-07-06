@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
 /**
  * Comparison operators for depth and stencil testing.

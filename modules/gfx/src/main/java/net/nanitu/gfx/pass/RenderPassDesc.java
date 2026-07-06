@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pass;
+package net.fmhi.gfx.pass;
 
-import net.nanitu.math.Color;
+import net.fmhi.math.Color;
 import org.jspecify.annotations.Nullable;
 
 /**

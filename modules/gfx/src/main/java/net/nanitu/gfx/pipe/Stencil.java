@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
 /**
  * Creates a new {@code Stencil} describing the stencil test and per-face stencil operations.

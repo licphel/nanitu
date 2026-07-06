@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.mod;
+package net.fmhi.mod;
 
 /**
  * Optional lifecycle hooks for mod entrypoint classes.

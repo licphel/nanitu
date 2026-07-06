@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
 /**
  * Bitmask flags for controlling {@link Graphics2D} drawing behavior.

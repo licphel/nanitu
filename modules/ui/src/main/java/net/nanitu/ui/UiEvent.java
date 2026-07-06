@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
 /**
  * Input events dispatched through the UI widget tree.

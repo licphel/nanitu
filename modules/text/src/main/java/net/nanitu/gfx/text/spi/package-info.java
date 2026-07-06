@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.gfx.text.spi;
+package net.fmhi.gfx.text.spi;
 
 import org.jspecify.annotations.NullMarked;

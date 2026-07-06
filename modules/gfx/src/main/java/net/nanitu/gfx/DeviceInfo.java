@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx;
+package net.fmhi.gfx;
 
 /**
  * Creates a new {@code DeviceInfo} describing a {@link Device} implementation.

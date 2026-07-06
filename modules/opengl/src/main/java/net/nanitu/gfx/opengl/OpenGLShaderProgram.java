@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.shader.ShaderModule;
-import net.nanitu.gfx.shader.ShaderProgram;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.shader.ShaderModule;
+import net.fmhi.gfx.shader.ShaderProgram;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import static org.lwjgl.opengl.GL33.*;

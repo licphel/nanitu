@@ -26,19 +26,19 @@
  * Platform-agnostic input event system.
  *
  * <p>This package provides types for representing user input independent of
- * any windowing backend, plus pollable per-frame input state. Input events extend {@link net.nanitu.event.Event} and
- * are dispatched through the core {@link net.nanitu.event.EventBus}.
+ * any windowing backend, plus pollable per-frame input state. Input events extend {@link net.fmhi.event.Event} and
+ * are dispatched through the core {@link net.fmhi.event.EventBus}.
  *
  * <h3>Key types</h3>
  * <ul>
- *   <li>{@link net.nanitu.gfx.input.event} — immutable input event records
+ *   <li>{@link net.fmhi.gfx.input.event} — immutable input event records
  *       (key, mouse, scroll, resize, etc.)</li>
- *   <li>{@link net.nanitu.gfx.input.Snapshot} — per-frame pollable input
+ *   <li>{@link net.fmhi.gfx.input.Snapshot} — per-frame pollable input
  *       state for game-style queries</li>
- *   <li>{@link net.nanitu.gfx.input.KeyCode} — platform-agnostic key codes
+ *   <li>{@link net.fmhi.gfx.input.KeyCode} — platform-agnostic key codes
  *       based on USB HID Usage Tables</li>
- *   <li>{@link net.nanitu.gfx.input.KeyAction} — press/release/repeat enum</li>
- *   <li>{@link net.nanitu.gfx.input.MouseButton} — platform-agnostic mouse buttons</li>
+ *   <li>{@link net.fmhi.gfx.input.KeyAction} — press/release/repeat enum</li>
+ *   <li>{@link net.fmhi.gfx.input.MouseButton} — platform-agnostic mouse buttons</li>
  * </ul>
  */
-package net.nanitu.gfx.input;
+package net.fmhi.gfx.input;

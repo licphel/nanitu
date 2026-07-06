@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.dim2;
+package net.fmhi.math.dim2;
 
-import net.nanitu.math.Box2;
-import net.nanitu.math.Matrix4x4;
-import net.nanitu.math.Vector2;
-import net.nanitu.math.Vector3;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Matrix4x4;
+import net.fmhi.math.Vector2;
+import net.fmhi.math.Vector3;
 
 /**
  * 2D orthographic camera (Y-down, top-left origin).

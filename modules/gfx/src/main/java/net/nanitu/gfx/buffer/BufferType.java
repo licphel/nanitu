@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
 /**
  * The role a GPU buffer plays in the graphics pipeline.

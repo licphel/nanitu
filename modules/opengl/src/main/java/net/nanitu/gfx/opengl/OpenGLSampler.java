@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.SamplerDesc;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.SamplerDesc;
+import net.fmhi.util.InternalApi;
 
 import static org.lwjgl.opengl.GL33.*;
 

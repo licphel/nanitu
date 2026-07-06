@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * Marker interface for types that can be posted to an {@link EventBus}.

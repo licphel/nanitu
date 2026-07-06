@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.memory.zip;
+package net.fmhi.memory.zip;
 
 /**
  * Compression level for {@link Compressor} operations.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.util;
+package net.fmhi.util;
 
 /**
  * An immutable representation of a <a href="https://semver.org">Semantic Version</a> string

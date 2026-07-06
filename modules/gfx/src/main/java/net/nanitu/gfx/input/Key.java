@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input;
+package net.fmhi.gfx.input;
 
 /**
  * A logical key binding that wraps a physical {@link KeyCode} with persistent press tracking and modifier-aware

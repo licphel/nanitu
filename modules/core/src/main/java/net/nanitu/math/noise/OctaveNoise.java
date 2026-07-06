@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
 /**
  * Fractal (octave) noise: sums multiple scaled layers of a base {@link NoiseGenerator}.

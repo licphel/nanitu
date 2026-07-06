@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * A listener for events of a specific type.

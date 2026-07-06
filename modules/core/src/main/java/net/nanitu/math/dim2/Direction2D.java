@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.dim2;
+package net.fmhi.math.dim2;
 
-import net.nanitu.math.Vector2;
+import net.fmhi.math.Vector2;
 
 /**
  * Enumerated 2D cardinal and diagonal directions.

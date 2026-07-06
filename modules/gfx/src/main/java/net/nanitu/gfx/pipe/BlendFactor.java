@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
 /**
  * Blend factors that control how source and destination pixel colors are combined during blending.

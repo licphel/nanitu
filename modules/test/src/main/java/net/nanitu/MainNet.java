@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu;
+package net.fmhi;
 
-import net.nanitu.memory.Buf;
-import net.nanitu.net.NetConfig;
-import net.nanitu.net.client.NetworkClient;
-import net.nanitu.net.packet.Packet;
-import net.nanitu.net.packet.PacketRegistry;
-import net.nanitu.net.server.NetworkServer;
-import net.nanitu.net.session.Session;
-import net.nanitu.net.session.SessionState;
+import net.fmhi.memory.Buf;
+import net.fmhi.network.NetConfig;
+import net.fmhi.network.NetworkClient;
+import net.fmhi.network.NetworkServer;
+import net.fmhi.network.packet.Packet;
+import net.fmhi.network.packet.PacketRegistry;
+import net.fmhi.network.session.Session;
+import net.fmhi.network.session.SessionState;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

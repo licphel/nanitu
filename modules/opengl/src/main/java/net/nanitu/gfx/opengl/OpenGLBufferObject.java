@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.buffer.BufferFrequency;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.gfx.buffer.BufferUsage;
-import net.nanitu.memory.Memory;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.buffer.BufferFrequency;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferObjectDesc;
+import net.fmhi.gfx.buffer.BufferUsage;
+import net.fmhi.memory.Memory;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;

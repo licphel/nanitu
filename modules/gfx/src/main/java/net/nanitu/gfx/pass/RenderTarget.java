@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pass;
+package net.fmhi.gfx.pass;
 
-import net.nanitu.gfx.texture.TextureFilter;
+import net.fmhi.gfx.texture.TextureFilter;
 
 /**
  * A framebuffer target that receives rendered output.

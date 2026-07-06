@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.dim3;
+package net.fmhi.math.dim3;
 
-import net.nanitu.math.*;
+import net.fmhi.math.*;
 
 /**
  * Abstract base class for a 3D camera (Y-up convention).

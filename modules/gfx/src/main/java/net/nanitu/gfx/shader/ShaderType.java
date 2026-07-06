@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
 /**
  * Shader pipeline stages and their corresponding bitmask constants for resource-set layout declarations.

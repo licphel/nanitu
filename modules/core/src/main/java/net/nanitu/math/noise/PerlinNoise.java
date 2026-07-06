@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
-import net.nanitu.math.random.RandomGenerator;
+import net.fmhi.math.random.RandomGenerator;
 
 /**
  * Classic Ken Perlin 3D noise.

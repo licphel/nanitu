@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * Immutable column-major 2×2 matrix.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.raster;
+package net.fmhi.gfx.text.raster;
 
 /**
  * A shaped glyph produced by the text shaping pass.

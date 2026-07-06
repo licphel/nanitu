@@ -26,8 +26,8 @@ def lwjglVersion = property('lwjgl_version')
 def lwjglNatives = rootProject.ext.lwjglNatives
 
 dependencies {
-    implementation project(':nanitu-core')
-    implementation project(':nanitu-audio')
+    implementation project(':fmhi-core')
+    implementation project(':fmhi-audio')
 
     implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
     implementation 'org.lwjgl:lwjgl'

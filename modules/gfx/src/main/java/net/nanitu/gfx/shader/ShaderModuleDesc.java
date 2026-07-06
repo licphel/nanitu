@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
 /**
  * Creates a new {@code ShaderModuleDesc} describing a single shader stage to be compiled.

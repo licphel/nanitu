@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
 import org.jspecify.annotations.NullMarked;

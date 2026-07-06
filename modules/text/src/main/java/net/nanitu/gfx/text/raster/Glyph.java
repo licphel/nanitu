@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.raster;
+package net.fmhi.gfx.text.raster;
 
-import net.nanitu.gfx.texture.TexturePart;
+import net.fmhi.gfx.texture.TexturePart;
 
 /**
  * A rasterized glyph with its texture region and positioning data.

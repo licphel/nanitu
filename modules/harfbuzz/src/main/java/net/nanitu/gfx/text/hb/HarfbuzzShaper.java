@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.hb;
+package net.fmhi.gfx.text.hb;
 
 import com.ibm.icu.text.Bidi;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.ShapeResult;
-import net.nanitu.gfx.text.spi.ShaperProvider;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.raster.ShapeResult;
+import net.fmhi.gfx.text.spi.ShaperProvider;
 import org.lwjgl.util.harfbuzz.hb_glyph_info_t;
 import org.lwjgl.util.harfbuzz.hb_glyph_position_t;
 
@@ -39,7 +39,7 @@ import java.util.Map;
 import static org.lwjgl.util.harfbuzz.HarfBuzz.*;
 
 /**
- * {@link net.nanitu.gfx.text.spi.ShaperProvider} implementation backed by the HarfBuzz shaping engine.
+ * {@link net.fmhi.gfx.text.spi.ShaperProvider} implementation backed by the HarfBuzz shaping engine.
  *
  * <p>Uses HarfBuzz for glyph shaping and ICU4J for bidirectional text analysis.
  * Font faces are cached to avoid repeated blob creation.

@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
-import net.nanitu.gfx.text.raster.Raster;
+import net.fmhi.gfx.text.raster.Raster;
 import org.jspecify.annotations.Nullable;
 
 /**

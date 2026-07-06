@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.spi;
+package net.fmhi.audio.spi;
 
-import net.nanitu.audio.Mixer;
-import net.nanitu.util.Service;
+import net.fmhi.audio.Mixer;
+import net.fmhi.util.Service;
 
 /**
  * Service interface for discovering and instantiating audio backend implementations.
  *
  * <p>Implementations are loaded via {@link java.util.ServiceLoader} and
  * represent concrete audio backends. Each implementation should register itself in
- * {@code META-INF/services/net.nanitu.audio.spi.MixerProvider}.
+ * {@code META-INF/services/net.fmhi.audio.spi.MixerProvider}.
  *
  * @see Mixer
  */

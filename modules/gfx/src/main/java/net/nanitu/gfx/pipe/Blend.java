@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
-import net.nanitu.math.Color;
+import net.fmhi.math.Color;
 
 /**
  * Creates a new {@code Blend} describing the blend state for a render pipeline.

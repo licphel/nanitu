@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.memory.buf;
+package net.fmhi.memory.buf;
 
 import org.jspecify.annotations.NullMarked;

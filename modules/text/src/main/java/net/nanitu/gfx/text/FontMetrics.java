@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
 /**
  * Scaled font metrics for text layout calculations.

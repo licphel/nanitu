@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui.widget;
+package net.fmhi.ui.widget;
 
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.math.Box2;
-import net.nanitu.ui.ButtonState;
-import net.nanitu.ui.Look;
-import net.nanitu.ui.UiEvent;
-import net.nanitu.ui.Widget;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.math.Box2;
+import net.fmhi.ui.ButtonState;
+import net.fmhi.ui.Look;
+import net.fmhi.ui.UiEvent;
+import net.fmhi.ui.Widget;
 import org.jspecify.annotations.Nullable;
 
 /**

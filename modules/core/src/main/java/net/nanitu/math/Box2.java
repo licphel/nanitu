@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * Immutable axis-aligned 2D bounding box defined by min and max corners.

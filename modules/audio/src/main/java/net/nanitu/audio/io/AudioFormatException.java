@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.io;
+package net.fmhi.audio.io;
 
 import java.io.Serial;
 

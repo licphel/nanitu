@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
 /**
  * Visual states of a button widget.

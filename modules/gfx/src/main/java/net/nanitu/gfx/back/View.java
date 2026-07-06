@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.back;
+package net.fmhi.gfx.back;
 
-import net.nanitu.event.Event;
-import net.nanitu.event.EventBus;
-import net.nanitu.gfx.GraphicsException;
-import net.nanitu.gfx.ViewInfo;
-import net.nanitu.gfx.input.Snapshot;
-import net.nanitu.gfx.input.event.*;
-import net.nanitu.gfx.io.ImageInfo;
-import net.nanitu.math.Vector2;
+import net.fmhi.event.Event;
+import net.fmhi.event.EventBus;
+import net.fmhi.gfx.GraphicsException;
+import net.fmhi.gfx.ViewInfo;
+import net.fmhi.gfx.input.Snapshot;
+import net.fmhi.gfx.input.event.*;
+import net.fmhi.gfx.io.ImageInfo;
+import net.fmhi.math.Vector2;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -43,7 +43,7 @@ import org.jspecify.annotations.Nullable;
  *
  * <h3>Lifecycle</h3>
  * <ol>
- *   <li>Obtain a {@code View} from a {@link net.nanitu.gfx.spi.ViewProvider ViewProvider}.</li>
+ *   <li>Obtain a {@code View} from a {@link net.fmhi.gfx.spi.ViewProvider ViewProvider}.</li>
  *   <li>Configure state — title, size, decorations, etc. — before calling {@link #initialize()}.</li>
  *   <li>Call {@link #initialize()}.</li>
  *   <li>Each frame, call {@link #pollEvents()}, render, then {@link #present()}.</li>
@@ -156,7 +156,7 @@ public abstract class View implements AutoCloseable {
    * Presents the most recent rendering result to the screen.
    *
    * <p>This is a synchronous operation. To present correctly from a rendering thread, wrap the
-   * call in {@link net.nanitu.gfx.Device#submit(Runnable)}.
+   * call in {@link net.fmhi.gfx.Device#submit(Runnable)}.
    */
   public abstract void present();
 
@@ -197,7 +197,7 @@ public abstract class View implements AutoCloseable {
   /**
    * Returns the event bus for registering input event listeners.
    *
-   * <p>Listeners are registered via {@link EventBus#register(Class, net.nanitu.event.EventListener)}
+   * <p>Listeners are registered via {@link EventBus#register(Class, net.fmhi.event.EventListener)}
    * and removed via {@link EventBus#deregister(Object)}.
    *
    * @return the event bus

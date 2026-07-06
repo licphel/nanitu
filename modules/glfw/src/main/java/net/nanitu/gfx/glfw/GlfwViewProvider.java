@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.glfw;
+package net.fmhi.gfx.glfw;
 
-import net.nanitu.gfx.back.View;
-import net.nanitu.gfx.spi.ViewProvider;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.spi.ViewProvider;
+import net.fmhi.util.InternalApi;
 
 /**
  * {@link ViewProvider} backed by GLFW (via LWJGL).
  *
  * <p>Loaded automatically by {@link java.util.ServiceLoader} from
- * {@code META-INF/services/net.nanitu.graphics.spi.ViewProvider}.
+ * {@code META-INF/services/net.fmhi.graphics.spi.ViewProvider}.
  *
  * <p>{@link #isAvailable()} initializes and immediately terminates GLFW to
  * verify that LWJGL natives are present.

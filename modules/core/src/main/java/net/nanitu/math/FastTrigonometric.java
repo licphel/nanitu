@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * Provides table-based fast trigonometric calculations.

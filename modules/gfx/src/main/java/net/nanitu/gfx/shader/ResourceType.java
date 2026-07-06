@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
 /**
  * The kind of shader resource bound at a resource-set slot.

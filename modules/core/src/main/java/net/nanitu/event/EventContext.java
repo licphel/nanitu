@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * Mutable context carried alongside an {@link Event} during dispatch.

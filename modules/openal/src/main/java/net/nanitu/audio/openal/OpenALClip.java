@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.openal;
+package net.fmhi.audio.openal;
 
-import net.nanitu.audio.AudioException;
-import net.nanitu.audio.AudioFormat;
-import net.nanitu.audio.Clip;
-import net.nanitu.audio.Controller;
-import net.nanitu.util.InternalApi;
+import net.fmhi.audio.AudioException;
+import net.fmhi.audio.AudioFormat;
+import net.fmhi.audio.Clip;
+import net.fmhi.audio.Controller;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;

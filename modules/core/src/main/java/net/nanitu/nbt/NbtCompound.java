@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.nbt;
+package net.fmhi.nbt;
 
-import net.nanitu.memory.Buf;
+import net.fmhi.memory.Buf;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;

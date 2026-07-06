@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
 /**
  * Drawing alignment for positioning content relative to an anchor point.

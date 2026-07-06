@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio;
+package net.fmhi.audio;
 
 /**
  * Represents an audio output device.

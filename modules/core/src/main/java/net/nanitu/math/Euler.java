@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * Euler angles in radians (Y-X-Z order, also known as yaw-pitch-roll).

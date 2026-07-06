@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.freetype;
+package net.fmhi.gfx.text.freetype;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.FontMetrics;
-import net.nanitu.gfx.text.raster.Glyph;
-import net.nanitu.memory.Memory;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.FontMetrics;
+import net.fmhi.gfx.text.raster.Glyph;
+import net.fmhi.memory.Memory;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

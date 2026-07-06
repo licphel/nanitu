@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.raster;
+package net.fmhi.gfx.text.raster;
 
-import net.nanitu.math.Color;
+import net.fmhi.math.Color;
 
 /**
  * A glyph positioned by the layout pass, ready for rendering.

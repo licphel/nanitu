@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.gfx.texture.FragileTexture;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.Texture;
-import net.nanitu.gfx.texture.TexturePart;
-import net.nanitu.math.*;
-import net.nanitu.math.dim2.Camera2D;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.gfx.texture.FragileTexture;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.Texture;
+import net.fmhi.gfx.texture.TexturePart;
+import net.fmhi.math.*;
+import net.fmhi.math.dim2.Camera2D;
 import org.jspecify.annotations.Nullable;
 
 /**

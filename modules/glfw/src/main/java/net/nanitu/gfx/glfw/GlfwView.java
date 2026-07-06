@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.glfw;
+package net.fmhi.gfx.glfw;
 
-import net.nanitu.gfx.GraphicsException;
-import net.nanitu.gfx.ViewInfo;
-import net.nanitu.gfx.back.View;
-import net.nanitu.gfx.input.KeyAction;
-import net.nanitu.gfx.input.KeyCode;
-import net.nanitu.gfx.input.event.*;
-import net.nanitu.gfx.io.ImageInfo;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.GraphicsException;
+import net.fmhi.gfx.ViewInfo;
+import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.input.KeyAction;
+import net.fmhi.gfx.input.KeyCode;
+import net.fmhi.gfx.input.event.*;
+import net.fmhi.gfx.io.ImageInfo;
+import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryUtil;
@@ -45,8 +45,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 /**
  * GLFW window implementing the {@link View} abstract class with an OpenGL 3.3 Core Profile context.
  *
- * <p>Input arrives via GLFW callbacks that translate native events into {@link net.nanitu.event.Event}
- * records and dispatch them through {@link #dispatchInputEvent(net.nanitu.event.Event)}.
+ * <p>Input arrives via GLFW callbacks that translate native events into {@link net.fmhi.event.Event}
+ * records and dispatch them through {@link #dispatchInputEvent(net.fmhi.event.Event)}.
  */
 @InternalApi
 public final class GlfwView extends View {

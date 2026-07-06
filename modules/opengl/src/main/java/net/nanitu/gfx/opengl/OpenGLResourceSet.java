@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.GraphicsException;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.shader.ResourceSetLayout;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.Texture;
+import net.fmhi.gfx.GraphicsException;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.shader.ResourceSet;
+import net.fmhi.gfx.shader.ResourceSetLayout;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.Texture;
 import org.jspecify.annotations.Nullable;
 
 /**

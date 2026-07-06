@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
 import org.jspecify.annotations.NullMarked;

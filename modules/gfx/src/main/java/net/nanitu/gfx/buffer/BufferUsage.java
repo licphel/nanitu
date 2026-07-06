@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
 /**
  * Access-pattern hints for a {@link BufferObject}.

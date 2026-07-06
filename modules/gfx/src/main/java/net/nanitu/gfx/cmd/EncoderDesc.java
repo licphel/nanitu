@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.cmd;
+package net.fmhi.gfx.cmd;
 
 /**
  * Creates a new {@code EncoderDesc} describing an {@link Encoder} to be created.

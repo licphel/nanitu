@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.buffer.BufferFrequency;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.memory.Buf;
-import net.nanitu.memory.Endianness;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.buffer.BufferFrequency;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferObjectDesc;
+import net.fmhi.memory.Buf;
+import net.fmhi.memory.Endianness;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;

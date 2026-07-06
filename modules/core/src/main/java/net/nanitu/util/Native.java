@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.util;
+package net.fmhi.util;
 
 /**
  * Utility class for detecting the availability of native system libraries. Uses JNA (Java Native Access) to safely

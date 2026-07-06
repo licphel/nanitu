@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input.event;
+package net.fmhi.gfx.input.event;
 
-import net.nanitu.event.Event;
-import net.nanitu.gfx.input.KeyAction;
-import net.nanitu.gfx.input.KeyCode;
+import net.fmhi.event.Event;
+import net.fmhi.gfx.input.KeyAction;
+import net.fmhi.gfx.input.KeyCode;
 
 /**
  * A keyboard key event (press, release, or repeat).

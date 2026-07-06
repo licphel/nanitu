@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
-import net.nanitu.math.Box2;
+import net.fmhi.math.Box2;
 import org.jspecify.annotations.Nullable;
 
 /**

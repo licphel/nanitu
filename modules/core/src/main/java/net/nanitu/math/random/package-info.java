@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.math.random;
+package net.fmhi.math.random;
 
 import org.jspecify.annotations.NullMarked;

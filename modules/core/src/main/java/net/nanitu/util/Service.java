@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.util;
+package net.fmhi.util;
 
 import java.util.ServiceLoader;
 
 /**
  * A service provider interface for discovering and loading pluggable implementations.
  *
- * <p>This is the central extension mechanism for the nanitu framework. Modules
+ * <p>This is the central extension mechanism for the fmhi framework. Modules
  * expose implementations by registering them in {@code META-INF/services/<interface-name>}, and consumers obtain them
  * via {@link #get(Class)} or {@link #collect(Class)} without any compile-time dependency on the implementing module.
  *

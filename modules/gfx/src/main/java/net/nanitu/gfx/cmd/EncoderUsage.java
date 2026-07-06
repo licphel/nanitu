@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.cmd;
+package net.fmhi.gfx.cmd;
 
 /**
  * Intended workload type for an {@link Encoder}.

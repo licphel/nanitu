@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.math.Box2;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.math.Box2;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;

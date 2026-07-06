@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.resource;
+package net.fmhi.resource;
 
-import net.nanitu.mod.Identifier;
-import net.nanitu.mod.Mod;
-import net.nanitu.mod.ModLoader;
+import net.fmhi.mod.Identifier;
+import net.fmhi.mod.Mod;
+import net.fmhi.mod.ModLoader;
 
 import java.io.IOException;
 import java.io.InputStream;

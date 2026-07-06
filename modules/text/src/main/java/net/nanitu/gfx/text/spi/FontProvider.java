@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.spi;
+package net.fmhi.gfx.text.spi;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.util.Service;
 
 import java.io.IOException;
 import java.io.InputStream;

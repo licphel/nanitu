@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.raster;
+package net.fmhi.gfx.text.raster;
 
 import com.ibm.icu.text.BreakIterator;
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.FontMetrics;
-import net.nanitu.gfx.text.TextLiteral;
-import net.nanitu.gfx.text.spi.ShaperProvider;
-import net.nanitu.math.Box2;
-import net.nanitu.math.Color;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.FontMetrics;
+import net.fmhi.gfx.text.TextLiteral;
+import net.fmhi.gfx.text.spi.ShaperProvider;
+import net.fmhi.math.Box2;
+import net.fmhi.math.Color;
+import net.fmhi.util.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;

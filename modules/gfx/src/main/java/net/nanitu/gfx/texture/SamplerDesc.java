@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
-import net.nanitu.math.Color;
+import net.fmhi.math.Color;
 
 /**
  * Creates a new {@code SamplerDesc} describing texture filtering, wrapping, and level-of-detail parameters.

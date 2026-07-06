@@ -23,5 +23,5 @@
  */
 
 dependencies {
-    api project(':nanitu-core')
+    api project(':fmhi-core')
 }

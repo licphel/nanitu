@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.nbt;
+package net.fmhi.nbt;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingJsonFactory;

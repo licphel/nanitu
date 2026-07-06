@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
 /**
  * Base interface for noise generators. All values are normalized to {@code [0, 1]}.

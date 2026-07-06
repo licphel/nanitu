@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.openal;
+package net.fmhi.audio.openal;
 
-import net.nanitu.audio.Clip;
-import net.nanitu.audio.Mixer;
-import net.nanitu.audio.MixerInfo;
-import net.nanitu.util.InternalApi;
+import net.fmhi.audio.Clip;
+import net.fmhi.audio.Mixer;
+import net.fmhi.audio.MixerInfo;
+import net.fmhi.util.InternalApi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.openal.AL;

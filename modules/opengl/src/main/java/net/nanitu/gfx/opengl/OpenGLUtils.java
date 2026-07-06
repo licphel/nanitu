@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.buffer.BufferFrequency;
-import net.nanitu.gfx.buffer.BufferType;
-import net.nanitu.gfx.pipe.*;
-import net.nanitu.gfx.shader.ShaderType;
-import net.nanitu.gfx.shader.VertexAttributeType;
-import net.nanitu.gfx.texture.TextureFilter;
-import net.nanitu.gfx.texture.TextureFormat;
-import net.nanitu.gfx.texture.TextureType;
-import net.nanitu.gfx.texture.TextureWrap;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.buffer.BufferFrequency;
+import net.fmhi.gfx.buffer.BufferType;
+import net.fmhi.gfx.pipe.*;
+import net.fmhi.gfx.shader.ShaderType;
+import net.fmhi.gfx.shader.VertexAttributeType;
+import net.fmhi.gfx.texture.TextureFilter;
+import net.fmhi.gfx.texture.TextureFormat;
+import net.fmhi.gfx.texture.TextureType;
+import net.fmhi.gfx.texture.TextureWrap;
+import net.fmhi.util.InternalApi;
 
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
@@ -41,7 +41,7 @@ import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 /**
  * Stateless converter from engine enums to OpenGL integer constants.
  *
- * <p>Every method maps a single {@code net.nanitu.graphics} enum value to
+ * <p>Every method maps a single {@code net.fmhi.graphics} enum value to
  * the corresponding {@code GL_*} integer. The class is a pure function collection — it holds no state and every method
  * is deterministic.
  *

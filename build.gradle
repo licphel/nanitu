@@ -52,8 +52,8 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    group = 'net.nanitu'
-    version = property('nanitu_version')
+    group = 'net.fmhi'
+    version = property('fmhi_version')
 
     java {
         toolchain {
@@ -100,8 +100,8 @@ subprojects {
 
                 pom {
                     name = project.name
-                    description = 'nanitu — a game engine framework'
-                    url = 'https://github.com/licphel/nanitu'
+                    description = 'fmhi — a game engine framework'
+                    url = 'https://github.com/licphel/fmhi'
 
                     licenses {
                         license {
@@ -118,9 +118,9 @@ subprojects {
                     }
 
                     scm {
-                        connection = 'scm:git:git://github.com/licphel/nanitu.git'
-                        developerConnection = 'scm:git:ssh://github.com:licphel/nanitu.git'
-                        url = 'https://github.com/licphel/nanitu'
+                        connection = 'scm:git:git://github.com/licphel/fmhi.git'
+                        developerConnection = 'scm:git:ssh://github.com:licphel/fmhi.git'
+                        url = 'https://github.com/licphel/fmhi'
                     }
                 }
             }

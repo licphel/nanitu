@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
 /**
  * Creates a new {@code BufferObjectDesc} describing a GPU buffer to be allocated.

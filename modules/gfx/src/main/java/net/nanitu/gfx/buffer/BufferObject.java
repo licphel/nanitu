@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.memory.Memory;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.memory.Memory;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -24,4 +24,8 @@
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.1'
+
+    implementation platform('io.netty:netty-bom:4.1.118.Final')
+    implementation 'io.netty:netty-handler'
+    implementation 'io.netty:netty-transport'
 }

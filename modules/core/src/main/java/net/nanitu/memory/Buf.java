@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.memory;
+package net.fmhi.memory;
 
-import net.nanitu.memory.buf.JavaBuf;
+import net.fmhi.memory.buf.JavaBuf;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;

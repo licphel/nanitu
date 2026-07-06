@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.cmd;
+package net.fmhi.gfx.cmd;
 
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferType;
-import net.nanitu.gfx.pass.RenderPassDesc;
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.pipe.Topology;
-import net.nanitu.gfx.shader.ResourceSet;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferType;
+import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pipe.Pipeline;
+import net.fmhi.gfx.pipe.Topology;
+import net.fmhi.gfx.shader.ResourceSet;
 
 /**
  * Records GPU commands (draw calls, state changes, dispatches) for batched submission.
@@ -86,7 +86,7 @@ public interface Encoder extends AutoCloseable {
    * targets this is a no-op (the result stays in GPU memory).
    *
    * <p>Clears the internal current-target reference; calling {@link #setViewport}
-   * after {@code endPass} without a subsequent {@link #beginPass} throws {@link net.nanitu.gfx.GraphicsException}.
+   * after {@code endPass} without a subsequent {@link #beginPass} throws {@link net.fmhi.gfx.GraphicsException}.
    */
   void endPass();
 

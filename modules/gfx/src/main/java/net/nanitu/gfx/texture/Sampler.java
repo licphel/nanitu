@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
-import net.nanitu.gfx.shader.ResourceSet;
+import net.fmhi.gfx.shader.ResourceSet;
 
 /**
  * An immutable GPU sampler object that controls texture filtering, wrapping, and level-of-detail parameters.

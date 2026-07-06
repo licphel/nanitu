@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.pipe.*;
-import net.nanitu.gfx.shader.VertexAttributeType;
-import net.nanitu.gfx.shader.VertexLayout;
-import net.nanitu.util.InternalApi;
+import net.fmhi.gfx.pipe.*;
+import net.fmhi.gfx.shader.VertexAttributeType;
+import net.fmhi.gfx.shader.VertexLayout;
+import net.fmhi.util.InternalApi;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

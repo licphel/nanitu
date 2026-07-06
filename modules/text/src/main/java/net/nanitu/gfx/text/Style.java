@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
-import net.nanitu.math.Color;
+import net.fmhi.math.Color;
 
 /**
  * Immutable text styling attributes for a span of text.

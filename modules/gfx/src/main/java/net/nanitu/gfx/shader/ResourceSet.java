@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.Texture;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.Texture;
 
 /**
  * A set of texture/sampler and uniform-buffer bindings for a single draw call.

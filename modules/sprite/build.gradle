@@ -23,7 +23,7 @@
  */
 
 dependencies {
-    implementation project(':nanitu-core')
-    implementation project(':nanitu-gfx')
-    implementation project(':nanitu-text')
+    implementation project(':fmhi-core')
+    implementation project(':fmhi-gfx')
+    implementation project(':fmhi-text')
 }

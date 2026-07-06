@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx;
+package net.fmhi.gfx;
 
 import java.io.Serial;
 

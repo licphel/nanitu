@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.dim3;
+package net.fmhi.math.dim3;
 
-import net.nanitu.math.Matrix4x4;
+import net.fmhi.math.Matrix4x4;
 
 /**
  * A 3D orthographic camera.

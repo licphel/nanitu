@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.util.InternalApi;
+import net.fmhi.util.InternalApi;
 
 import java.util.Arrays;
 

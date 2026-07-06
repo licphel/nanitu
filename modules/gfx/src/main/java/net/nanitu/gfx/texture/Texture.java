@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.math.Box3;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.shader.ResourceSet;
+import net.fmhi.math.Box3;
 
 /**
  * A GPU texture resource holding 1D, 2D, or 3D image data.

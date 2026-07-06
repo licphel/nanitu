@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
-import net.nanitu.gfx.sprite.Alignment;
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.math.Box2;
-import net.nanitu.ui.look.ModernFlat;
+import net.fmhi.gfx.sprite.Alignment;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.math.Box2;
+import net.fmhi.ui.look.ModernFlat;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.shader;
+package net.fmhi.gfx.shader;
 
 /**
  * Creates a new {@code Slot} declaring a single shader resource binding.

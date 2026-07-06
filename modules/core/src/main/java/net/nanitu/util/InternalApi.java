@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.util;
+package net.fmhi.util;
 
 import java.lang.annotation.*;
 

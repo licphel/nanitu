@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.spi;
+package net.fmhi.gfx.spi;
 
-import net.nanitu.gfx.back.View;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.back.View;
+import net.fmhi.util.Service;
 
 /**
  * Service interface for discovering and instantiating windowing backends.
  *
  * <p>Implementations are loaded via {@link java.util.ServiceLoader} and represent
  * concrete windowing systems such as GLFW or SDL. Each implementation should register itself in
- * {@code META-INF/services/net.nanitu.graphics.spi.ViewProvider}.
+ * {@code META-INF/services/net.fmhi.graphics.spi.ViewProvider}.
  *
  * <p>Before calling {@link #create()}, check {@link #isAvailable()} to verify
  * that the windowing system's native libraries are present.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * Three-state result carried by an {@link EventContext}, capturing semantic intent beyond the binary

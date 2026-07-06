@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input;
+package net.fmhi.gfx.input;
 
 /**
  * Platform-agnostic key codes based on the USB HID Usage Tables (Keyboard/Keypad Page 0x07), with mouse buttons mapped

@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.mod;
+package net.fmhi.mod;
 
-import net.nanitu.event.EventBus;
+import net.fmhi.event.EventBus;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;

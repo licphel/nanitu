@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input;
+package net.fmhi.gfx.input;
 
 /**
  * The action of a key or mouse button transition.

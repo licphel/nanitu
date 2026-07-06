@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
 /**
  * Marker interface for inline metadata attached to a {@link Text}.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.input;
+package net.fmhi.gfx.input;
 
 /**
  * Modifier key bitmask constants aligned with GLFW modifier flags.

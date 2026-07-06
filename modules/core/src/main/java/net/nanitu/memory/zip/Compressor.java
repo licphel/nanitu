@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.memory.zip;
+package net.fmhi.memory.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

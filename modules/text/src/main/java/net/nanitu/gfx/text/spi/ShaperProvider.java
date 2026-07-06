@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text.spi;
+package net.fmhi.gfx.text.spi;
 
-import net.nanitu.gfx.text.Font;
-import net.nanitu.gfx.text.raster.ShapeResult;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.text.Font;
+import net.fmhi.gfx.text.raster.ShapeResult;
+import net.fmhi.util.Service;
 
 /**
  * Service provider interface for text shaping backends.
  *
  * <p>Implementations convert text strings into {@link ShapeResult} objects using
- * a shaping engine and are discovered through the {@link net.nanitu.util.Service} mechanism.
+ * a shaping engine and are discovered through the {@link net.fmhi.util.Service} mechanism.
  */
 public interface ShaperProvider extends Service {
   /**

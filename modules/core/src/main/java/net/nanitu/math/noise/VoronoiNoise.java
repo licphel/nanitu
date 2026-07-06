@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math.noise;
+package net.fmhi.math.noise;
 
-import net.nanitu.math.random.RandomGenerator;
+import net.fmhi.math.random.RandomGenerator;
 
 /**
  * Voronoi (cellular / Worley) noise.

@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.text;
+package net.fmhi.gfx.text;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.text.raster.Glyph;
-import net.nanitu.gfx.text.spi.FontProvider;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.text.raster.Glyph;
+import net.fmhi.gfx.text.spi.FontProvider;
+import net.fmhi.util.Service;
 import org.jspecify.annotations.Nullable;
 
 import java.io.FileInputStream;

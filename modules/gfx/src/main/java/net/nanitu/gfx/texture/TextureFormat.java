@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.texture;
+package net.fmhi.gfx.texture;
 
 /**
  * Texture pixel formats specifying the number of channels, bits depth, and data type.

@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.mod;
+package net.fmhi.mod;
 
-import net.nanitu.util.SemanticVersion;
+import net.fmhi.util.SemanticVersion;
 import org.jspecify.annotations.Nullable;
 
 /**

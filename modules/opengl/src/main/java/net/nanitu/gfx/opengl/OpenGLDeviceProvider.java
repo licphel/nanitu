@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.opengl;
+package net.fmhi.gfx.opengl;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.gfx.spi.DeviceProvider;
-import net.nanitu.util.InternalApi;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.Device;
+import net.fmhi.gfx.spi.DeviceProvider;
+import net.fmhi.util.InternalApi;
+import net.fmhi.util.Service;
 
 import java.util.ServiceLoader;
 
@@ -35,7 +35,7 @@ import java.util.ServiceLoader;
  * {@link DeviceProvider} backed by OpenGL (via LWJGL).
  *
  * <p>Loaded automatically by {@link ServiceLoader} from
- * {@code META-INF/services/net.nanitu.graphics.spi.DeviceProvider}. Callers should prefer using
+ * {@code META-INF/services/net.fmhi.graphics.spi.DeviceProvider}. Callers should prefer using
  * {@link Service#get Service.get} or a DI container rather than constructing this class directly.
  *
  * <p>{@link #isAvailable()} verifies that the LWJGL OpenGL bindings are on

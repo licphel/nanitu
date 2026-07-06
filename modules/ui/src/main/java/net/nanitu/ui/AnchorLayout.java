@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui;
+package net.fmhi.ui;
 
 /**
  * Describes how a widget is positioned and sized relative to its parent's content area.

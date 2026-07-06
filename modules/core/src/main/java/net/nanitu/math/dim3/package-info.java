@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package net.nanitu.math.dim3;
+package net.fmhi.math.dim3;
 
 import org.jspecify.annotations.NullMarked;

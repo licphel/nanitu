@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.event;
+package net.fmhi.event;
 
 /**
  * Priority of an event handler, controlling the order in which handlers are invoked during dispatch.

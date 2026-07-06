@@ -23,7 +23,7 @@
  */
 
 @NullMarked
-package net.nanitu.event;
+package net.fmhi.event;
 
 import org.jspecify.annotations.NullMarked;
 

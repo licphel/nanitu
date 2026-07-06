@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
-import net.nanitu.gfx.cmd.Encoder;
+import net.fmhi.gfx.cmd.Encoder;
 
 /**
  * Primitive topology — how the GPU assembles vertices into geometric primitives.

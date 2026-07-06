@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.nanitu.ui.widget;
+package net.fmhi.ui.widget;
 
-import net.nanitu.gfx.sprite.Graphics;
-import net.nanitu.gfx.text.Text;
-import net.nanitu.math.Box2;
-import net.nanitu.ui.*;
+import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.text.Text;
+import net.fmhi.math.Box2;
+import net.fmhi.ui.*;
 import org.jspecify.annotations.Nullable;
 
 /**

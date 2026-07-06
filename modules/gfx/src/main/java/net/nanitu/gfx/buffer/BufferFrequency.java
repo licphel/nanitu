@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.buffer;
+package net.fmhi.gfx.buffer;
 
 /**
  * Buf usage frequency hints that guide the GPU driver's memory placement.

@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.spi;
+package net.fmhi.gfx.spi;
 
-import net.nanitu.gfx.Device;
-import net.nanitu.util.Service;
+import net.fmhi.gfx.Device;
+import net.fmhi.util.Service;
 
 /**
  * Service interface for discovering and instantiating graphics backend implementations.
  *
  * <p>Implementations are loaded via {@link java.util.ServiceLoader} and represent
  * concrete graphics backends such as OpenGL or Vulkan. Each implementation should register itself in
- * {@code META-INF/services/net.nanitu.graphics.spi.DeviceProvider}.
+ * {@code META-INF/services/net.fmhi.graphics.spi.DeviceProvider}.
  *
  * <p>Before calling {@link #create()}, check {@link #isAvailable()} to verify
  * that the backend's native libraries are present and a device can be created on the current system.

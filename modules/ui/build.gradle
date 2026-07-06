@@ -23,8 +23,8 @@
  */
 
 dependencies {
-    api project(':nanitu-core')
-    api project(':nanitu-gfx')
-    api project(':nanitu-sprite')
-    api project(':nanitu-text')
+    api project(':fmhi-core')
+    api project(':fmhi-gfx')
+    api project(':fmhi-sprite')
+    api project(':fmhi-text')
 }

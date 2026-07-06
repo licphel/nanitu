@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.memory;
+package net.fmhi.memory;
 
 import org.jspecify.annotations.Nullable;
 

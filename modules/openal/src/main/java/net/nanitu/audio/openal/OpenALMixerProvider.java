@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.openal;
+package net.fmhi.audio.openal;
 
-import net.nanitu.audio.Mixer;
-import net.nanitu.audio.spi.MixerProvider;
-import net.nanitu.util.InternalApi;
+import net.fmhi.audio.Mixer;
+import net.fmhi.audio.spi.MixerProvider;
+import net.fmhi.util.InternalApi;
 
 /**
  * {@link MixerProvider} backed by OpenAL (via LWJGL).
  *
  * <p>Loaded automatically by {@link java.util.ServiceLoader} from
- * {@code META-INF/services/net.nanitu.audio.spi.MixerProvider}. Callers should prefer using {@code ServiceLoader} or a
+ * {@code META-INF/services/net.fmhi.audio.spi.MixerProvider}. Callers should prefer using {@code ServiceLoader} or a
  * DI container rather than constructing this class directly.
  *
  * <p>{@link #isAvailable()} opens a temporary OpenAL device and context to

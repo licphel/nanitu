@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.pipe;
+package net.fmhi.gfx.pipe;
 
-import net.nanitu.gfx.shader.ResourceSetLayout;
-import net.nanitu.gfx.shader.VertexLayout;
+import net.fmhi.gfx.shader.ResourceSetLayout;
+import net.fmhi.gfx.shader.VertexLayout;
 import org.jspecify.annotations.Nullable;
 
 /**

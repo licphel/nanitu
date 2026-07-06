@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.mod;
+package net.fmhi.mod;
 
-import net.nanitu.event.EventBus;
-import net.nanitu.event.Subscribe;
+import net.fmhi.event.EventBus;
+import net.fmhi.event.Subscribe;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;

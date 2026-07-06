@@ -22,23 +22,23 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx;
+package net.fmhi.gfx;
 
-import net.nanitu.gfx.back.View;
-import net.nanitu.gfx.buffer.BufferObject;
-import net.nanitu.gfx.buffer.BufferObjectDesc;
-import net.nanitu.gfx.cmd.Encoder;
-import net.nanitu.gfx.cmd.EncoderDesc;
-import net.nanitu.gfx.pass.RenderTarget;
-import net.nanitu.gfx.pass.RenderTargetDesc;
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.pipe.PipelineDesc;
-import net.nanitu.gfx.shader.*;
-import net.nanitu.gfx.spi.DeviceProvider;
-import net.nanitu.gfx.texture.Sampler;
-import net.nanitu.gfx.texture.SamplerDesc;
-import net.nanitu.gfx.texture.Texture;
-import net.nanitu.gfx.texture.TextureDesc;
+import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.buffer.BufferObject;
+import net.fmhi.gfx.buffer.BufferObjectDesc;
+import net.fmhi.gfx.cmd.Encoder;
+import net.fmhi.gfx.cmd.EncoderDesc;
+import net.fmhi.gfx.pass.RenderTarget;
+import net.fmhi.gfx.pass.RenderTargetDesc;
+import net.fmhi.gfx.pipe.Pipeline;
+import net.fmhi.gfx.pipe.PipelineDesc;
+import net.fmhi.gfx.shader.*;
+import net.fmhi.gfx.spi.DeviceProvider;
+import net.fmhi.gfx.texture.Sampler;
+import net.fmhi.gfx.texture.SamplerDesc;
+import net.fmhi.gfx.texture.Texture;
+import net.fmhi.gfx.texture.TextureDesc;
 
 /**
  * Represents a graphics output device (hardware or software).

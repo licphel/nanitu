@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.math;
+package net.fmhi.math;
 
 /**
  * IEEE 754 float16 (half-precision) utility. Cast float to half-precision.

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.resource;
+package net.fmhi.resource;
 
 import java.io.Serial;
 

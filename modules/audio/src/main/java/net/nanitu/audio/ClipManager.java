@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio;
+package net.fmhi.audio;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

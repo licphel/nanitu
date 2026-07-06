@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.gfx.sprite;
+package net.fmhi.gfx.sprite;
 
-import net.nanitu.gfx.pipe.Pipeline;
-import net.nanitu.gfx.shader.ResourceSet;
-import net.nanitu.gfx.texture.Texture;
+import net.fmhi.gfx.pipe.Pipeline;
+import net.fmhi.gfx.shader.ResourceSet;
+import net.fmhi.gfx.texture.Texture;
 import org.jspecify.annotations.Nullable;
 
 /**

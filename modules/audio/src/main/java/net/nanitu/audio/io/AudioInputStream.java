@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.io;
+package net.fmhi.audio.io;
 
-import net.nanitu.audio.AudioFormat;
+import net.fmhi.audio.AudioFormat;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

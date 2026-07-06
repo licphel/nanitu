@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio;
+package net.fmhi.audio;
 
 /**
  * Identifies the sample encoding used in a PCM audio stream.

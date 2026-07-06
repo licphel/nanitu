@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.nanitu.mod;
+package net.fmhi.mod;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.nanitu.util.SemanticVersion;
+import net.fmhi.util.SemanticVersion;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;

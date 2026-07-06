@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.nanitu.audio.openal;
+package net.fmhi.audio.openal;
 
-import net.nanitu.audio.AudioFormat;
-import net.nanitu.util.InternalApi;
+import net.fmhi.audio.AudioFormat;
+import net.fmhi.util.InternalApi;
 
 import static org.lwjgl.openal.AL10.*;
 

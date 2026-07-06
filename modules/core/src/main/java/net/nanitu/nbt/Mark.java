@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.nanitu.nbt;
+package net.fmhi.nbt;
 
 import org.jspecify.annotations.Nullable;
 
