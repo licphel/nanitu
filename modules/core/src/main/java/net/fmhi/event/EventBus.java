@@ -33,7 +33,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
-import java.util.EventListener;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -206,7 +205,7 @@ public final class EventBus {
   @SuppressWarnings("unchecked")
   public <T extends Event> void register(Class<T> eventType, EventListener<T> listener, Priority priority,
                                          Phase phase, @Nullable Object owner) {
-    HandlerWrapper wrapper = new HandlerWrapper(listener, priority, phase, owner);
+    HandlerWrapper wrapper = new HandlerWrapper((EventListener<Event>) listener, priority, phase, owner);
     addHandler(eventType, wrapper);
   }
 
