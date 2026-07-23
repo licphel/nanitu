@@ -314,6 +314,7 @@ public class Main {
     final int MAX_FRAMES = 6000000;
 
     Key key0 = theView.snapshot().key(KeyCode.E);
+    boolean init = false;
 
     while (!theView.shouldClose() && frame < MAX_FRAMES) {
       double now = System.nanoTime();
@@ -424,7 +425,10 @@ public class Main {
       }
       g.setColor(Color.WHITE);
       g.drawLine(0, 100, 200, 200);
+      g.drawCurve(t -> new Vector2(t, t * t).multiply(100), 100);
+
       ui.render(g, delta);
+
       g.end();
 
       BatchedGraphics2D bg = new BatchedGraphics2D(dev);
@@ -433,6 +437,9 @@ public class Main {
       bg.begin();
       bg.setCamera(new Camera2D(800, 450));
       bg.drawMesh(mesh);
+      bg.drawRectangleFrame(0, 0, 200, 200);
+      bg.drawPolygonFrame(new Vector2(0, 0), new Vector2(200, 200), new Vector2(200, 400), new Vector2(20, 400));
+      bg.drawOvalFrame(100, 100, 50, 30);
       bg.end();
 
       dev.submit(theView::present);
@@ -453,7 +460,6 @@ public class Main {
       theView.snapshot().clearFrameState();
     }
 
-    // --- Cleanup ---
     ui.close();
     enc.close();
     resourceSet.close();

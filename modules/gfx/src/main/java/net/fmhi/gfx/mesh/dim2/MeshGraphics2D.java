@@ -25,6 +25,7 @@
 package net.fmhi.gfx.mesh.dim2;
 
 import net.fmhi.gfx.Device;
+import net.fmhi.gfx.GraphicsException;
 import net.fmhi.gfx.buffer.BufferFrequency;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
@@ -81,20 +82,22 @@ public final class MeshGraphics2D extends BatchedGraphics2D {
     if (vertexCount <= 0 && indexCount <= 0) {
       return;
     }
-    byte[] vdata = vertexBuf.toByteArray();
-    byte[] idata = indexBuf.toByteArray();
+    byte[] vertices = vertexBuf.toByteArray();
+    byte[] indices = indexBuf.toByteArray();
     vertexBuf.clear();
     indexBuf.clear();
     vertexCount = 0;
     indexCount = 0;
-    drafts.add(new SectionDraft(vdata, idata,
+    drafts.add(new SectionDraft(vertices, indices,
         currentPrimitive, currentTexture, sampler,
         resolvePipeline(), resolveResourceSetLayout()));
   }
 
   @Override
   public void begin(RenderPass pass) {
-    drafts.clear();
+    if (!drafts.isEmpty()) {
+      throw new GraphicsException("Mesh graphics cannot be reused");
+    }
   }
 
   @Override
@@ -114,37 +117,37 @@ public final class MeshGraphics2D extends BatchedGraphics2D {
    */
   public Mesh bake(Device device) {
     List<Section> sections = new ArrayList<>();
+
     for (SectionDraft d : drafts) {
-      if (d.primitive == null) {
+      if (d.primitive() == null) {
         continue;
       }
       ResourceSet rs = device.getResourceSet(d.rsl);
       rs.bindUniform(0, ubo, 64);
-      boolean tex = d.primitive == Primitive.TEXTURE_SPRITE;
-      if (tex && d.texture != null && d.sampler != null) {
-        rs.bindTexture(1, d.texture, d.sampler);
+      boolean tex = d.primitive().isTextured();
+      if (tex && d.texture() != null && d.sampler() != null) {
+        rs.bindTexture(1, d.texture(), d.sampler());
       }
 
       BufferObject vbo = device.getBuffer(BufferObjectDesc.vertex(BufferFrequency.STATIC));
-      vbo.submit(d.vertices, 0, d.vertices.length);
-      BufferObject ibo = d.indices.length > 0
-          ? device.getBuffer(BufferObjectDesc.index(BufferFrequency.STATIC)) : null;
+      vbo.submit(d.vertices(), 0, d.vertices().length);
+      BufferObject ibo = d.primitive().isIndexed() ? device.getBuffer(BufferObjectDesc.index(BufferFrequency.STATIC)) : null;
       if (ibo != null) {
-        ibo.submit(d.indices, 0, d.indices.length);
+        ibo.submit(d.indices(), 0, d.indices().length);
       }
 
-      Topology top = d.primitive == Primitive.COLOR_LINE ? Topology.LINE :
-          d.primitive == Primitive.COLOR_POINT ? Topology.POINT : Topology.TRIANGLE;
-      int idxCount = d.indices.length / Integer.BYTES;
-      int vertCount = d.primitive == Primitive.TEXTURE_SPRITE ? d.vertices.length / 28 : d.vertices.length / 20;
+      Topology top = d.primitive().topology();
+      int idxCount = d.indices().length / Integer.BYTES;
+      int vertCount = d.vertices().length / d.primitive().vertexSize();
       sections.add(new Section(new Material(d.pipeline, rs), vbo, ibo, vertCount, 0, 0, idxCount, top));
     }
+
     return new Mesh(ubo, List.copyOf(sections));
   }
 
   private record SectionDraft(byte[] vertices,
                               byte[] indices,
-                              @Nullable Primitive primitive,
+                              @Nullable Primitive2D primitive,
                               @Nullable Texture texture,
                               @Nullable Sampler sampler,
                               Pipeline pipeline,

@@ -58,9 +58,16 @@ final class OpenGLCache {
   boolean polyOffsetFill = false;
 
   // Blend
-  int blendSrcRgb = GL_ONE, blendDstRgb = GL_ZERO, blendEqRgb = GL_FUNC_ADD;
-  int blendSrcA = GL_ONE, blendDstA = GL_ZERO, blendEqA = GL_FUNC_ADD;
-  float blendConstR, blendConstG, blendConstB, blendConstA;
+  int blendSrcRgb = GL_ONE;
+  int blendDstRgb = GL_ZERO;
+  int blendEqRgb = GL_FUNC_ADD;
+  int blendSrcA = GL_ONE;
+  int blendDstA = GL_ZERO;
+  int blendEqA = GL_FUNC_ADD;
+  float blendConstR;
+  float blendConstG;
+  float blendConstB;
+  float blendConstA;
 
   // Depth
   boolean depthWrite = true;
@@ -68,21 +75,33 @@ final class OpenGLCache {
   int fboR = 0;
   int fboW = 0;
   // Stencil (front)
-  int stencilFFunc = GL_ALWAYS, stencilFRef, stencilFMask = 0xFF;
-  int stencilFFail = GL_KEEP, stencilFZFail = GL_KEEP, stencilFZPass = GL_KEEP;
+  int stencilFFunc = GL_ALWAYS;
+  int stencilFRef;
+  int stencilFMask = 0xFF;
+  int stencilFFail = GL_KEEP;
+  int stencilFZFail = GL_KEEP;
+  int stencilFZPass = GL_KEEP;
   int stencilFWriteMask = 0xFF;
   // Stencil (back)
-  int stencilBFunc = GL_ALWAYS, stencilBRef, stencilBMask = 0xFF;
-  int stencilBFail = GL_KEEP, stencilBZFail = GL_KEEP, stencilBZPass = GL_KEEP;
+  int stencilBFunc = GL_ALWAYS;
+  int stencilBRef;
+  int stencilBMask = 0xFF;
+  int stencilBFail = GL_KEEP;
+  int stencilBZFail = GL_KEEP;
+  int stencilBZPass = GL_KEEP;
 
   // Rasterization
   int polyMode = GL_FILL;
   int cullMode = GL_BACK;
   int frontFace = GL_CCW;
-  float depthBiasConstant = 0f, depthBiasSlope = 0f;
+  float depthBiasConstant = 0f;
+  float depthBiasSlope = 0f;
   int stencilBWriteMask = 0xFF;
   // Color write mask
-  boolean colorMaskR = true, colorMaskG = true, colorMaskB = true, colorMaskA = true;
+  boolean colorMaskR = true;
+  boolean colorMaskG = true;
+  boolean colorMaskB = true;
+  boolean colorMaskA = true;
 
   OpenGLCache() {
     Arrays.fill(textures, 0);

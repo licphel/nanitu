@@ -61,7 +61,10 @@ final class FreetypeGlyphCache implements AutoCloseable {
   private final Device device;
   private final Map<GlyphKey, @Nullable Glyph> cache = new HashMap<>();
   private @Nullable GrowableAtlas atlas;
-  private int cursorX, cursorY, rowHeight, size;
+  private int cursorX;
+  private int cursorY;
+  private int rowHeight;
+  private int size;
   private int resolution = 0;
   private boolean disposed;
 
@@ -129,7 +132,8 @@ final class FreetypeGlyphCache implements AutoCloseable {
     FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
     FT_Bitmap bitmap = slot.bitmap();
 
-    int w = bitmap.width(), h = bitmap.rows();
+    int w = bitmap.width();
+    int h = bitmap.rows();
 
     // For oblique glyphs FreeType skews the bitmap without updating x_advance, so the rightmost
     // pixels spill past the advance box. Pad the advance to cover the actual bitmap right edge.

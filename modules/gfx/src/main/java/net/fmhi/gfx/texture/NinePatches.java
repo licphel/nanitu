@@ -24,7 +24,7 @@
 
 package net.fmhi.gfx.texture;
 
-import net.fmhi.gfx.mesh.dim2.Drawable;
+import net.fmhi.gfx.mesh.dim2.Drawable2D;
 import net.fmhi.gfx.mesh.dim2.VertexBuilder2D;
 import net.fmhi.math.Box2;
 
@@ -39,10 +39,10 @@ import net.fmhi.math.Box2;
  * the drawn result exactly matches the destination size. Keep {@code fit} {@code false} when tiles are translucent and
  * overlap would be visible.
  *
- * @see Drawable
- * @see VertexBuilder2D#draw(Drawable, float, float, float, float)
+ * @see Drawable2D
+ * @see VertexBuilder2D#draw(Drawable2D, float, float, float, float)
  */
-public final class NinePatches implements Drawable {
+public final class NinePatches implements Drawable2D {
   private static final float P13 = 1.0F / 3.0F;
   private static final float P23 = 2.0F / 3.0F;
 

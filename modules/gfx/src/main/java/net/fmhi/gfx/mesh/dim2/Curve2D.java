@@ -24,30 +24,22 @@
 
 package net.fmhi.gfx.mesh.dim2;
 
+import net.fmhi.math.Vector2;
+
 /**
- * A drawable object that renders itself using a {@link VertexBuilder2D}.
+ * A parametric curve that evaluates to a 2D point for a given parameter in {@code [0, 1]}.
  *
- * <p>This is a functional interface whose functional method is
- * {@link #draw(VertexBuilder2D, float, float, float, float, float, float, float, float)}.
- * Implementations define custom drawing logic and can be passed to the various
- * {@code VertexBuilder2D.draw(...)} overloads.
+ * <p>This is a functional interface whose functional method is {@link #evaluate(float)}.
  *
- * @see VertexBuilder2D
+ * @see VertexBuilder2D#drawCurve(Curve2D, int)
  */
 @FunctionalInterface
-public interface Drawable {
+public interface Curve2D {
   /**
-   * Draws this object at the given position, size, and texture coordinate region.
+   * Evaluates the curve at the given parameter.
    *
-   * @param g  the vertex builder to draw with
-   * @param x  the X position in world units
-   * @param y  the Y position in world units
-   * @param w  the width in world units
-   * @param h  the height in world units
-   * @param u  the U texture coordinate offset in texels
-   * @param v  the V texture coordinate offset in texels
-   * @param uw the U texture coordinate range in texels
-   * @param vh the V texture coordinate range in texels
+   * @param t the parameter, in the range {@code [0, 1]}
+   * @return the point on the curve at {@code t}
    */
-  void draw(VertexBuilder2D g, float x, float y, float w, float h, float u, float v, float uw, float vh);
+  Vector2 evaluate(float t);
 }

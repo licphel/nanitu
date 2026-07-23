@@ -24,6 +24,8 @@
 
 package net.fmhi.gfx.mesh.dim2;
 
+import net.fmhi.gfx.pipe.Topology;
+
 /**
  * Primitive type that selects the pipeline, resource set layout, and topology for rendering.
  *
@@ -33,15 +35,38 @@ package net.fmhi.gfx.mesh.dim2;
  *
  * @see VertexBuilder2D
  */
-public enum Primitive {
-  /** No primitive — rendering is skipped. */
-  NONE,
-  /** Textured sprite rendered as indexed triangles. */
-  TEXTURE_SPRITE,
-  /** Colored sprite without texture, rendered as indexed triangles. */
-  COLOR_SPRITE,
-  /** Colored line segments. */
-  COLOR_LINE,
-  /** Colored points. */
-  COLOR_POINT
+public enum Primitive2D {
+  TEXTURE_TRIANGLE_INDEXED(true, Topology.TRIANGLE, true, 28),
+  COLOR_TRIANGLE_INDEXED(true, Topology.TRIANGLE, false, 20),
+  COLOR_TRIANGLE(false, Topology.TRIANGLE, false, 20),
+  COLOR_LINE(false, Topology.LINE, false, 20),
+  COLOR_POINT(false, Topology.POINT, false, 20);
+
+  final boolean indexed;
+  final Topology topology;
+  final boolean textured;
+  final int vertexSize;
+
+  Primitive2D(boolean indexed, Topology topology, boolean textured, int vertexSize) {
+    this.indexed = indexed;
+    this.topology = topology;
+    this.textured = textured;
+    this.vertexSize = vertexSize;
+  }
+
+  public boolean isTextured() {
+    return textured;
+  }
+
+  public boolean isIndexed() {
+    return indexed;
+  }
+
+  public Topology topology() {
+    return topology;
+  }
+
+  public int vertexSize() {
+    return vertexSize;
+  }
 }

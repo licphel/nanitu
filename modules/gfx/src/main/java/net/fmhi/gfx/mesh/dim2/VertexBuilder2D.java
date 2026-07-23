@@ -10,6 +10,7 @@ import net.fmhi.gfx.texture.TexturePart;
 import net.fmhi.math.Box2;
 import net.fmhi.math.Color;
 import net.fmhi.math.Vector2;
+import net.fmhi.math.Vector3;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -163,12 +164,12 @@ public interface VertexBuilder2D extends VertexBuilder {
   }
 
   /**
-   * Draws a {@link Drawable} into a destination rectangle.
+   * Draws a {@link Drawable2D} into a destination rectangle.
    *
    * @param t   the drawable to draw; does nothing if {@code null}
    * @param dst the destination rectangle in world units
    */
-  default void draw(@Nullable Drawable t, Box2 dst) {
+  default void draw(@Nullable Drawable2D t, Box2 dst) {
     if (t == null) {
       return;
     }
@@ -176,13 +177,13 @@ public interface VertexBuilder2D extends VertexBuilder {
   }
 
   /**
-   * Draws a {@link Drawable} with a source region into a destination rectangle.
+   * Draws a {@link Drawable2D} with a source region into a destination rectangle.
    *
    * @param t   the drawable to draw; does nothing if {@code null}
    * @param dst the destination rectangle in world units
    * @param src the source region in texel coordinates
    */
-  default void draw(@Nullable Drawable t, Box2 dst, Box2 src) {
+  default void draw(@Nullable Drawable2D t, Box2 dst, Box2 src) {
     if (t == null) {
       return;
     }
@@ -190,7 +191,7 @@ public interface VertexBuilder2D extends VertexBuilder {
   }
 
   /**
-   * Draws a {@link Drawable} at the given position and size.
+   * Draws a {@link Drawable2D} at the given position and size.
    *
    * @param t the drawable to draw; does nothing if {@code null}
    * @param x the X position in world units
@@ -198,7 +199,7 @@ public interface VertexBuilder2D extends VertexBuilder {
    * @param w the width in world units
    * @param h the height in world units
    */
-  default void draw(@Nullable Drawable t, float x, float y, float w, float h) {
+  default void draw(@Nullable Drawable2D t, float x, float y, float w, float h) {
     if (t == null) {
       return;
     }
@@ -206,7 +207,7 @@ public interface VertexBuilder2D extends VertexBuilder {
   }
 
   /**
-   * Draws a {@link Drawable} at the given position, size, and source region.
+   * Draws a {@link Drawable2D} at the given position, size, and source region.
    *
    * @param t  the drawable to draw; does nothing if {@code null}
    * @param x  the X position in world units
@@ -218,7 +219,7 @@ public interface VertexBuilder2D extends VertexBuilder {
    * @param uw the U coordinate range in texels
    * @param vh the V coordinate range in texels
    */
-  default void draw(@Nullable Drawable t, float x, float y, float w, float h, float u, float v, float uw, float vh) {
+  default void draw(@Nullable Drawable2D t, float x, float y, float w, float h, float u, float v, float uw, float vh) {
     if (t == null) {
       return;
     }
@@ -303,6 +304,175 @@ public interface VertexBuilder2D extends VertexBuilder {
    */
   default void drawPoint(Vector2 at) {
     drawPoint(at.x(), at.y());
+  }
+
+  /**
+   * Draws a filled triangle.
+   *
+   * @param x1 the X coordinate of the first vertex
+   * @param y1 the Y coordinate of the first vertex
+   * @param x2 the X coordinate of the second vertex
+   * @param y2 the Y coordinate of the second vertex
+   * @param x3 the X coordinate of the third vertex
+   * @param y3 the Y coordinate of the third vertex
+   */
+  void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
+
+  /**
+   * Draws a filled triangle.
+   *
+   * @param a the first vertex
+   * @param b the second vertex
+   * @param c the third vertex
+   */
+  default void drawTriangle(Vector2 a, Vector2 b, Vector2 c) {
+    drawTriangle(a.x(), a.y(), b.x(), b.y(), c.x(), c.y());
+  }
+
+  /**
+   * Draws the outline of a triangle as three line segments.
+   *
+   * @param x1 the X coordinate of the first vertex
+   * @param y1 the Y coordinate of the first vertex
+   * @param x2 the X coordinate of the second vertex
+   * @param y2 the Y coordinate of the second vertex
+   * @param x3 the X coordinate of the third vertex
+   * @param y3 the Y coordinate of the third vertex
+   */
+  default void drawTriangleFrame(float x1, float y1, float x2, float y2, float x3, float y3) {
+    drawLine(x1, y1, x2, y2);
+    drawLine(x2, y2, x3, y3);
+    drawLine(x3, y3, x1, y1);
+  }
+
+  /**
+   * Draws the outline of a triangle as three line segments.
+   *
+   * @param a the first vertex
+   * @param b the second vertex
+   * @param c the third vertex
+   */
+  default void drawTriangleFrame(Vector2 a, Vector2 b, Vector2 c) {
+    drawTriangleFrame(a.x(), a.y(), b.x(), b.y(), c.x(), c.y());
+  }
+
+  /**
+   * Draws a filled oval (axis-aligned ellipse).
+   *
+   * @param x the X position of the bounding box
+   * @param y the Y position of the bounding box
+   * @param w the width
+   * @param h the height
+   */
+  default void drawOval(float x, float y, float w, float h) {
+    float rx = w / 2f, ry = h / 2f, cx = x + rx, cy = y + ry;
+    int segments = computeOvalSegments(x, y, w, h);
+    for (int i = 0; i < segments; i++) {
+      double a1 = i * 2.0 * Math.PI / segments;
+      double a2 = (i + 1) * 2.0 * Math.PI / segments;
+      drawTriangle(cx, cy,
+          cx + rx * (float) Math.cos(a1), cy + ry * (float) Math.sin(a1),
+          cx + rx * (float) Math.cos(a2), cy + ry * (float) Math.sin(a2));
+    }
+  }
+
+  /**
+   * Draws a filled oval (axis-aligned ellipse).
+   *
+   * @param dst the bounding box in world units
+   */
+  default void drawOval(Box2 dst) {
+    drawOval(dst.minX(), dst.minY(), dst.width(), dst.height());
+  }
+
+  /**
+   * Draws the outline of an oval as line segments. The segment count is automatically
+   * determined from the transformed size — larger ovals use more segments for smoothness.
+   *
+   * @param x the X position of the bounding box
+   * @param y the Y position of the bounding box
+   * @param w the width
+   * @param h the height
+   */
+  default void drawOvalFrame(float x, float y, float w, float h) {
+    float rx = w / 2.0f;
+    float ry = h / 2.0f;
+    float cx = x + rx;
+    float cy = y + ry;
+    int segments = computeOvalSegments(x, y, w, h);
+
+    for (int i = 0; i < segments; i++) {
+      double a1 = i * 2.0 * Math.PI / segments;
+      double a2 = (i + 1) * 2.0 * Math.PI / segments;
+      drawLine(cx + rx * (float) Math.cos(a1), cy + ry * (float) Math.sin(a1),
+               cx + rx * (float) Math.cos(a2), cy + ry * (float) Math.sin(a2));
+    }
+  }
+
+  /**
+   * Draws the outline of an oval as line segments. The segment count is automatically
+   * determined from the transformed size — larger ovals use more segments for smoothness.
+   *
+   * @param dst the bounding box in world units
+   */
+  default void drawOvalFrame(Box2 dst) {
+    drawOvalFrame(dst.minX(), dst.minY(), dst.width(), dst.height());
+  }
+
+  /**
+   * Draws a parametric curve as line segments.
+   *
+   * <p>The curve is sampled at {@code segments} evenly-spaced values of {@code t} in
+   * {@code [0, 1]} and drawn as connected line segments. More segments produce a smoother curve.
+   *
+   * @param curve    the parametric curve to evaluate
+   * @param segments the number of line segments
+   */
+  default void drawCurve(Curve2D curve, int segments) {
+    if (segments <= 0) {
+      return;
+    }
+
+    Vector2 prev = curve.evaluate(0.0F);
+    for (int i = 1; i <= segments; i++) {
+      float t = (float) i / segments;
+      Vector2 curr = curve.evaluate(t);
+      drawLine(prev.x(), prev.y(), curr.x(), curr.y());
+      prev = curr;
+    }
+  }
+
+  /**
+   * Draws a filled polygon as a triangle fan.
+   *
+   * <p>Does nothing if fewer than 3 vertices are provided.
+   *
+   * @param vertices the polygon vertices in order
+   */
+  default void drawPolygon(Vector2... vertices) {
+    if (vertices.length < 3) return;
+    Vector2 v0 = vertices[0];
+    for (int i = 1; i < vertices.length - 1; i++) {
+      drawTriangle(v0, vertices[i], vertices[i + 1]);
+    }
+  }
+
+  /**
+   * Draws the outline of a polygon as a closed line loop.
+   *
+   * <p>Does nothing if fewer than 2 vertices are provided.
+   *
+   * @param vertices the polygon vertices in order
+   */
+  default void drawPolygonFrame(Vector2... vertices) {
+    if (vertices.length < 2) {
+      return;
+    }
+    for (int i = 0; i < vertices.length; i++) {
+      Vector2 a = vertices[i];
+      Vector2 b = vertices[(i + 1) % vertices.length];
+      drawLine(a, b);
+    }
   }
 
   /**
@@ -393,5 +563,28 @@ public interface VertexBuilder2D extends VertexBuilder {
    */
   default void drawText(@Nullable Text text, Vector2 pos) {
     drawText(text, pos.x(), pos.y());
+  }
+
+  /**
+   * Computes the number of segments for an oval based on its approximated transformed radius.
+   *
+   * @param x the X position of the bounding box
+   * @param y the Y position of the bounding box
+   * @param w the width
+   * @param h the height
+   * @return the segment count, clamped to {@code [8, 128]}
+   */
+  private int computeOvalSegments(float x, float y, float w, float h) {
+    float rx = w / 2.0f;
+    float ry = h / 2.0f;
+    float cx = x + rx;
+    float cy = y + ry;
+    Vector3 tc = transform().top().transform(new Vector3(cx, cy, 0));
+    Vector3 tr = transform().top().transform(new Vector3(cx + rx, cy, 0));
+    float dx = tr.x() - tc.x();
+    float dy = tr.y() - tc.y();
+    float screenRx = (float) Math.sqrt(dx * dx + dy * dy);
+    int segments = (int) (screenRx * Math.PI * 0.5f);
+    return Math.clamp(segments, 8, 128);
   }
 }

@@ -82,7 +82,9 @@ public final class OpenGLTexture implements Texture {
       ctx.cache.setTexture(0, target, handle);
 
       int[] fmt = OpenGLUtils.textureFormat(desc.format());
-      int internal = fmt[0], pixFmt = fmt[1], pixType = fmt[2];
+      int internal = fmt[0];
+      int pixFmt = fmt[1];
+      int pixType = fmt[2];
 
       ByteBuffer data = null;
       if (desc.initialBytes() != null) {
@@ -123,9 +125,14 @@ public final class OpenGLTexture implements Texture {
     ctx.submit(() -> {
       ctx.cache.setTexture(0, target, handle);
       int[] fmt = OpenGLUtils.textureFormat(desc.format());
-      int pixFmt = fmt[1], pixType = fmt[2];
-      int x = (int) region.minX(), y = (int) region.minY(), z = (int) region.minZ();
-      int w = (int) region.width(), h = (int) region.height(), d = (int) region.depth();
+      int pixFmt = fmt[1];
+      int pixType = fmt[2];
+      int x = (int) region.minX();
+      int y = (int) region.minY();
+      int z = (int) region.minZ();
+      int w = (int) region.width();
+      int h = (int) region.height();
+      int d = (int) region.depth();
 
       ByteBuffer bb = memAlloc(bytes.length);
       try {

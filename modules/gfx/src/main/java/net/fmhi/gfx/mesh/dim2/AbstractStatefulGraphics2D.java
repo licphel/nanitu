@@ -50,7 +50,7 @@ abstract class AbstractStatefulGraphics2D extends Graphics2D {
   private final Deque<Scissor> scissorStack = new ArrayDeque<>();
   protected @Nullable Pipeline currentPipeline;
   protected @Nullable ResourceSet currentResourceSet;
-  protected @Nullable Primitive currentPrimitive;
+  protected @Nullable Primitive2D currentPrimitive;
   protected @Nullable Texture currentTexture;
   protected @Nullable Camera2D camera;
   protected @Nullable Sampler sampler;
@@ -64,7 +64,7 @@ abstract class AbstractStatefulGraphics2D extends Graphics2D {
    * @param primitive the expected primitive type
    */
   @Override
-  protected void assertPrimitive(Primitive primitive) {
+  protected void assertPrimitive(Primitive2D primitive) {
     if (primitive != currentPrimitive) {
       flush();
       currentPrimitive = primitive;

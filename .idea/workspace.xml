@@ -4,118 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc84a4b6-8796-44bb-82d0-ca09e1fa272f" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/InplaceVertexBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Graphics2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/InplaceVertexBuilder2D.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/pipe/Scissor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.claude/skills/write-javadoc/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/skills/write-javadoc/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="cc84a4b6-8796-44bb-82d0-ca09e1fa272f" name="更改" comment="feat: refactor gfx.sprite">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/math/Matrix4x4.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/math/Matrix4x4.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/Buf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/Buf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/ByteBufPool.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/Endianness.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/Memory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/MemoryAllocator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/buf/JavaBuf.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/buf/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/zip/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/zip/CompressionLevel.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/zip/CompressionLevel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/zip/Compressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/zip/Compressor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/memory/zip/package-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/nbt/Json.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/Json.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/nbt/Mark.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/TagMark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/nbt/NbtCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/CompoundTag.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/nbt/NbtList.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/ListTag.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/nbt/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/codec/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/NetConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/NetConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/NetworkClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/Connection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/NetworkServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/ServerConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/NettyBuf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/NettyBuf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/PacketDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/PacketDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/PacketEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/codec/PacketEncoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/HeartbeatPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/HeartbeatPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/Packet.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/Packet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/PacketRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/packet/PacketRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/session/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/session/SessionState.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/SessionState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/core/src/main/java/net/fmhi/network/session/package-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/freetype/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/modules/freetype/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeFont.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeFont.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeFontProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeFontProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/back/View.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/View.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/back/package-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/buffer/BufferFrequency.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/buffer/BufferFrequency.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/buffer/BufferObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/buffer/BufferObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/cmd/Encoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/cmd/Encoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/input/Snapshot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/input/Snapshot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/io/ImageInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/io/ImageInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/pass/RenderPassDesc.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/pass/RenderPass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/pass/RenderTarget.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/pass/RenderTarget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeGlyphCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/freetype/src/main/java/net/fmhi/gfx/text/freetype/FreetypeGlyphCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/VertexBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/VertexBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/AbstractStatefulGraphics2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/AbstractStatefulGraphics2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/BatchedGraphics2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/BatchedGraphics2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Drawable.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Drawable2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/DrawingFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/DrawingFlags.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/InplaceVertexBuilder2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/InplaceVertexBuilder2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/MeshGraphics2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/MeshGraphics2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Primitive.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Primitive2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/VertexBuilder2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/VertexBuilder2D.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/shader/VertexLayout.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/shader/VertexLayout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/spi/ViewProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/spi/ViewProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/Rasterizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/Rasterizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/FragileTexture.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/FragileTexture.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/TextureDesc.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/TextureDesc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/NinePatches.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/NinePatches.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/TexturePart.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/TexturePart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/glfw/src/main/java/net/fmhi/gfx/glfw/GlfwView.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/glfw/src/main/java/net/fmhi/gfx/glfw/GlfwView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/glfw/src/main/java/net/fmhi/gfx/glfw/GlfwViewProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/glfw/src/main/java/net/fmhi/gfx/glfw/GlfwViewProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/harfbuzz/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/modules/harfbuzz/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/harfbuzz/src/main/java/net/fmhi/gfx/text/hb/HarfbuzzShaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/harfbuzz/src/main/java/net/fmhi/gfx/text/hb/HarfbuzzShaper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLBufferObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLBufferObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLDevice.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLDevice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLEncoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLPipeline.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLPipeline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLResourceSet.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLResourceSet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Alignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Alignment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Drawable.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Drawable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Graphics.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/VertexBuilder2D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Graphics2D.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/GraphicsFlag.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/DrawingFlags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/MultiMesh.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/Mesh.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/NRS_330.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/NinePatches.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/texture/NinePatches.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Primitive.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/dim2/Primitive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/Recorder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/sprite/src/main/java/net/fmhi/gfx/sprite/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/mesh/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/test/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/modules/test/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLTexture.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/opengl/src/main/java/net/fmhi/gfx/opengl/OpenGLTexture.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/Main3D.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/Main3D.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/MainNet.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/test/src/main/java/net/fmhi/MainNet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/Font.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/Font.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/FontMetrics.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/FontMetrics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/Href.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/Href.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/Meta.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/Meta.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/Style.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/Style.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/Text.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/TextLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/TextLiteral.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/TextSequence.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/TextSequence.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/Glyph.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/Glyph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/LayoutGlyph.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/LayoutGlyph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/LayoutRun.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/LayoutRun.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/Raster.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/Raster.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/Rasterizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/Rasterizer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/ShapeGlyph.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/ShapeGlyph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/ShapeResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/ShapeResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/raster/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/spi/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/spi/FontProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/spi/FontProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/spi/ShaperProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/spi/ShaperProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/text/src/main/java/net/fmhi/gfx/text/spi/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/gfx/src/main/java/net/fmhi/gfx/text/raster/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/Look.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/Look.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/UiContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/UiContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/Widget.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/Widget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/look/ModernFlat.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/look/ModernFlat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Button.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Button.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Panel.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Panel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Window.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ui/src/main/java/net/fmhi/ui/widget/Window.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -353,6 +264,19 @@
       <option name="presentableId" value="Default" />
       <updated>1783334089744</updated>
     </task>
+    <task id="LOCAL-00001" summary="feat: refactor gfx.sprite">
+      <option name="closed" value="true" />
+      <created>1784815805742</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1784815805742</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: refactor gfx.sprite" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: refactor gfx.sprite" />
   </component>
 </project>

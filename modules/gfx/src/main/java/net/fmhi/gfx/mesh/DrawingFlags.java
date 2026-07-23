@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package net.fmhi.gfx.mesh.dim2;
+package net.fmhi.gfx.mesh;
+
+import net.fmhi.gfx.mesh.dim2.VertexBuilder2D;
 
 /**
  * Bitmask flags for controlling drawing behavior.

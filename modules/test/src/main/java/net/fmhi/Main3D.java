@@ -148,11 +148,14 @@ public class Main3D {
           continue;
         }
         TexturePart tp = b.glyph().texPart();
-        float atlW = tp.src().width(), atlH = tp.src().height();
-        float u0 = tp.u() / atlW, u1 = (tp.u() + tp.width()) / atlW;
+        float atlW = tp.src().width();
+        float atlH = tp.src().height();
+        float u0 = tp.u() / atlW;
+        float u1 = (tp.u() + tp.width()) / atlW;
         // Atlas is always stored top-row-first. For Y-up (flipY=false), the visual top of the
         // quad is at by+sy, so atlas-top (v0) must map there — flip v0/v1 accordingly.
-        float v0, v1;
+        float v0;
+        float v1;
         if (raster.flipY()) {
           v0 = tp.v() / atlH;
           v1 = (tp.v() + tp.height()) / atlH;
@@ -170,7 +173,8 @@ public class Main3D {
         float gy = b.bounds().minY();
         float bx = (gx - raster.bounds().width() / 2f) * scale3d;
         float by = (gy - centerY) * scale3d;
-        float sx = tp.width() * b.scale() * scale3d, sy = tp.height() * b.scale() * scale3d;
+        float sx = tp.width() * b.scale() * scale3d;
+        float sy = tp.height() * b.scale() * scale3d;
 
         qVerts[0] = bx;
         qVerts[1] = by;

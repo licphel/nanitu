@@ -67,16 +67,22 @@ public final class Window extends Widget {
   private int dragMode = DRAG_NONE;
   private float dragOffsetX;
   private float dragOffsetY;
-  private float preDragW, preDragH;
+  private float preDragW;
+  private float preDragH;
   // saved pre-minimize / pre-maximize geometry
   private float savedMinH;
-  private float savedMaxX, savedMaxY, savedMaxW, savedMaxH;
+  private float savedMaxX;
+  private float savedMaxY;
+  private float savedMaxW;
+  private float savedMaxH;
   // absolute bounds of decoration buttons (recomputed each layout())
   private Box2 closeButtonBounds = Box2.ZERO;
   private Box2 minButtonBounds = Box2.ZERO;
   private Box2 maxButtonBounds = Box2.ZERO;
   // hover state for decoration buttons
-  private boolean closeHovered, minHovered, maxHovered;
+  private boolean closeHovered;
+  private boolean minHovered;
+  private boolean maxHovered;
 
   /**
    * Creates a floating window at the given position and size.

@@ -56,7 +56,9 @@ import net.fmhi.math.Matrix4x4;
  * @see MeshGraphics2D
  */
 public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
-  final BufferObject vbo, ibo, ubo;
+  final BufferObject vbo;
+  final BufferObject ibo;
+  final BufferObject ubo;
   private final Encoder encoder;
   private final Device device;
   private boolean begun;
@@ -173,12 +175,14 @@ public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
 
     byte[] vertices = vertexBuf.toByteArray();
     byte[] indices = indexBuf.toByteArray();
+    int vc = vertexCount;
+    int ic = indexCount;
     vertexCount = 0;
     indexCount = 0;
 
     uploadVP(camera.viewProjectionMatrix());
     vbo.submit(vertices, 0, vertices.length);
-    if (indices.length > 0) {
+    if (indices.length > 0 && currentPrimitive.isIndexed()) {
       ibo.submit(indices, 0, indices.length);
     }
 
@@ -189,11 +193,14 @@ public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
     Pipeline pipe = currentPipeline;
     ResourceSet rs = currentResourceSet;
     if (pipe == null) {
-      pipe = currentPrimitive == Primitive.TEXTURE_SPRITE ? BuiltinGfx.pipeTexture : BuiltinGfx.pipeColor;
-      ResourceSetLayout rsl = currentPrimitive == Primitive.TEXTURE_SPRITE ? BuiltinGfx.rslTexture : BuiltinGfx.rslColor;
+      boolean useTexture = currentPrimitive.isTextured();
+
+      pipe = useTexture ? BuiltinGfx.pipeTexture : BuiltinGfx.pipeColor;
+      ResourceSetLayout rsl = useTexture ? BuiltinGfx.rslTexture : BuiltinGfx.rslColor;
       rs = device.getResourceSet(rsl);
       rs.bindUniform(0, ubo, 64);
-      if (currentTexture != null && currentPrimitive == Primitive.TEXTURE_SPRITE) {
+
+      if (currentTexture != null && useTexture) {
         if (sampler == null) {
           throw new GraphicsException("Null sampler");
         }
@@ -202,19 +209,18 @@ public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
     }
     encoder.setRenderPipe(pipe);
     if (rs == null) {
-      throw new GraphicsException("There's a custom pipeline, however, no custom resource set bound.");
+      throw new GraphicsException("There's a custom pipeline, however, no custom resource set bound");
     }
     encoder.setResource(0, rs);
 
-    Topology top = currentPrimitive == Primitive.COLOR_LINE ? Topology.LINE :
-        currentPrimitive == Primitive.COLOR_POINT ? Topology.POINT : Topology.TRIANGLE;
+    Topology top = currentPrimitive.topology();
     encoder.setTopology(top);
     encoder.setVertexBuffer(vbo);
-    if (indices.length > 0) {
+    if (currentPrimitive.isIndexed()) {
       encoder.setIndexBuffer(ibo);
-      encoder.drawIndexed(indices.length / Integer.BYTES, 0);
+      encoder.drawIndexed(ic, 0);
     } else {
-      encoder.draw(vertices.length / 20, 0);
+      encoder.draw(vc, 0);
     }
 
     encoder.endPass();
@@ -233,7 +239,8 @@ public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
     if (currentPipeline != null) {
       return currentPipeline;
     }
-    return currentPrimitive == Primitive.TEXTURE_SPRITE ? BuiltinGfx.pipeTexture : BuiltinGfx.pipeColor;
+    return (currentPrimitive == null || currentPrimitive.isTextured()) ?
+        BuiltinGfx.pipeTexture : BuiltinGfx.pipeColor;
   }
 
   /**
@@ -242,7 +249,8 @@ public class BatchedGraphics2D extends AbstractStatefulGraphics2D {
    * @return the resolved resource set layout
    */
   protected ResourceSetLayout resolveResourceSetLayout() {
-    return currentPrimitive == Primitive.TEXTURE_SPRITE ? BuiltinGfx.rslTexture : BuiltinGfx.rslColor;
+    return (currentPrimitive == null || currentPrimitive.isTextured()) ?
+        BuiltinGfx.rslTexture : BuiltinGfx.rslColor;
   }
 
   /**

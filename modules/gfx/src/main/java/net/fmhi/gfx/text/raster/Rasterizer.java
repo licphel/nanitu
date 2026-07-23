@@ -205,11 +205,15 @@ public final class Rasterizer {
     List<Raster.Stroke> result = new ArrayList<>();
 
     boolean inRun = false;
-    float runX = 0, runY = 0, runW = 0;
+    float runX = 0;
+    float runY = 0;
+    float runW = 0;
     int runFlags = 0;
     Color runColor = null;
-    float runThicknessU = 0, runOffsetU = 0;
-    float runThicknessS = 0, runOffsetS = 0;
+    float runThicknessU = 0;
+    float runOffsetU = 0;
+    float runThicknessS = 0;
+    float runOffsetS = 0;
 
     for (LayoutRun layoutRun : runs) {
       for (LayoutGlyph lg : layoutRun.glyphs()) {
@@ -363,8 +367,10 @@ public final class Rasterizer {
     // Compute bearing-adjusted pen-space bounds for each glyph.
     // All coordinates are in pen space (x from 0 per line, y from 0 top).
     // Entry.bounds, Raster.bounds, and hitTest all live in this same space.
-    float bMinX = Float.MAX_VALUE, bMinY = Float.MAX_VALUE;
-    float bMaxX = -Float.MAX_VALUE, bMaxY = -Float.MAX_VALUE;
+    float bMinX = Float.MAX_VALUE;
+    float bMinY = Float.MAX_VALUE;
+    float bMaxX = -Float.MAX_VALUE;
+    float bMaxY = -Float.MAX_VALUE;
 
     record GlyphBound(float gx, float gy, float gw, float gh) {
     }
@@ -377,7 +383,10 @@ public final class Rasterizer {
         Glyph g = lit.style().font().rasterizeGlyph(lg.glyphId(), lit.style().fontStyle());
         float penX = lg.x() + lg.xOffset();
         float penY = lg.y() + lg.yOffset();
-        float gx, gy, gw, gh;
+        float gx;
+        float gy;
+        float gw;
+        float gh;
         if (g != null) {
           gx = penX + g.bearingX() * scale;
           gw = g.texPart().width() * scale;
@@ -475,7 +484,8 @@ public final class Rasterizer {
       }
       int lineGlyphEnd = glyphCursor;
 
-      float lineHeight = 0, maxAscender = 0;
+      float lineHeight = 0;
+      float maxAscender = 0;
       for (int g = lineGlyphStart; g < lineGlyphEnd; g++) {
         TextLiteral lit = literals.get(glyphs[g].ownerIndex());
         FontMetrics m = lit.style().font().metrics();

@@ -22,31 +22,32 @@
  * SOFTWARE.
  */
 
-package net.fmhi.gfx.texture;
-
-import net.fmhi.gfx.mesh.dim2.Drawable2D;
-import net.fmhi.gfx.mesh.dim2.VertexBuilder2D;
-import org.jspecify.annotations.Nullable;
+package net.fmhi.gfx.mesh.dim2;
 
 /**
- * A potentially unstable texture reference whose backing {@link Texture} may change at runtime.
+ * A drawable object that renders itself using a {@link VertexBuilder2D}.
  *
- * <p>Call {@link #pin()} immediately before use to obtain the current backing texture. Implementors
- * that wrap a mutable reference (e.g. a growing glyph atlas) may return a different {@link Texture} on each call;
- * stable implementors (e.g. {@link Texture} itself) always return {@code this}.
+ * <p>This is a functional interface whose functional method is
+ * {@link #draw(VertexBuilder2D, float, float, float, float, float, float, float, float)}.
+ * Implementations define custom drawing logic and can be passed to the various
+ * {@code VertexBuilder2D.draw(...)} overloads.
  *
- * <p><b>Thread safety:</b> pin() must be called on the render thread.
+ * @see VertexBuilder2D
  */
-public interface FragileTexture extends Drawable2D {
+@FunctionalInterface
+public interface Drawable2D {
   /**
-   * Returns the current backing texture.
+   * Draws this object at the given position, size, and texture coordinate region.
    *
-   * @return the current {@link Texture}
+   * @param g  the vertex builder to draw with
+   * @param x  the X position in world units
+   * @param y  the Y position in world units
+   * @param w  the width in world units
+   * @param h  the height in world units
+   * @param u  the U texture coordinate offset in texels
+   * @param v  the V texture coordinate offset in texels
+   * @param uw the U texture coordinate range in texels
+   * @param vh the V texture coordinate range in texels
    */
-  @Nullable Texture pin();
-
-  @Override
-  default void draw(VertexBuilder2D g, float x, float y, float w, float h, float u, float v, float uw, float vh) {
-    g.draw(this, x, y, w, h, u, v, uw, vh);
-  }
+  void draw(VertexBuilder2D g, float x, float y, float w, float h, float u, float v, float uw, float vh);
 }

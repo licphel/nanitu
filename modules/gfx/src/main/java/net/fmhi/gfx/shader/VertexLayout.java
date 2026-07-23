@@ -66,7 +66,9 @@ public final class VertexLayout {
    * @return a baked layout with computed offsets and strides
    */
   public static VertexLayout bake(Attr... attrs) {
-    int vertexOffset = 0, instanceOffset = 0, location = 0;
+    int vertexOffset = 0;
+    int instanceOffset = 0;
+    int location = 0;
     Attr[] baked = new Attr[attrs.length];
     for (int i = 0; i < attrs.length; i++) {
       Attr a = attrs[i];

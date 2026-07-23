@@ -25,7 +25,6 @@
 package net.fmhi.gfx.mesh;
 
 import net.fmhi.codec.Buf;
-import net.fmhi.gfx.mesh.dim2.DrawingFlags;
 import net.fmhi.math.Color;
 import net.fmhi.math.MatrixStack;
 
