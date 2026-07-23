@@ -36,7 +36,7 @@ import net.fmhi.gfx.texture.TextureFilter;
  *       attachments.
  * </ul>
  *
- * @see RenderPassDesc
+ * @see RenderPass
  */
 public interface RenderTarget extends AutoCloseable {
   /**

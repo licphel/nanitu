@@ -27,7 +27,7 @@ rootProject.name = "fmhi"
 var modulesDir = file("modules")
 
 modulesDir.listFiles()?.findAll { it.isDirectory() }?.each { dir ->
-    var projectName = "fmhi-${dir.name}"
-    include(projectName)
-    project(":${projectName}").projectDir = dir
+  var projectName = "fmhi-${dir.name}"
+  include(projectName)
+  project(":${projectName}").projectDir = dir
 }

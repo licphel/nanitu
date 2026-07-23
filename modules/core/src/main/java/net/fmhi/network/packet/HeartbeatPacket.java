@@ -24,9 +24,9 @@
 
 package net.fmhi.network.packet;
 
-import net.fmhi.memory.Buf;
+import net.fmhi.codec.Buf;
 import net.fmhi.network.NetConfig;
-import net.fmhi.network.session.Session;
+import net.fmhi.network.Session;
 
 /**
  * A built-in keepalive packet with no payload.
@@ -39,9 +39,6 @@ import net.fmhi.network.session.Session;
  * @see NetConfig#SESSION_TIMEOUT_MS
  */
 public final class HeartbeatPacket extends Packet {
-  /** Wire-format ID for heartbeat packets, always 0. */
-  public static final int ID = PacketRegistry.register(HeartbeatPacket.class, HeartbeatPacket::new);
-
   @Override
   public void read(Buf buf) {
     // Heartbeat carries no payload.

@@ -24,6 +24,7 @@
 
 package net.fmhi.gfx.input;
 
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.input.event.KeyEvent;
 import net.fmhi.gfx.input.event.MouseButtonEvent;
 
@@ -35,7 +36,7 @@ import java.util.Set;
  * Per-frame pollable input state for game-style queries.
  *
  * <p>{@code Snapshot} accumulates keyboard, mouse, and scroll state as events
- * are dispatched through the {@link net.fmhi.gfx.back.View}. Key press state persists across frames — a held key
+ * are dispatched through the {@link View}. Key press state persists across frames — a held key
  * remains {@link KeyAction#PRESS} until the platform reports a release.
  *
  * <p>For higher-level key binding support, use {@link #key(KeyCode)} to create

@@ -39,7 +39,7 @@ import java.util.Map;
 import static org.lwjgl.util.harfbuzz.HarfBuzz.*;
 
 /**
- * {@link net.fmhi.gfx.text.spi.ShaperProvider} implementation backed by the HarfBuzz shaping engine.
+ * {@link ShaperProvider} implementation backed by the HarfBuzz shaping engine.
  *
  * <p>Uses HarfBuzz for glyph shaping and ICU4J for bidirectional text analysis.
  * Font faces are cached to avoid repeated blob creation.

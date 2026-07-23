@@ -24,7 +24,7 @@
 
 package net.fmhi.ui.widget;
 
-import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.mesh.dim2.Graphics2D;
 import net.fmhi.gfx.text.Text;
 import net.fmhi.math.Box2;
 import net.fmhi.ui.ButtonState;
@@ -100,7 +100,7 @@ public final class Button extends Widget {
   }
 
   @Override
-  protected void renderSelf(Graphics g, Look look) {
+  protected void renderSelf(Graphics2D g, Look look) {
     ButtonState drawState = enabled ? state : ButtonState.DISABLED;
     look.drawButton(g, drawState, absoluteBounds(), label);
   }

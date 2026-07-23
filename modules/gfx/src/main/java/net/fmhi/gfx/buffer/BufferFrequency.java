@@ -25,7 +25,7 @@
 package net.fmhi.gfx.buffer;
 
 /**
- * Buf usage frequency hints that guide the GPU driver's memory placement.
+ * Buffer usage frequency hints that guide the GPU driver's memory placement.
  *
  * <ul>
  *   <li>{@link #STATIC} — written once, drawn many times (e.g. level geometry).

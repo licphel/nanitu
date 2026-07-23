@@ -28,7 +28,6 @@ def lwjglNatives = rootProject.ext.lwjglNatives
 dependencies {
   api project(':fmhi-core')
   api project(':fmhi-gfx')
-  api project(':fmhi-text')
 
   implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
   implementation 'org.lwjgl:lwjgl'

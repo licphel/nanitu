@@ -24,7 +24,7 @@
 
 package net.fmhi.ui;
 
-import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.mesh.dim2.Graphics2D;
 import net.fmhi.math.Box2;
 import org.jspecify.annotations.Nullable;
 
@@ -44,7 +44,7 @@ import java.util.List;
  *   <li>{@link #layout(Box2)} — resolves {@link AnchorLayout} positioning, recurses into
  *       children.</li>
  *   <li>{@link #update(float)} — per-frame logic tick.</li>
- *   <li>{@link #render(Graphics, Look, Box2)} — draws self then children; containers apply
+ *   <li>{@link #render(Graphics2D, Look, Box2)} — draws self then children; containers apply
  *       scissor clipping.</li>
  * </ol>
  *
@@ -240,7 +240,7 @@ public abstract class Widget {
   /**
    * Renders this widget and its children.
    *
-   * <p>The default implementation calls {@link #renderSelf(Graphics, Look)} then draws children in
+   * <p>The default implementation calls {@link #renderSelf(Graphics2D, Look)} then draws children in
    * z-order. Containers that need scissor clipping override this method.
    *
    * @param g          the drawing context
@@ -248,7 +248,7 @@ public abstract class Widget {
    * @param parentClip the effective scissor rectangle in absolute logical coordinates, or {@code null} if no clipping
    *                   is active
    */
-  public void render(Graphics g, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics2D g, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
@@ -264,7 +264,7 @@ public abstract class Widget {
    * @param g    the drawing context
    * @param look the active look implementation
    */
-  protected abstract void renderSelf(Graphics g, Look look);
+  protected abstract void renderSelf(Graphics2D g, Look look);
 
   /**
    * Handles an input event. Children are tried in reverse z-order — topmost first — before this widget processes the

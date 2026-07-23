@@ -24,6 +24,8 @@
 
 package net.fmhi.gfx.texture;
 
+import net.fmhi.gfx.mesh.dim2.Drawable;
+import net.fmhi.gfx.mesh.dim2.VertexBuilder2D;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -35,11 +37,16 @@ import org.jspecify.annotations.Nullable;
  *
  * <p><b>Thread safety:</b> pin() must be called on the render thread.
  */
-public interface FragileTexture {
+public interface FragileTexture extends Drawable {
   /**
    * Returns the current backing texture.
    *
    * @return the current {@link Texture}
    */
   @Nullable Texture pin();
+
+  @Override
+  default void draw(VertexBuilder2D g, float x, float y, float w, float h, float u, float v, float uw, float vh) {
+    g.draw(this, x, y, w, h, u, v, uw, vh);
+  }
 }

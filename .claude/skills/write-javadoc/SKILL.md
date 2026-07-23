@@ -95,6 +95,7 @@ public Point { ...}
 - **Discard existing Javadoc entirely. Do not keep it.**
 - Your judgment about its quality is irrelevant. Replace it.
 - Generate fresh Javadoc following the rules above, regardless of what exists.
+- For separator comments like /* ====, /* --- or others, delete them completely.
 
 ### Exemplar
 

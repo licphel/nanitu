@@ -64,11 +64,9 @@ final class OpenGLResourceSet implements ResourceSet {
   private final int[] uboOffsets = new int[MAX_SLOTS];
 
   private final ResourceSetLayout layout;
-  private final OpenGLDevice ctx;
   private int slotCount = 0;
 
   OpenGLResourceSet(OpenGLDevice ctx, ResourceSetLayout layout) {
-    this.ctx = ctx;
     this.layout = layout;
   }
 
@@ -79,27 +77,19 @@ final class OpenGLResourceSet implements ResourceSet {
 
   @Override
   public void bindTexture(int slot, Texture texture, Sampler sampler) {
-    ctx.submit(() -> {
-      types[slot] = TEXTURE;
-      textures[slot] = (OpenGLTexture) texture;
-      samplers[slot] = (OpenGLSampler) sampler;
-      if (slot >= slotCount) {
-        slotCount = slot + 1;
-      }
-    });
+    types[slot] = TEXTURE;
+    textures[slot] = (OpenGLTexture) texture;
+    samplers[slot] = (OpenGLSampler) sampler;
+    if (slot >= slotCount) slotCount = slot + 1;
   }
 
   @Override
   public void bindUniform(int slot, BufferObject buffer, int size, int offset) {
-    ctx.submit(() -> {
-      types[slot] = UNIFORM;
-      ubos[slot] = (OpenGLBufferObject) buffer;
-      uboSizes[slot] = size;
-      uboOffsets[slot] = offset;
-      if (slot >= slotCount) {
-        slotCount = slot + 1;
-      }
-    });
+    types[slot] = UNIFORM;
+    ubos[slot] = (OpenGLBufferObject) buffer;
+    uboSizes[slot] = size;
+    uboOffsets[slot] = offset;
+    if (slot >= slotCount) slotCount = slot + 1;
   }
 
   @Override

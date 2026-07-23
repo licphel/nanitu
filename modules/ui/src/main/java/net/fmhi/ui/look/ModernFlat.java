@@ -24,8 +24,8 @@
 
 package net.fmhi.ui.look;
 
-import net.fmhi.gfx.sprite.Alignment;
-import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.mesh.dim2.Alignment;
+import net.fmhi.gfx.mesh.dim2.Graphics2D;
 import net.fmhi.gfx.text.Text;
 import net.fmhi.math.Box2;
 import net.fmhi.math.Color;
@@ -76,7 +76,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawButton(Graphics g, ButtonState state, Box2 bounds, @Nullable Text label) {
+  public void drawButton(Graphics2D g, ButtonState state, Box2 bounds, @Nullable Text label) {
     Color bg = switch (state) {
       case IDLE -> BTN_IDLE;
       case HOVERED -> ACCENT_HOV;
@@ -95,7 +95,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawPanel(Graphics g, Box2 bounds) {
+  public void drawPanel(Graphics2D g, Box2 bounds) {
     g.setColor(SURFACE);
     g.drawRectangle(bounds);
     g.setColor(BORDER);
@@ -104,7 +104,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawScrollPane(Graphics g, Box2 bounds) {
+  public void drawScrollPane(Graphics2D g, Box2 bounds) {
     g.setColor(WIN_BG);
     g.drawRectangle(bounds);
     g.setColor(BORDER);
@@ -113,7 +113,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowFrame(Graphics g, WindowState state, Box2 bounds) {
+  public void drawWindowFrame(Graphics2D g, WindowState state, Box2 bounds) {
     Box2 shadow = bounds.translate(4.0F, 4.0F);
     g.setColor(WIN_SHADOW);
     g.drawRectangle(shadow);
@@ -125,7 +125,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowTitleBar(Graphics g, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
+  public void drawWindowTitleBar(Graphics2D g, boolean focused, Box2 titleBarBounds, @Nullable Text title) {
     g.setColor(focused ? ACCENT : TITLE_UNFOCUS);
     g.drawRectangle(titleBarBounds);
     if (title != null) {
@@ -138,7 +138,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowCloseButton(Graphics g, boolean hovered, Box2 bounds) {
+  public void drawWindowCloseButton(Graphics2D g, boolean hovered, Box2 bounds) {
     if (hovered) {
       g.setColor(CLOSE_HOV);
       g.drawRectangle(bounds);
@@ -151,7 +151,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowMinimizeButton(Graphics g, boolean hovered, Box2 bounds) {
+  public void drawWindowMinimizeButton(Graphics2D g, boolean hovered, Box2 bounds) {
     if (hovered) {
       g.setColor(ACCENT_HOV);
       g.drawRectangle(bounds);
@@ -164,7 +164,7 @@ public final class ModernFlat implements Look {
   }
 
   @Override
-  public void drawWindowMaximizeButton(Graphics g, boolean hovered, Box2 bounds) {
+  public void drawWindowMaximizeButton(Graphics2D g, boolean hovered, Box2 bounds) {
     if (hovered) {
       g.setColor(ACCENT_HOV);
       g.drawRectangle(bounds);

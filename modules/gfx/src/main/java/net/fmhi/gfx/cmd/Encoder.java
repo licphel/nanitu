@@ -25,11 +25,11 @@
 package net.fmhi.gfx.cmd;
 
 import net.fmhi.gfx.buffer.BufferObject;
-import net.fmhi.gfx.buffer.BufferType;
-import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pass.RenderPass;
 import net.fmhi.gfx.pipe.Pipeline;
 import net.fmhi.gfx.pipe.Topology;
 import net.fmhi.gfx.shader.ResourceSet;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Records GPU commands (draw calls, state changes, dispatches) for batched submission.
@@ -77,7 +77,7 @@ public interface Encoder extends AutoCloseable {
    *
    * @param desc the render pass configuration
    */
-  void beginPass(RenderPassDesc desc);
+  void beginPass(RenderPass desc);
 
   /**
    * Ends the current render pass, presenting the bound render target.
@@ -98,14 +98,29 @@ public interface Encoder extends AutoCloseable {
   void setTopology(Topology topology);
 
   /**
-   * Binds a buffer for subsequent draw calls.
-   *
-   * <p>Buffers of type {@link BufferType#INDEX} are used for indexed drawing;
-   * all other buffers are treated as vertex buffers.
+   * Binds a vertex buffer for subsequent draw calls.
    *
    * @param buffer the buffer to bind
    */
-  void setBuffer(BufferObject buffer);
+  void setVertexBuffer(BufferObject buffer);
+
+  /**
+   * Binds an index buffer for subsequent draw calls.
+   *
+   * @param buffer the buffer to bind
+   */
+  void setIndexBuffer(BufferObject buffer);
+
+  /**
+   * Binds an instance-data buffer for subsequent instanced draw calls.
+   *
+   * <p>Instance buffers carry per-instance vertex attributes (divisor &gt; 0).
+   * The layout of this buffer is defined by the pipeline's
+   * {@link net.fmhi.gfx.shader.VertexLayout}.
+   *
+   * @param buffer the instance buffer, or {@code null} to unbind
+   */
+  void setInstanceBuffer(@Nullable BufferObject buffer);
 
   /**
    * Binds a render pipeline for subsequent draw calls.
@@ -191,6 +206,31 @@ public interface Encoder extends AutoCloseable {
    * @param firstIndex index of the first index element
    */
   void drawIndexed(int indexCount, int firstIndex);
+
+  /**
+   * Records an instanced, non-indexed draw call.
+   *
+   * <p>Each instance receives the same vertex data but a different slice of
+   * the instance buffer (see {@link #setInstanceBuffer}). The instance buffer's per-instance attributes are declared in
+   * the pipeline's {@link net.fmhi.gfx.shader.VertexLayout} with {@code divisor > 0}.
+   *
+   * @param vertexCount   number of vertices to draw per instance
+   * @param instanceCount number of instances to draw
+   * @param firstVertex   index of the first vertex
+   */
+  void drawInstanced(int vertexCount, int instanceCount, int firstVertex);
+
+  /**
+   * Records an instanced, indexed draw call.
+   *
+   * <p>Each instance receives the same vertex/index data but a different slice
+   * of the instance buffer.
+   *
+   * @param indexCount    number of indices to draw per instance
+   * @param instanceCount number of instances to draw
+   * @param firstIndex    index of the first index element
+   */
+  void drawIndexedInstanced(int indexCount, int instanceCount, int firstIndex);
 
   /**
    * Records a compute dispatch.

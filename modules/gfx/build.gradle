@@ -24,4 +24,6 @@
 
 dependencies {
   api project(':fmhi-core')
+
+  implementation 'com.ibm.icu:icu4j:76.1'
 }

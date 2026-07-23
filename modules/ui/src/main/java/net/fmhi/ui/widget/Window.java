@@ -24,7 +24,7 @@
 
 package net.fmhi.ui.widget;
 
-import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.mesh.dim2.Graphics2D;
 import net.fmhi.gfx.text.Text;
 import net.fmhi.math.Box2;
 import net.fmhi.ui.*;
@@ -299,7 +299,7 @@ public final class Window extends Widget {
    * rendering.
    */
   @Override
-  public void render(Graphics g, Look look, @Nullable Box2 parentClip) {
+  public void render(Graphics2D g, Look look, @Nullable Box2 parentClip) {
     if (!visible) {
       return;
     }
@@ -309,20 +309,20 @@ public final class Window extends Widget {
       Box2 contentAbs = absoluteContentBounds();
       Box2 effectiveClip = parentClip != null ? Box2.getIntersection(parentClip, contentAbs) : contentAbs;
 
-      g.setScissor(effectiveClip);
+      g.pushScissor(effectiveClip);
       for (Widget child : children) {
         child.render(g, look, effectiveClip);
       }
       if (parentClip != null) {
-        g.setScissor(parentClip);
+        g.pushScissor(parentClip);
       } else {
-        g.disableScissor();
+        g.popScissor();
       }
     }
   }
 
   @Override
-  protected void renderSelf(Graphics g, Look look) {
+  protected void renderSelf(Graphics2D g, Look look) {
     Box2 abs = absoluteBounds();
     WindowState ws = focused ? WindowState.FOCUSED : WindowState.NORMAL;
     look.drawWindowFrame(g, ws, abs);

@@ -25,8 +25,8 @@
 package net.fmhi.gfx.glfw;
 
 import net.fmhi.gfx.GraphicsException;
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.ViewInfo;
-import net.fmhi.gfx.back.View;
 import net.fmhi.gfx.input.KeyAction;
 import net.fmhi.gfx.input.KeyCode;
 import net.fmhi.gfx.input.event.*;

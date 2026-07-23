@@ -31,7 +31,7 @@ import net.fmhi.audio.io.AudioFormatException;
 import net.fmhi.audio.io.AudioInputStream;
 import net.fmhi.audio.spi.MixerProvider;
 import net.fmhi.gfx.Device;
-import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.buffer.BufferFrequency;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
@@ -43,7 +43,10 @@ import net.fmhi.gfx.input.KeyCode;
 import net.fmhi.gfx.input.Modifiers;
 import net.fmhi.gfx.io.ImageInfo;
 import net.fmhi.gfx.io.ImageInputStream;
-import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.mesh.dim2.BatchedGraphics2D;
+import net.fmhi.gfx.mesh.Mesh;
+import net.fmhi.gfx.mesh.dim2.MeshGraphics2D;
+import net.fmhi.gfx.pass.RenderPass;
 import net.fmhi.gfx.pipe.CompareOp;
 import net.fmhi.gfx.pipe.Depth;
 import net.fmhi.gfx.pipe.Pipeline;
@@ -51,8 +54,6 @@ import net.fmhi.gfx.pipe.PipelineDesc;
 import net.fmhi.gfx.shader.*;
 import net.fmhi.gfx.spi.DeviceProvider;
 import net.fmhi.gfx.spi.ViewProvider;
-import net.fmhi.gfx.sprite.Graphics;
-import net.fmhi.gfx.sprite.MultiMesh;
 import net.fmhi.gfx.text.Font;
 import net.fmhi.gfx.text.Style;
 import net.fmhi.gfx.text.TextLiteral;
@@ -276,7 +277,7 @@ public class Main {
     resourceSet.bindUniform(2, uboLighting, 64, 0);
 
     Encoder enc = dev.getEncoder(EncoderDesc.DEFAULT);
-    RenderPassDesc clearDesc = RenderPassDesc.of(new Color(0.1F, 0.12F, 0.15F, 1.0F));
+    RenderPass clearDesc = RenderPass.of(new Color(0.1F, 0.12F, 0.15F, 1.0F));
 
     Font font = Font.open(dev, ".ref/kst.ttf");
     Font font2 = Font.open(dev, ".ref/main.ttf");
@@ -311,9 +312,6 @@ public class Main {
     double lastTime = System.nanoTime();
     int frame = 0;
     final int MAX_FRAMES = 6000000;
-
-    MultiMesh mesh = new MultiMesh(dev, true);
-    mesh.setDirect(true);
 
     Key key0 = theView.snapshot().key(KeyCode.E);
 
@@ -354,7 +352,8 @@ public class Main {
       enc.queuedExecute();
        */
 
-      Graphics g = mesh.begin();
+      MeshGraphics2D g = new MeshGraphics2D(dev);
+      g.begin(RenderPass.DEFAULT);
       g.setCamera(new Camera2D(800, 450));
       TextSequence cns = new TextSequence().justify(true).flipY(true).maxWidth(260);
       cns.newline();
@@ -416,18 +415,25 @@ public class Main {
       g.setColor(new Color(1.0F, 1.0F, 1.0F, 0.2F));
       for (int j = 0; j < 4; j++) {
         for (int i = 0; i < 10; i++) {
-          g.transform.push();
-          g.transform.load(Matrix3x2.createRotation(frame / 50.0F,
+          g.transform().push();
+          g.transform().load(Matrix3x2.createRotation(frame / 50.0F,
               new Vector2(i * 50.0F, j * 100F).add(new Vector2(50, 50))).toMatrix4x4());
           g.drawTexture(texture, i / 2.0F, j * 100F, 100, 100);
-          g.transform.pop();
+          g.transform().pop();
         }
       }
       g.setColor(Color.WHITE);
       g.drawLine(0, 100, 200, 200);
-
       ui.render(g, delta);
-      mesh.end();
+      g.end();
+
+      BatchedGraphics2D bg = new BatchedGraphics2D(dev);
+      Mesh mesh = g.bake(dev);
+
+      bg.begin();
+      bg.setCamera(new Camera2D(800, 450));
+      bg.drawMesh(mesh);
+      bg.end();
 
       dev.submit(theView::present);
       dev.execute();

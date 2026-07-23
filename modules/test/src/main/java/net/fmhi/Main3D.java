@@ -25,14 +25,14 @@
 package net.fmhi;
 
 import net.fmhi.gfx.Device;
-import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.buffer.BufferFrequency;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
 import net.fmhi.gfx.buffer.BufferType;
 import net.fmhi.gfx.cmd.Encoder;
 import net.fmhi.gfx.cmd.EncoderDesc;
-import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pass.RenderPass;
 import net.fmhi.gfx.pipe.*;
 import net.fmhi.gfx.shader.*;
 import net.fmhi.gfx.spi.DeviceProvider;
@@ -103,7 +103,7 @@ public class Main3D {
 
     // Text
     Font font = Font.open(dev, ".ref/main.ttf");
-    TextSequence tc = new TextSequence().justify(true).flipY(false).maxWidth(190);
+    TextSequence tc = new TextSequence().justify(false).flipY(false).maxWidth(190);
     tc.append(new TextLiteral("苹果 (Apple)：",
         new Style.Builder(font).fontSize(8).color(Color.WHITE).fontStyle(Font.BOLD).build()));
     tc.append(new TextLiteral("1234567890",
@@ -132,7 +132,7 @@ public class Main3D {
       dev.pollEvents();
 
       enc.reset();
-      enc.beginPass(RenderPassDesc.DEFAULT);
+      enc.beginPass(RenderPass.DEFAULT);
 
       Matrix4x4 vp = cam.getProjectionMatrix().multiply(cam.getViewMatrix());
 
@@ -194,7 +194,7 @@ public class Main3D {
         qVerts[19] = v1;
 
         enc.reset();
-        enc.beginPass(RenderPassDesc.NOT_CLEAR);
+        enc.beginPass(RenderPass.NOT_CLEAR);
         enc.setRenderPipe(pipe);
         enc.setTopology(Topology.TRIANGLE);
         enc.setViewport(0, 0, view.width(), view.height());
@@ -206,8 +206,8 @@ public class Main3D {
         enc.setResource(0, rs);
 
         vbo.submit(floatsToBytes(qVerts));
-        enc.setBuffer(vbo);
-        enc.setBuffer(ibo);
+        enc.setVertexBuffer(vbo);
+        enc.setIndexBuffer(ibo);
         enc.drawIndexed(6, 0);
 
         enc.endPass();

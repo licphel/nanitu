@@ -24,7 +24,7 @@
 
 package net.fmhi.gfx.spi;
 
-import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.View;
 import net.fmhi.util.Service;
 
 /**

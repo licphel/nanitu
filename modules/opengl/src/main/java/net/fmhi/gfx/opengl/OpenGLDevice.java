@@ -26,7 +26,7 @@ package net.fmhi.gfx.opengl;
 
 import net.fmhi.gfx.Device;
 import net.fmhi.gfx.DeviceInfo;
-import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
 import net.fmhi.gfx.cmd.Encoder;

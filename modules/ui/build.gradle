@@ -25,6 +25,4 @@
 dependencies {
   api project(':fmhi-core')
   api project(':fmhi-gfx')
-  api project(':fmhi-sprite')
-  api project(':fmhi-text')
 }

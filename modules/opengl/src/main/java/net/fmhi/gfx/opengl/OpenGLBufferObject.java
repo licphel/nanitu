@@ -28,7 +28,6 @@ import net.fmhi.gfx.buffer.BufferFrequency;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
 import net.fmhi.gfx.buffer.BufferUsage;
-import net.fmhi.memory.Memory;
 import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 
@@ -86,9 +85,7 @@ final class OpenGLBufferObject implements BufferObject {
     boolean gpuWrite = (desc.usage() & BufferUsage.GPU_WRITE) != 0;
     hint = OpenGLUtils.bufferUsage(desc.frequency(), gpuWrite);
 
-    ctx.submit(() -> {
-      handle = glGenBuffers();
-    });
+    ctx.submit(() -> handle = glGenBuffers());
   }
 
   @Override
@@ -127,7 +124,7 @@ final class OpenGLBufferObject implements BufferObject {
   }
 
   @Override
-  public void submit(Memory memory, int offset) {
+  public void submit(ByteBuffer memory, int offset) {
     /*
      * Copy first since the memory is volatile.
      * Users may pollute the memory after submission.
@@ -135,12 +132,12 @@ final class OpenGLBufferObject implements BufferObject {
      * P.S. This might influence the performance.
      * However, this is essential, if we want a pure asynchronous submission.
      */
-    ByteBuffer bb = memAlloc((int) memory.size());
-    bb.put(memory.segment().asByteBuffer()).flip();
+    int size = memory.remaining();
+    ByteBuffer bb = memAlloc(size);
+    bb.put(memory).flip();
 
     ctx.submit(() -> {
       OpenGLCache cache = ctx.cache;
-      int size = (int) memory.size();
       int needed = offset + size;
       cache.bindBuffer(target, handle);
 

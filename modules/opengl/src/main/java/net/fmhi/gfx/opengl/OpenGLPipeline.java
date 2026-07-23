@@ -29,7 +29,6 @@ import net.fmhi.gfx.shader.VertexAttributeType;
 import net.fmhi.gfx.shader.VertexLayout;
 import net.fmhi.util.InternalApi;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,8 +43,8 @@ import static org.lwjgl.opengl.GL33.*;
  * bound via {@code glUseProgram}.
  *
  * <p><b>VAO caching:</b> OpenGL VAOs record buffer bindings at setup time,
- * so a unique VAO is required for each (VBO handle, IBO handle) pair. This class maintains a {@link HashMap} keyed by
- * the combined handles so that repeated draws with the same buffer pair reuse the same VAO.
+ * so a unique VAO is required for each (VBO, instance-VBO, IBO) triple. This class maintains a cache keyed by the
+ * combined handles so that repeated draws with the same buffer triple reuse the same VAO.
  *
  * <p><b>Thread safety:</b> immutable after construction. {@link #apply} and
  * {@link #acquireVao} must be called on the render thread.
@@ -57,12 +56,12 @@ final class OpenGLPipeline implements Pipeline {
   private final OpenGLDevice ctx;
   private final PipelineDesc desc;
   /**
-   * LRU VAO cache keyed by {@code vboHandle | ((long) eboHandle << 32)}. Evicts the least recently accessed VAO when
+   * LRU VAO cache keyed by {@code VaoKey}. Evicts the least recently accessed VAO when
    * over {@value #MAX_VAO_CACHE} entries.
    */
-  private final Map<Long, Integer> vaoCache = new LinkedHashMap<>(MAX_VAO_CACHE, 0.75F, true) {
+  private final Map<VaoKey, Integer> vaoCache = new LinkedHashMap<>(MAX_VAO_CACHE, 0.75F, true) {
     @Override
-    protected boolean removeEldestEntry(Map.Entry<Long, Integer> eldest) {
+    protected boolean removeEldestEntry(Map.Entry<VaoKey, Integer> eldest) {
       if (size() > MAX_VAO_CACHE) {
         glDeleteVertexArrays(eldest.getValue());
         return true;
@@ -70,6 +69,12 @@ final class OpenGLPipeline implements Pipeline {
       return false;
     }
   };
+
+  /**
+   * Key for the VAO cache combining vertex, instance, and index buffer handles.
+   */
+  private record VaoKey(int vbo, int instanceVbo, int ebo) {
+  }
 
   /**
    * Creates a new GL render pipeline.
@@ -146,17 +151,18 @@ final class OpenGLPipeline implements Pipeline {
   }
 
   /**
-   * Returns a configured VAO for the given buffer pair, creating one if necessary.
+   * Returns a configured VAO for the given buffer triple, creating one if necessary.
    *
    * <p>Must be called on the render thread. The VAO encodes the vertex
-   * attribute pointers for the given VBO, using the vertex layout from the pipeline descriptor.
+   * attribute pointers for the given VBO and instance VBO, using the vertex layout from the pipeline descriptor.
    *
-   * @param vboHandle the GL vertex buffer handle (must be non-zero)
-   * @param eboHandle the GL index buffer handle (0 if not indexed)
-   * @return a GL VAO handle configured for this (VBO, IBO) pair
+   * @param vboHandle         the GL vertex buffer handle (must be non-zero)
+   * @param instanceVboHandle the GL instance-data buffer handle (0 if not instanced)
+   * @param eboHandle         the GL index buffer handle (0 if not indexed)
+   * @return a GL VAO handle configured for this (VBO, instance-VBO, IBO) triple
    */
-  public int acquireVao(int vboHandle, int eboHandle) {
-    long key = (long) vboHandle | ((long) eboHandle << 32);
+  public int acquireVao(int vboHandle, int instanceVboHandle, int eboHandle) {
+    VaoKey key = new VaoKey(vboHandle, instanceVboHandle, eboHandle);
     Integer cached = vaoCache.get(key);
     if (cached != null) {
       return cached;
@@ -165,36 +171,55 @@ final class OpenGLPipeline implements Pipeline {
     int vao = glGenVertexArrays();
     ctx.cache.bindVao(vao);
 
-    /*
-     * Note: in OpenGL, after VAO creation we must
-     * explicitly bind VBO and EBO (optional)
-     * so we just force binding and reflush the cache.
-     */
-    ctx.cache.bindBufferForce(GL_ARRAY_BUFFER, vboHandle);
-    if (eboHandle != 0) {
-      ctx.cache.bindBufferForce(GL_ELEMENT_ARRAY_BUFFER, eboHandle);
+    VertexLayout layout = desc.vertexLayout();
+
+    // Set up per-instance attributes (from instance VBO, divisor > 0)
+    if (instanceVboHandle != 0 && layout.instanceStride > 0) {
+      ctx.cache.bindBufferForce(GL_ARRAY_BUFFER, instanceVboHandle);
+      for (VertexLayout.Attr attr : layout.attrs) {
+        if (attr.divisor() > 0) {
+          glEnableVertexAttribArray(attr.location());
+          int glType = OpenGLUtils.vertexAttribType(attr.type());
+          if (isIntType(attr.type()) && !attr.normalized()) {
+            glVertexAttribIPointer(attr.location(), attr.components(), glType, layout.instanceStride, attr.offset());
+          } else {
+            glVertexAttribPointer(attr.location(), attr.components(), glType, attr.normalized(), layout.instanceStride,
+                attr.offset());
+          }
+          glVertexAttribDivisor(attr.location(), attr.divisor());
+        }
+      }
     }
 
-    VertexLayout layout = desc.vertexLayout();
+    // Set up per-vertex attributes (from main VBO, divisor = 0)
+    ctx.cache.bindBufferForce(GL_ARRAY_BUFFER, vboHandle);
     for (VertexLayout.Attr attr : layout.attrs) {
-      glEnableVertexAttribArray(attr.location());
-      int glType = OpenGLUtils.vertexAttribType(attr.type());
-      boolean isInt = switch (attr.type()) {
-        case VertexAttributeType.INT8, VertexAttributeType.INT16, VertexAttributeType.INT32, VertexAttributeType.UINT8,
-             VertexAttributeType.UINT16, VertexAttributeType.UINT32 -> true;
-        default -> false;
-      };
-      if (isInt && !attr.normalized()) {
-        glVertexAttribIPointer(attr.location(), attr.components(), glType, layout.stride, attr.offset());
-      } else {
-        glVertexAttribPointer(attr.location(), attr.components(), glType, attr.normalized(), layout.stride,
-            attr.offset());
+      if (attr.divisor() == 0) {
+        glEnableVertexAttribArray(attr.location());
+        int glType = OpenGLUtils.vertexAttribType(attr.type());
+        if (isIntType(attr.type()) && !attr.normalized()) {
+          glVertexAttribIPointer(attr.location(), attr.components(), glType, layout.stride, attr.offset());
+        } else {
+          glVertexAttribPointer(attr.location(), attr.components(), glType, attr.normalized(), layout.stride,
+              attr.offset());
+        }
       }
+    }
+
+    if (eboHandle != 0) {
+      ctx.cache.bindBufferForce(GL_ELEMENT_ARRAY_BUFFER, eboHandle);
     }
 
     ctx.cache.bindVao(0);
     vaoCache.put(key, vao);
     return vao;
+  }
+
+  private static boolean isIntType(VertexAttributeType type) {
+    return switch (type) {
+      case INT8, INT16, INT32, UINT8, UINT16, UINT32 -> true;
+      default -> false;
+    };
   }
 
   @Override

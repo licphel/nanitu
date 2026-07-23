@@ -24,14 +24,10 @@
 
 package net.fmhi;
 
-import net.fmhi.memory.Buf;
-import net.fmhi.network.NetConfig;
-import net.fmhi.network.NetworkClient;
-import net.fmhi.network.NetworkServer;
+import net.fmhi.codec.Buf;
+import net.fmhi.network.*;
 import net.fmhi.network.packet.Packet;
 import net.fmhi.network.packet.PacketRegistry;
-import net.fmhi.network.session.Session;
-import net.fmhi.network.session.SessionState;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -49,7 +45,7 @@ public class MainNet {
     int port = NetConfig.DEFAULT_PORT;
 
     // --- Start server ---
-    NetworkServer server = NetworkServer.open();
+    ServerConnection server = ServerConnection.open();
     CountDownLatch serverBound = new CountDownLatch(1);
     server.bind(port).thenRun(serverBound::countDown);
     serverBound.await(3, TimeUnit.SECONDS);
@@ -69,7 +65,7 @@ public class MainNet {
     });
 
     // --- Start client ---
-    NetworkClient client = new NetworkClient();
+    Connection client = new Connection();
     System.out.println("[CLIENT] clientId=" + client.clientId());
 
     CountDownLatch clientConnected = new CountDownLatch(1);

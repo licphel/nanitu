@@ -26,9 +26,8 @@ package net.fmhi.gfx.opengl;
 
 import net.fmhi.gfx.GraphicsException;
 import net.fmhi.gfx.buffer.BufferObject;
-import net.fmhi.gfx.buffer.BufferType;
 import net.fmhi.gfx.cmd.Encoder;
-import net.fmhi.gfx.pass.RenderPassDesc;
+import net.fmhi.gfx.pass.RenderPass;
 import net.fmhi.gfx.pass.RenderTarget;
 import net.fmhi.gfx.pipe.Pipeline;
 import net.fmhi.gfx.pipe.Topology;
@@ -69,6 +68,7 @@ final class OpenGLEncoder implements Encoder {
   private @Nullable OpenGLPipeline currentPipe;
   private @Nullable OpenGLBufferObject currentVbo;
   private @Nullable OpenGLBufferObject currentEbo;
+  private @Nullable OpenGLBufferObject currentInstanceVbo;
   private @Nullable RenderTarget currentTarget;
   private int topology = GL_TRIANGLES;
 
@@ -93,6 +93,7 @@ final class OpenGLEncoder implements Encoder {
     currentPipe = null;
     currentVbo = null;
     currentEbo = null;
+    currentInstanceVbo = null;
     currentTarget = null;
   }
 
@@ -113,7 +114,7 @@ final class OpenGLEncoder implements Encoder {
   }
 
   @Override
-  public void beginPass(RenderPassDesc desc) {
+  public void beginPass(RenderPass desc) {
     commands.add(() -> {
       currentTarget = desc.target() == null ? ctx.getSwapchain() : desc.target();
 
@@ -124,16 +125,16 @@ final class OpenGLEncoder implements Encoder {
       }
 
       int glMask = 0;
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_COLOR) != 0) {
+      if ((desc.clearMask() & RenderPass.CLEAR_COLOR) != 0) {
         Color color = desc.clearColor();
         glClearColor(color.red(), color.green(), color.blue(), color.alpha());
         glMask |= GL_COLOR_BUFFER_BIT;
       }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_DEPTH) != 0) {
+      if ((desc.clearMask() & RenderPass.CLEAR_DEPTH) != 0) {
         glClearDepth(desc.clearDepth());
         glMask |= GL_DEPTH_BUFFER_BIT;
       }
-      if ((desc.clearMask() & RenderPassDesc.CLEAR_STENCIL) != 0) {
+      if ((desc.clearMask() & RenderPass.CLEAR_STENCIL) != 0) {
         glClearStencil(desc.clearStencil());
         glMask |= GL_STENCIL_BUFFER_BIT;
       }
@@ -160,15 +161,25 @@ final class OpenGLEncoder implements Encoder {
   }
 
   @Override
-  public void setBuffer(BufferObject buffer) {
+  public void setVertexBuffer(BufferObject buffer) {
     OpenGLBufferObject glBuf = (OpenGLBufferObject) buffer;
-    commands.add(() -> {
-      if (buffer.desc().type() == BufferType.INDEX) {
-        currentEbo = glBuf;
-      } else {
-        currentVbo = glBuf;
-      }
-    });
+    commands.add(() -> currentVbo = glBuf);
+  }
+
+  @Override
+  public void setIndexBuffer(BufferObject buffer) {
+    OpenGLBufferObject glBuf = (OpenGLBufferObject) buffer;
+    commands.add(() -> currentEbo = glBuf);
+  }
+
+  @Override
+  public void setInstanceBuffer(@Nullable BufferObject buffer) {
+    if (buffer == null) {
+      commands.add(() -> currentInstanceVbo = null);
+      return;
+    }
+    OpenGLBufferObject glBuf = (OpenGLBufferObject) buffer;
+    commands.add(() -> currentInstanceVbo = glBuf);
   }
 
   @Override
@@ -235,7 +246,7 @@ final class OpenGLEncoder implements Encoder {
 
       applyResources();
 
-      int vao = currentPipe.acquireVao(currentVbo.handle, 0);
+      int vao = currentPipe.acquireVao(currentVbo.handle, 0, 0);
       ctx.cache.bindVao(vao);
       glDrawArrays(topology, firstVertex, vertexCount);
       ctx.cache.bindVao(0);
@@ -265,9 +276,52 @@ final class OpenGLEncoder implements Encoder {
 
       applyResources();
 
-      int vao = currentPipe.acquireVao(currentVbo.handle, currentEbo.handle);
+      int vao = currentPipe.acquireVao(currentVbo.handle, 0, currentEbo.handle);
       ctx.cache.bindVao(vao);
       glDrawElements(topology, indexCount, GL_UNSIGNED_INT, (long) firstIndex * Integer.BYTES);
+      ctx.cache.bindVao(0);
+    });
+  }
+
+  @Override
+  public void drawInstanced(int vertexCount, int instanceCount, int firstVertex) {
+    commands.add(() -> {
+      if (currentVbo == null) {
+        throw new GraphicsException("VBO not bound");
+      }
+      if (currentPipe == null) {
+        throw new GraphicsException("Pipeline not bound");
+      }
+
+      applyResources();
+
+      int instHandle = currentInstanceVbo != null ? currentInstanceVbo.handle : 0;
+      int vao = currentPipe.acquireVao(currentVbo.handle, instHandle, 0);
+      ctx.cache.bindVao(vao);
+      glDrawArraysInstanced(topology, firstVertex, vertexCount, instanceCount);
+      ctx.cache.bindVao(0);
+    });
+  }
+
+  @Override
+  public void drawIndexedInstanced(int indexCount, int instanceCount, int firstIndex) {
+    commands.add(() -> {
+      if (currentVbo == null) {
+        throw new GraphicsException("VBO not bound");
+      }
+      if (currentEbo == null) {
+        throw new GraphicsException("EBO not bound");
+      }
+      if (currentPipe == null) {
+        throw new GraphicsException("Pipeline not bound");
+      }
+
+      applyResources();
+
+      int instHandle = currentInstanceVbo != null ? currentInstanceVbo.handle : 0;
+      int vao = currentPipe.acquireVao(currentVbo.handle, instHandle, currentEbo.handle);
+      ctx.cache.bindVao(vao);
+      glDrawElementsInstanced(topology, indexCount, GL_UNSIGNED_INT, (long) firstIndex * Integer.BYTES, instanceCount);
       ctx.cache.bindVao(0);
     });
   }

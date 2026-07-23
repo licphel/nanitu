@@ -41,36 +41,48 @@ public final class VertexLayout {
    */
   public final Attr[] attrs;
   /**
-   * Total byte stride between consecutive vertices.
+   * Total byte stride between consecutive vertices (per-vertex attributes only).
    */
   public final int stride;
+  /**
+   * Total byte stride between consecutive instances (per-instance attributes only), or 0 if no instancing.
+   */
+  public final int instanceStride;
 
-  private VertexLayout(Attr[] attrs, int stride) {
+  private VertexLayout(Attr[] attrs, int stride, int instanceStride) {
     this.attrs = attrs;
     this.stride = stride;
+    this.instanceStride = instanceStride;
   }
 
   /**
    * Bakes a vertex layout from a sequence of attribute descriptors.
    *
-   * <p>Each attribute's {@code offset} is computed as the running sum of
-   * previous attribute sizes. {@code location} is assigned sequentially starting from 0.
+   * <p>Attributes with {@code divisor == 0} are per-vertex; their offsets are computed within the vertex stride.
+   * Attributes with {@code divisor > 0} are per-instance; their offsets are computed within a separate instance stride.
+   * {@code location} is assigned sequentially in declaration order across both groups.
    *
    * @param attrs attribute descriptors in declaration order
-   * @return a baked layout with computed offsets and stride
+   * @return a baked layout with computed offsets and strides
    */
   public static VertexLayout bake(Attr... attrs) {
-    int offset = 0;
-    int location = 0;
+    int vertexOffset = 0, instanceOffset = 0, location = 0;
     Attr[] baked = new Attr[attrs.length];
     for (int i = 0; i < attrs.length; i++) {
       Attr a = attrs[i];
       int size = a.components * byteSize(a.type);
-      baked[i] = new Attr(a.components, a.type, a.normalized, location, offset, size);
-      offset += size;
+      int offset;
+      if (a.divisor == 0) {
+        offset = vertexOffset;
+        vertexOffset += size;
+      } else {
+        offset = instanceOffset;
+        instanceOffset += size;
+      }
+      baked[i] = new Attr(a.components, a.type, a.normalized, a.divisor, location, offset, size);
       location++;
     }
-    return new VertexLayout(baked, offset);
+    return new VertexLayout(baked, vertexOffset, instanceOffset);
   }
 
   private static int byteSize(VertexAttributeType type) {
@@ -87,13 +99,15 @@ public final class VertexLayout {
    * @param components number of components (1–4)
    * @param type       the component data type
    * @param normalized {@code true} to map integer types to [0,1] or [-1,1] in the shader
+   * @param divisor    0 for per-vertex, 1+ for per-instance
    * @param location   the shader attribute location (assigned by {@link VertexLayout#bake})
-   * @param offset     byte offset of this attribute within a vertex (assigned by {@code bake})
+   * @param offset     byte offset of this attribute within its buffer (assigned by {@code bake})
    * @param size       total byte size of this attribute ({@code components × sizeof(type)})
    */
-  public record Attr(int components, VertexAttributeType type, boolean normalized, int location, int offset, int size) {
+  public record Attr(int components, VertexAttributeType type, boolean normalized, int divisor, int location, int offset,
+                     int size) {
     /**
-     * Creates a new {@code Attr} for an unresolved attribute — location, offset, and size are set to 0 and will be
+     * Creates a new {@code Attr} for a per-vertex attribute — location, offset, and size are set to 0 and will be
      * computed by {@link VertexLayout#bake}.
      *
      * @param components number of components (1–4)
@@ -101,7 +115,17 @@ public final class VertexLayout {
      * @param normalized {@code true} to map integer types to [0,1] or [-1,1]
      */
     public Attr(int components, VertexAttributeType type, boolean normalized) {
-      this(components, type, normalized, 0, 0, 0);
+      this(components, type, normalized, 0, 0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this attribute with the given instance divisor.
+     *
+     * @param divisor 0 for per-vertex, 1+ for per-instance
+     * @return a new Attr with the divisor set
+     */
+    public Attr withDivisor(int divisor) {
+      return new Attr(components, type, normalized, divisor, location, offset, size);
     }
   }
 }

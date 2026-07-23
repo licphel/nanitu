@@ -27,10 +27,10 @@ package net.fmhi.ui;
 import net.fmhi.event.EventBus;
 import net.fmhi.event.EventListener;
 import net.fmhi.gfx.Device;
-import net.fmhi.gfx.back.View;
+import net.fmhi.gfx.View;
 import net.fmhi.gfx.input.KeyAction;
 import net.fmhi.gfx.input.event.*;
-import net.fmhi.gfx.sprite.Graphics;
+import net.fmhi.gfx.mesh.dim2.Graphics2D;
 import net.fmhi.math.Box2;
 import net.fmhi.math.Vector2;
 import net.fmhi.math.dim2.Camera2D;
@@ -119,7 +119,7 @@ public final class UiContext implements AutoCloseable {
 
   private void attach(View view) {
     this.eventBus = view.eventBus();
-    var bus = this.eventBus;
+    EventBus bus = this.eventBus;
 
     // Mouse move
     EventListener<MouseMoveEvent> mouseMove = (ctx, e) -> {
@@ -188,7 +188,7 @@ public final class UiContext implements AutoCloseable {
    * @param g         the drawing context
    * @param deltaTime seconds elapsed since the previous frame
    */
-  public void render(Graphics g, float deltaTime) {
+  public void render(Graphics2D g, float deltaTime) {
     if (disposed) {
       return;
     }

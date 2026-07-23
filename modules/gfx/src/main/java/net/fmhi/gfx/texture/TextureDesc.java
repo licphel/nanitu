@@ -151,7 +151,7 @@ public record TextureDesc(int width, int height, int depth, TextureFormat format
      * @param b the initial pixel data, or {@code null}
      * @return this builder
      */
-    public Builder initialBytes(byte[] b) {
+    public Builder initialBytes(byte @Nullable [] b) {
       initialBytes = b;
       return this;
     }

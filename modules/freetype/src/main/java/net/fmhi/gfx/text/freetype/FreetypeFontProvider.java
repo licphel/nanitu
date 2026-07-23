@@ -27,11 +27,11 @@ package net.fmhi.gfx.text.freetype;
 import net.fmhi.gfx.Device;
 import net.fmhi.gfx.text.Font;
 import net.fmhi.gfx.text.spi.FontProvider;
-import net.fmhi.memory.Memory;
 import net.fmhi.util.InternalApi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * {@link FontProvider} implementation backed by the FreeType library.
@@ -52,7 +52,6 @@ public final class FreetypeFontProvider implements FontProvider {
 
   @Override
   public Font create(Device device, InputStream stream) throws IOException {
-    Memory memory = new Memory(stream.readAllBytes());
-    return new FreetypeFont(device, memory, 0);
+    return new FreetypeFont(device, ByteBuffer.wrap(stream.readAllBytes()), 0);
   }
 }

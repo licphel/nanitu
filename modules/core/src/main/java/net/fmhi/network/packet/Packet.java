@@ -24,8 +24,8 @@
 
 package net.fmhi.network.packet;
 
-import net.fmhi.memory.Buf;
-import net.fmhi.network.session.Session;
+import net.fmhi.codec.Buf;
+import net.fmhi.network.Session;
 
 /**
  * Base class for network messages exchanged between client and server.

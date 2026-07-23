@@ -32,7 +32,7 @@ import java.util.UUID;
  * Shared constants for the network module.
  *
  * <p>All values are advisory defaults and may be overridden through configuration on
- * {@link NetworkClient} or {@link NetworkServer}.
+ * {@link Connection} or {@link ServerConnection}.
  */
 public final class NetConfig {
   /** Default listening port for servers and default connect port for clients. */

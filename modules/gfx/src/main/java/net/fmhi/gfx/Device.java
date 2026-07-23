@@ -24,7 +24,6 @@
 
 package net.fmhi.gfx;
 
-import net.fmhi.gfx.back.View;
 import net.fmhi.gfx.buffer.BufferObject;
 import net.fmhi.gfx.buffer.BufferObjectDesc;
 import net.fmhi.gfx.cmd.Encoder;

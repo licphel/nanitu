@@ -26,8 +26,9 @@ package net.fmhi.gfx.buffer;
 
 import net.fmhi.gfx.Device;
 import net.fmhi.gfx.cmd.Encoder;
-import net.fmhi.memory.Memory;
 import org.jspecify.annotations.Nullable;
+
+import java.nio.ByteBuffer;
 
 /**
  * A GPU buffer holding vertex, index, or uniform data.
@@ -46,7 +47,7 @@ import org.jspecify.annotations.Nullable;
  *   <li>Call {@link #close()} when the buffer is no longer needed.
  * </ol>
  *
- * <p><b>Buf orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
+ * <p><b>Buffer orphaning:</b> for {@link BufferFrequency#STREAM} buffers,
  * calling {@link #submit} with {@code offset == 0} discards the previous
  * allocation (via {@code glBufferData}) before uploading, which avoids
  * GPU pipeline stalls at the cost of an extra allocation per frame.
@@ -116,7 +117,7 @@ public interface BufferObject extends AutoCloseable {
    * @param size   bytes that will be uploaded
    */
   default void submit(byte[] data, int offset, int size) {
-    submit(new Memory(data).slice(0, size), offset);
+    submit(ByteBuffer.wrap(data).slice(0, size), offset);
   }
 
   /**
@@ -158,7 +159,7 @@ public interface BufferObject extends AutoCloseable {
    * @param memory the bytes to upload.
    * @param offset byte offset within the buffer to start writing
    */
-  void submit(Memory memory, int offset);
+  void submit(ByteBuffer memory, int offset);
 
   /**
    * Uploads bytes starting at offset 0.
@@ -167,7 +168,7 @@ public interface BufferObject extends AutoCloseable {
    *
    * @param memory the bytes to upload.
    */
-  default void submit(Memory memory) {
+  default void submit(ByteBuffer memory) {
     submit(memory, 0);
   }
 

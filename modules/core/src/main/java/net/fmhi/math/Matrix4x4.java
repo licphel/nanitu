@@ -439,4 +439,24 @@ public record Matrix4x4(float m00, float m10, float m20, float m30, float m01, f
   public Matrix2x2 toMatrix2x2() {
     return new Matrix2x2(m00, m01, m10, m11);
   }
+
+  /**
+   * Packs the matrix to a byte array.
+   *
+   * @param vpm input matrix
+   * @return the matrix data in byte[64]
+   */
+  public static byte[] pack(Matrix4x4 vpm) {
+    float[] m = vpm.toFloatArray();
+    byte[] bytes = new byte[64];
+    for (int i = 0; i < 16; i++) {
+      int bits = Float.floatToRawIntBits(m[i]);
+      int off = i * 4;
+      bytes[off] = (byte) bits;
+      bytes[off + 1] = (byte) (bits >> 8);
+      bytes[off + 2] = (byte) (bits >> 16);
+      bytes[off + 3] = (byte) (bits >> 24);
+    }
+    return bytes;
+  }
 }

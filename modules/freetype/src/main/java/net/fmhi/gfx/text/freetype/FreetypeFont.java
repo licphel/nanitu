@@ -28,7 +28,6 @@ import net.fmhi.gfx.Device;
 import net.fmhi.gfx.text.Font;
 import net.fmhi.gfx.text.FontMetrics;
 import net.fmhi.gfx.text.raster.Glyph;
-import net.fmhi.memory.Memory;
 import net.fmhi.util.InternalApi;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.PointerBuffer;
@@ -36,7 +35,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.freetype.FT_Face;
 import org.lwjgl.util.freetype.FT_Size;
 
-import java.lang.foreign.ValueLayout;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.util.freetype.FreeType.*;
@@ -62,11 +60,11 @@ final class FreetypeFont implements Font {
   private @Nullable FreetypeGlyphCache glyphCache;
   private float resolution = DEFAULT_RESOLUTION;
 
-  FreetypeFont(Device device, Memory bytes, int faceIndex) {
+  FreetypeFont(Device device, ByteBuffer buffer, int faceIndex) {
     this.device = device;
 
     // Buf the font data first — FT_New_Memory_Face reads from this buffer.
-    fileData = ByteBuffer.allocateDirect((int) bytes.size()).put(bytes.segment().toArray(ValueLayout.JAVA_BYTE)).flip();
+    fileData = ByteBuffer.allocateDirect(buffer.capacity()).put(buffer).flip();
 
     try (MemoryStack stack = MemoryStack.stackPush()) {
       PointerBuffer libOut = stack.callocPointer(1);

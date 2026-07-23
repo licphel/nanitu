@@ -27,12 +27,12 @@ package net.fmhi.network.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import net.fmhi.memory.Buf;
-import net.fmhi.memory.Endianness;
+import net.fmhi.codec.Buf;
 import net.fmhi.network.NetworkException;
 import net.fmhi.network.packet.Packet;
 import net.fmhi.network.packet.PacketRegistry;
 
+import java.nio.ByteOrder;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -79,7 +79,7 @@ public final class PacketDecoder extends ByteToMessageDecoder {
     if (in.readableBytes() < 4) {
       return;
     }
-    Buf buf = new NettyBuf(Endianness.BIG, in);
+    Buf buf = new NettyBuf(in).order(ByteOrder.BIG_ENDIAN);
     int packetId = buf.getInt();
     Packet packet = PacketRegistry.create(packetId);
     if (packet == null) {
@@ -103,7 +103,7 @@ public final class PacketDecoder extends ByteToMessageDecoder {
         in.resetReaderIndex();
         return;
       }
-      Buf buf = new NettyBuf(Endianness.BIG, in);
+      Buf buf = new NettyBuf(in);
       int packetId = buf.getInt();
       Packet packet = PacketRegistry.create(packetId);
       if (packet == null) {

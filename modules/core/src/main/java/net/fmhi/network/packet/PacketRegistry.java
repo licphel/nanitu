@@ -47,6 +47,10 @@ public final class PacketRegistry {
   private static final Map<Class<? extends Packet>, Integer> TYPE_TO_ID = new HashMap<>();
   private static final Object LOCK = new Object();
 
+  static {
+    register(HeartbeatPacket.class, HeartbeatPacket::new);
+  }
+
   private PacketRegistry() {
   }
 

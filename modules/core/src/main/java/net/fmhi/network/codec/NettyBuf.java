@@ -25,8 +25,9 @@
 package net.fmhi.network.codec;
 
 import io.netty.buffer.ByteBuf;
-import net.fmhi.memory.Buf;
-import net.fmhi.memory.Endianness;
+import net.fmhi.codec.Buf;
+
+import java.nio.ByteOrder;
 
 /**
  * A {@link Buf} that wraps a Netty {@link ByteBuf}.
@@ -35,19 +36,17 @@ import net.fmhi.memory.Endianness;
  * all byte-level operations to the underlying Netty buffer.
  */
 public final class NettyBuf extends Buf {
-  private final ByteBuf delegate;
+  private final ByteBuf buffer;
 
   /**
    * Wraps an existing Netty buffer with the given byte order.
    *
-   * @param endianness byte order for multi-byte operations
-   * @param delegate   the Netty buffer to wrap; its cursors are adopted as this buffer's cursors
+   * @param buffer   the Netty buffer to wrap; its cursors are adopted as this buffer's cursors
    */
-  public NettyBuf(Endianness endianness, ByteBuf delegate) {
-    super(endianness);
-    this.delegate = delegate;
-    this.readerIndex = delegate.readerIndex();
-    this.writerIndex = delegate.writerIndex();
+  public NettyBuf(ByteBuf buffer) {
+    this.buffer = buffer;
+    this.readerIndex = buffer.readerIndex();
+    this.writerIndex = buffer.writerIndex();
   }
 
   /**
@@ -56,41 +55,43 @@ public final class NettyBuf extends Buf {
    * @return the underlying Netty buffer
    */
   public ByteBuf delegate() {
-    return delegate;
+    return buffer;
   }
 
   @Override
-  protected byte _getByte(long index) {
-    return delegate.getByte((int) index);
+  protected byte get(long index) {
+    return buffer.getByte((int) index);
   }
 
   @Override
-  protected void _putByte(long index, byte value) {
-    delegate.setByte((int) index, value);
+  protected void put(long index, byte value) {
+    buffer.setByte((int) index, value);
   }
 
   @Override
-  protected long _capacity() {
-    return delegate.capacity();
+  public long capacity() {
+    return buffer.capacity();
   }
 
   @Override
-  protected void _expand(long minCapacity) {
-    delegate.capacity((int) minCapacity);
+  protected void expandTo(long minCapacity) {
+    buffer.capacity((int) minCapacity);
   }
 
   @Override
-  public Buf putByte(byte value) {
-    ensureWritable(1);
-    delegate.setByte((int) writerIndex++, value);
-    return this;
+  public ByteOrder order() {
+    return ByteOrder.BIG_ENDIAN;
+  }
+
+  @Override
+  public Buf order(ByteOrder order) {
+    throw new UnsupportedOperationException("Net buffer doesn't support byte order");
   }
 
   @Override
   public Buf putShort(short value) {
     ensureWritable(2);
-    short v = endianness == Endianness.LITTLE ? Short.reverseBytes(value) : value;
-    delegate.setShort((int) writerIndex, v);
+    buffer.setShort((int) writerIndex, value);
     writerIndex += 2;
     return this;
   }
@@ -98,8 +99,7 @@ public final class NettyBuf extends Buf {
   @Override
   public Buf putInt(int value) {
     ensureWritable(4);
-    int v = endianness == Endianness.LITTLE ? Integer.reverseBytes(value) : value;
-    delegate.setInt((int) writerIndex, v);
+    buffer.setInt((int) writerIndex, value);
     writerIndex += 4;
     return this;
   }
@@ -107,8 +107,7 @@ public final class NettyBuf extends Buf {
   @Override
   public Buf putLong(long value) {
     ensureWritable(8);
-    long v = endianness == Endianness.LITTLE ? Long.reverseBytes(value) : value;
-    delegate.setLong((int) writerIndex, v);
+    buffer.setLong((int) writerIndex, value);
     writerIndex += 8;
     return this;
   }
@@ -116,12 +115,7 @@ public final class NettyBuf extends Buf {
   @Override
   public Buf putFloat(float value) {
     ensureWritable(4);
-    if (endianness == Endianness.LITTLE) {
-      int bits = Integer.reverseBytes(Float.floatToRawIntBits(value));
-      delegate.setFloat((int) writerIndex, Float.intBitsToFloat(bits));
-    } else {
-      delegate.setFloat((int) writerIndex, value);
-    }
+    buffer.setFloat((int) writerIndex, value);
     writerIndex += 4;
     return this;
   }
@@ -129,12 +123,7 @@ public final class NettyBuf extends Buf {
   @Override
   public Buf putDouble(double value) {
     ensureWritable(8);
-    if (endianness == Endianness.LITTLE) {
-      long bits = Long.reverseBytes(Double.doubleToRawLongBits(value));
-      delegate.setDouble((int) writerIndex, Double.longBitsToDouble(bits));
-    } else {
-      delegate.setDouble((int) writerIndex, value);
-    }
+    buffer.setDouble((int) writerIndex, value);
     writerIndex += 8;
     return this;
   }
@@ -142,24 +131,15 @@ public final class NettyBuf extends Buf {
   @Override
   public Buf putBytes(byte[] src, int srcOffset, int length) {
     ensureWritable(length);
-    delegate.setBytes((int) writerIndex, src, srcOffset, length);
+    buffer.setBytes((int) writerIndex, src, srcOffset, length);
     writerIndex += length;
     return this;
   }
 
   @Override
-  public byte getByte() {
-    ensureReadable(1);
-    return delegate.getByte((int) readerIndex++);
-  }
-
-  @Override
   public short getShort() {
     ensureReadable(2);
-    short v = delegate.getShort((int) readerIndex);
-    if (endianness == Endianness.LITTLE) {
-      v = Short.reverseBytes(v);
-    }
+    short v = buffer.getShort((int) readerIndex);
     readerIndex += 2;
     return v;
   }
@@ -167,10 +147,7 @@ public final class NettyBuf extends Buf {
   @Override
   public int getInt() {
     ensureReadable(4);
-    int v = delegate.getInt((int) readerIndex);
-    if (endianness == Endianness.LITTLE) {
-      v = Integer.reverseBytes(v);
-    }
+    int v = buffer.getInt((int) readerIndex);
     readerIndex += 4;
     return v;
   }
@@ -178,10 +155,7 @@ public final class NettyBuf extends Buf {
   @Override
   public long getLong() {
     ensureReadable(8);
-    long v = delegate.getLong((int) readerIndex);
-    if (endianness == Endianness.LITTLE) {
-      v = Long.reverseBytes(v);
-    }
+    long v = buffer.getLong((int) readerIndex);
     readerIndex += 8;
     return v;
   }
@@ -189,11 +163,7 @@ public final class NettyBuf extends Buf {
   @Override
   public float getFloat() {
     ensureReadable(4);
-    float v = delegate.getFloat((int) readerIndex);
-    if (endianness == Endianness.LITTLE) {
-      int bits = Integer.reverseBytes(Float.floatToRawIntBits(v));
-      v = Float.intBitsToFloat(bits);
-    }
+    float v = buffer.getFloat((int) readerIndex);
     readerIndex += 4;
     return v;
   }
@@ -201,11 +171,7 @@ public final class NettyBuf extends Buf {
   @Override
   public double getDouble() {
     ensureReadable(8);
-    double v = delegate.getDouble((int) readerIndex);
-    if (endianness == Endianness.LITTLE) {
-      long bits = Long.reverseBytes(Double.doubleToRawLongBits(v));
-      v = Double.longBitsToDouble(bits);
-    }
+    double v = buffer.getDouble((int) readerIndex);
     readerIndex += 8;
     return v;
   }
@@ -214,13 +180,18 @@ public final class NettyBuf extends Buf {
   public byte[] getBytes(int length) {
     ensureReadable(length);
     byte[] dst = new byte[length];
-    delegate.getBytes((int) readerIndex, dst);
+    buffer.getBytes((int) readerIndex, dst);
     readerIndex += length;
     return dst;
   }
 
   @Override
+  public byte[] backingArray() {
+    return buffer.array();
+  }
+
+  @Override
   public void close() {
-    delegate.release();
+    buffer.release();
   }
 }
